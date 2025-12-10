@@ -1,21 +1,27 @@
 import type React from "react";
 import type { CardPropsType } from "../types/CardProps";
 import type { User } from "../types/User";
-import { IoCloseCircle } from "react-icons/io5";
-import { BiMoney } from "react-icons/bi";
+
 import { convertPrice } from "../utils/convertPrice";
-import { BiWallet } from "react-icons/bi";
-import { LuBoxes } from "react-icons/lu";
-import { PiEmptyBold } from "react-icons/pi";
 import Loading from "./Loading";
-import { TiShoppingCart } from "react-icons/ti";
-import { ImBlocked } from "react-icons/im";
-import { FaCheck } from "react-icons/fa6";
-import { RxCross2 } from "react-icons/rx";
+
+import {
+  LuBoxes,
+  RxCross2,
+  FaCheck,
+  ImBlocked,
+  TiShoppingCart,
+  PiEmptyBold,
+  BiWallet,
+  BiMoney,
+  IoCloseCircle,
+} from '../assets/icons';
 
 interface PropsType extends CardPropsType {
   purchase_dates: string[] | undefined;
   purchase_dates_prices: number[] | undefined;
+  purchase_dates_prices_per_unit: number[] | undefined;
+  purchase_dates_amounts: number[] | undefined;
   user: User | null;
   amount: number;
   productAmountInput: number;
@@ -39,6 +45,8 @@ const ProductCardFromFocus = ({
   productAmount,
   purchase_dates,
   purchase_dates_prices,
+  purchase_dates_prices_per_unit,
+  purchase_dates_amounts,
   user,
   defineQuantityBeforeBuy,
   productAmountInput,
@@ -103,6 +111,20 @@ const ProductCardFromFocus = ({
                           </span>
                           <span className="spent">
                             -R$ {purchase_dates_prices?.[index]?.toLocaleString('pt-BR', {
+                              minimumFractionDigits: 2
+                            })}
+                          </span>
+                          <span className="dot">
+                            {'•'}
+                          </span>
+                          <span className="amounts">
+                            {purchase_dates_amounts?.[index]}x
+                          </span>
+                          <span className="right-arrow">
+                            {'»'}
+                          </span>
+                          <span className="spent-per-unit">
+                            R$ {purchase_dates_prices_per_unit?.[index]?.toLocaleString('pt-BR', {
                               minimumFractionDigits: 2
                             })}
                           </span>
@@ -171,7 +193,11 @@ const ProductCardFromFocus = ({
                   <p>Seu saldo será de <span style={{color: 'rgb(0, 175, 0)'}}>R$ {user && price ? convertPrice(user.wallet - (price * productAmountInput)) : '?'}</span> após a compra.</p>
                   <div className="buttons">
                     <button className="buy-button" type="submit">{buyingState  ? <Loading/> : <FaCheck/>}{buyingState ? 'Comprando' : 'Sim'}</button>
-                    <button className="cancel-button" type="button" onClick={() => setPurchaseConfirmModal(false)}><RxCross2 size={25}/>Não</button>
+                    {buyingState ? (
+                      <button style={{cursor: 'not-allowed', filter: 'brightness(0.8)'}} disabled className="cancel-button" type="button"><RxCross2 size={25}/>Não</button>
+                    ) : (
+                      <button className="cancel-button" type="button" onClick={() => setPurchaseConfirmModal(false)}><RxCross2 size={25}/>Não</button>
+                    )}
                   </div>
                 </form>
               </>

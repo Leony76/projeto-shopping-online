@@ -20,7 +20,7 @@ const AddProductsForm = ({
   handleClick,
   resetImagePreview,
 }:AddProductsFormPropsType) => {
-  const [toast, setToast] = useState<{message: string, type: 'success' | 'error'} | null>();
+  const [toast, setToast] = useState<{message: string, type: 'success' | 'error' | 'alert'} | null>();
 
   const [name, setName] = useState("");
   const [category, setCategory] = useState("");
@@ -40,12 +40,12 @@ const AddProductsForm = ({
     });
 
     if (error) {
-      setToast({ message: error, type: "error" });
+      setToast({ message: error, type: "alert" });
       return;
     }
 
     if (!file) {
-      setToast({message: 'Selecione a imagem do produto', type: 'error'})
+      setToast({message: 'Selecione a imagem do produto', type: 'alert'})
       return;
     } 
 

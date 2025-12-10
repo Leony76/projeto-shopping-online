@@ -8,9 +8,11 @@ import { api } from "../services/api";
 import { UserContext } from "../context/UserContext";
 import { convertPrice } from "../utils/convertPrice";
 
-import { IoMenu } from "react-icons/io5";
-import { FaCartShopping } from "react-icons/fa6";
-import { BiWallet } from "react-icons/bi";
+import { 
+  IoMenu,
+  BiWallet,
+  FaCartShopping,
+} from '../assets/icons';
 
 import './AppLayout.css';
 
@@ -43,8 +45,7 @@ const AppLayout = ({children}:PageProps) => {
           {!user?.admin && (
             <div className="wallet-display"><BiWallet size={20}/> R$ {user ? convertPrice(user?.wallet) : '??'}</div>
           )}
-          <button>Configurações</button>
-          <button>Perfil</button>
+          <Link to={'/settings'}>Configurações</Link>
           <button onClick={log_out}>Logout</button>
         </div>
       )}
@@ -74,7 +75,7 @@ const AppLayout = ({children}:PageProps) => {
             {children}
           </main>
         <footer>
-          <p>&copy; Leony Leandro Barros</p>
+          <p>&copy; 2025 Leony Leandro Barros, Todos os direitos reservados.</p>
         </footer>
       </UserContext.Provider>
     </div>

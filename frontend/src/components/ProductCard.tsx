@@ -17,6 +17,8 @@ const ProductCard = ({
   id,
   purchase_dates,
   purchase_dates_prices,
+  purchase_dates_prices_per_unit,
+  purchase_dates_amounts,
   isnt_my_products_page,
 }:PropsType) => {
   const { user, setUser } = useUser();
@@ -101,6 +103,8 @@ const ProductCard = ({
           productAmount={productAmount}
           purchase_dates={purchase_dates}
           purchase_dates_prices={purchase_dates_prices}
+          purchase_dates_prices_per_unit={purchase_dates_prices_per_unit}
+          purchase_dates_amounts={purchase_dates_amounts}
           user={user}
           amount={amount}
           setVisibleBuyCard={setVisibleBuyCard}

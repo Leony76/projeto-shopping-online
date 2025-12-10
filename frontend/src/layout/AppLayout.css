@@ -93,18 +93,21 @@ footer p {
   display: flex;
   flex-direction: column;
   gap: 5px;
-}
+}.menu-modal button, .menu-modal a {
+    color: white;
+    background-color: transparent;
+    border: none;
+    padding: 5px;
+    border-radius: 5px;
+    cursor: pointer;
+  }.menu-modal a {
+    text-decoration: none;
+    text-align: center;
+  }.menu-modal button {
+    font-size: 16px;
+  }
 
-.menu-modal button {
-  color: white;
-  background-color: transparent;
-  border: none;
-  padding: 5px;
-  border-radius: 5px;
-  cursor: pointer;
-}
-
-.menu-modal button:hover {
+.menu-modal button:hover, .menu-modal a:hover {
   background-color: rgb(73, 73, 73);
 }
 
@@ -141,17 +144,25 @@ main {
   top: 80px;
   right: 10px;
 }.toast p {
-  border-radius: 10px;
-  padding: 10px;
-}.toast-error {
-  color: red;
-  background-color: darkred;
-  border: 1px solid red;
-}.toast-success {
-  color: rgb(0, 202, 0);
-  background-color: rgb(0, 66, 0);
-  border: 1px solid rgb(0, 202, 0);
-}
+    border-radius: 10px;
+    padding: 10px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-weight: 700;
+  }.toast-error {
+    color: red;
+    background-color: rgba(139, 0, 0, 0.9);
+    border: 1px solid red;
+  }.toast-success {
+    color: rgb(0, 202, 0);
+    background-color: rgba(0, 66, 0, 0.9);
+    border: 1px solid rgb(0, 202, 0);
+  }.toast-alert {
+    color: yellow;
+    background-color: rgba(184, 135, 11, 0.9);
+    border: 1px solid yellow;
+  }
 
 .loading-container {
   display: flex;

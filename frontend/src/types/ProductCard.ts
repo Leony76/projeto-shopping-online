@@ -3,7 +3,9 @@ export type PropsType = {
   price?: number;
   amount: number;
   purchase_dates_prices?: number[];
-
+  purchase_dates_prices_per_unit?: number[];
+  purchase_dates_amounts?: number[];
+  
   image: string;
   name: string;
   category: string;

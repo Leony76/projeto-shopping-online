@@ -8,6 +8,8 @@ class Order extends Model
 {
     protected $fillable = [
         'price',
+        'price_per_unit',
+        'amount',
         'user_id',
         'product_id'
     ];

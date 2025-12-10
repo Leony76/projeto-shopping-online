@@ -1,8 +1,15 @@
-import { BiMoney } from "react-icons/bi";
-import { LuBoxes } from "react-icons/lu";
 import { convertPrice } from "../utils/convertPrice";
 import type { CardPropsType } from "../types/CardProps";
-import { FiEye } from "react-icons/fi";
+import { 
+  LuBoxes,
+  GiGemNecklace, 
+  FaKitchenSet,
+  BiMoney,
+  LiaBroomSolid,
+  FaCalendarAlt,
+  FiEye,
+} from '../assets/icons';
+
 
 const ProductCardFromGrid = ({
   image,
@@ -20,9 +27,9 @@ const ProductCardFromGrid = ({
         <img src={image ? image : '[placeholder]'} alt={name ? name : '??'} />
         <h3>{name ? name : '??'}</h3>
         <div className="category-date">
-          <p>{category ? category : '??'}</p>
+          <p className="category-label">{category === 'Limpeza' ? <LiaBroomSolid/> : category === 'Artesanal' ?  <GiGemNecklace/> : <FaKitchenSet/>}{category ? category : '??'}</p>
           <span>•</span>
-          <p>{date_put_to_sale ? date_put_to_sale : '??'}</p>
+          <p className="date-label"><FaCalendarAlt/>{date_put_to_sale ? date_put_to_sale : '??'}</p>
         </div>
       </div>
       <div className="price-buy">

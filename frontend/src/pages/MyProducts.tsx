@@ -6,7 +6,8 @@ import SectionTitle from "../components/SectionTitle";
 import loading from '../assets/loading.svg';
 import type { Product } from "../types/Product";
 import { getProducts } from "../services/getProducts";
-import { BsBoxSeam } from "react-icons/bs";
+
+import { BsBoxSeam } from '../assets/icons';
 
 const MyProducts = () => {
 
@@ -57,6 +58,8 @@ const MyProducts = () => {
               amount={Number(product.pivot.amount)}
               purchase_dates={product.purchase_dates}
               purchase_dates_prices={product.prices}
+              purchase_dates_prices_per_unit={product.prices_per_unit}
+              purchase_dates_amounts={product.amounts}
               isnt_my_products_page={false}
             />
           ))}

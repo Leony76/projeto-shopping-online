@@ -1,13 +1,17 @@
+import type { Product } from "../types/Product";
+
+import { useEffect, useState } from "react";
+import { getProductsForSale } from "../services/getProductsForSale";
+
 import AppLayout from "../layout/AppLayout";
-import "./Dashboard.css";
 import ProductCard from "../components/ProductCard";
 import SectionTitle from "../components/SectionTitle";
 import Title from "../components/Title";
-import { useEffect, useState } from "react";
 import loading from '../assets/loading.svg';
-import type { Product } from "../types/Product";
-import { FaBasketShopping } from "react-icons/fa6";
-import { getProductsForSale } from "../services/getProductsForSale";
+
+import { FaBasketShopping } from '../assets/icons';
+
+import "./Dashboard.css";
 
 const Products = () => {
   const [products, setProducts] = useState<Product[]>([]);

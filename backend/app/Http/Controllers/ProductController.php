@@ -100,6 +100,8 @@ class ProductController extends Controller {
 
             Order::create([
                 'price' => $product_price_multiplied,
+                'price_per_unit' => $product->price,
+                'amount' => $request->product_amount_bought,
                 'user_id' => $user->id,
                 'product_id' => $product->id
             ]);
@@ -112,7 +114,9 @@ class ProductController extends Controller {
                 'type' => 'success',
                 'wallet' => $user->wallet,
                 'remaining_stock' => $product->amount,
-                'product_amount_bought' => $request->product_amount_bought
+                'product_amount_bought' => $request->product_amount_bought,
+                'total_price' => $product_price_multiplied,
+                'price_per_unit' => $product->price,
             ], 201);
         });
     }
@@ -137,9 +141,27 @@ class ProductController extends Controller {
             )->pluck(
                 'price'
             );
+
+            $prices_per_unit = $user->orders()->where(
+                'product_id', $product->id
+            )->orderBy(
+                'created_at', 'desc'
+            )->pluck(
+              'price_per_unit'  
+            );
+
+            $amouts = $user->orders()->where(
+                'product_id', $product->id
+            )->orderBy(
+                'created_at', 'desc'
+            )->pluck(
+                'amount'
+            );
                 
             $product->purchase_dates = $dates;
             $product->prices = $prices;
+            $product->prices_per_unit = $prices_per_unit;
+            $product->amounts = $amouts;
 
             return $product;
         });

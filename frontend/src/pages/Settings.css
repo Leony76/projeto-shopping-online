@@ -1,0 +1,16 @@
+.settings-nav {
+  border-top: 2px solid #a0a0a0;
+  border-bottom: 2px solid #a0a0a0;
+  padding: 15px;
+  padding-left: 20px;
+}.settings-nav ul {
+    display: flex;
+    gap: 15px;
+    list-style: none;
+  }.settings-nav button {
+    border: none;
+    background-color: transparent;
+    font-size: 20px;
+    color: darkgoldenrod;
+    font-weight: 600;
+  }

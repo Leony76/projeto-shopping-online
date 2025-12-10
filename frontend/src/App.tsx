@@ -8,6 +8,7 @@ import Products from './pages/Products';
 import AdminProducts from './pages/AdminProducts';
 import { AuthProvider } from './context/AuthContext.tsx'
 import MyProducts from './pages/MyProducts.tsx';
+import Settings from './pages/Settings.tsx';
 
 function App() {
   return (
@@ -43,6 +44,13 @@ function App() {
                 <AdminRoute>
                   <AdminProducts/>
                 </AdminRoute>
+              }
+            />
+            <Route path='/settings'
+              element={
+                <PrivateRoute>
+                  <Settings/>
+                </PrivateRoute>
               }
             />
           </Routes>

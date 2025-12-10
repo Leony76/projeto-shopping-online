@@ -9,6 +9,8 @@ export type Product = {
   amount: string;
   purchase_dates: string[];
   prices: number[];
+  prices_per_unit: number[];
+  amounts: number[];
   pivot: any;
 
   products: any[];
