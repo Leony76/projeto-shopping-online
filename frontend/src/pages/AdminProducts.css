@@ -1,0 +1,108 @@
+.form-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  height: 90vh;
+}
+
+.add-product-form {
+  display: flex;
+  gap: 20px;
+  border: 2px solid #a0a0a0;
+  border-radius: 10px;
+  padding: 20px;
+}.add-product-form input,
+ .add-product-form select,
+ .add-product-form textarea,
+ .add-product-form .add-product-button {
+  padding: 8px;
+  border-radius: 10px;
+  border: 2px solid #a0a0a0;
+}.add-product-form .add-product-button {
+  padding: 12px;
+  margin-top: 10px;
+  color: orangered;
+  border: 2px solid tomato;
+  background-color: rgba(255, 166, 0, 0.444);
+  font-size: 20px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: .1s;
+}.add-product-form .add-product-button:hover {
+  filter: brightness(.9);
+}.add-product-form .add-product-button:active {
+  filter: brightness(.8);
+}
+
+.product-info {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  gap: 5px;
+}
+
+.product-information {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.product-information > div {
+  display: flex;
+  flex-direction: column;
+}
+
+.image-input input{
+  border: none;
+}
+
+.image-file-button {
+  color: rgb(0, 94, 94);
+  background-color: rgba(0, 255, 255, 0.554);
+  border: 2px solid rgba(0, 139, 139, 0.696);
+  border-radius: 10px;
+  height: 100%;
+  font-weight: bold;
+  cursor: pointer;
+}.image-file-button:hover {
+  filter: brightness(.9);
+}.image-file-button:active {
+  filter: brightness(.8);
+}
+
+.image-preview {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-right: 2px solid #a0a0a0;
+  border-left: 2px solid #a0a0a0;
+  width: 100%;
+  background-color: rgb(235, 235, 235);
+  flex: 1;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center center;
+}.image-preview p {
+  transform: rotate(-45deg);
+  font-size: 20px;
+  color: #a0a0a0;
+}
+
+.image-input-amount {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.image-input,
+.amount-container {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+textarea {
+  height: 100px;
+}
+
+ 
