@@ -43,16 +43,14 @@ const ProductCard = ({
       setToast({message: response.data.message, type: response.data.type});
       setUser(prev => {
         if (!prev) return prev;
-
-          return {
-            ...prev,
-            wallet: response.data.wallet
-          };
-        }
-      );
+        return {
+          ...prev,
+          wallet: response.data.wallet
+        };
+      });
       setProductAmount(response.data.remaining_stock);
-    } catch (err:any) {
-      setToast({message: err.response?.data?.message, type: 'error'});
+    } catch {
+      setToast({message: 'Houve um erro', type: 'error'});
       return;
     } finally {
       setVisibleBuyCard(false);
@@ -63,22 +61,14 @@ const ProductCard = ({
     }
   }
 
-  useEffect(() => {
-    if (!toast)return;
-
-    const timer = setTimeout(() => {
-      setToast(null);
-    }, 3000);
-
-    return () => {
-      clearTimeout(timer);
-    }
-  }, [toast]);
-
   return (
     <div className="product-card">
       {toast && (
-        <Toast message={toast.message} type={toast.type}/>
+        <Toast 
+          message={toast.message} 
+          type={toast.type}
+          onClose={() => setToast(null)}
+        />
       )}
       <CardFromGrid
         image={image}

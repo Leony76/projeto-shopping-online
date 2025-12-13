@@ -22,5 +22,16 @@ export { TbXboxXFilled } from "react-icons/tb";
 export { GoAlertFill } from "react-icons/go";
 export { IoSettingsSharp } from "react-icons/io5";
 export { MdAccountCircle } from "react-icons/md";
-
+export { MdOutlineSecurity } from "react-icons/md";
+export { FaSignsPost } from "react-icons/fa6";
+export { MdEditSquare } from "react-icons/md";
+export { FaUser } from "react-icons/fa";
+export { IoMdMail } from "react-icons/io";
+export { FaPhone } from "react-icons/fa";
+export { FaBaby } from "react-icons/fa";
+export { ImCross } from "react-icons/im";
+export { RiErrorWarningLine } from "react-icons/ri";
+export { RiLockPasswordFill } from "react-icons/ri";
+export { MdVerifiedUser } from "react-icons/md";
+export { MdOutgoingMail } from "react-icons/md";
 

@@ -1,6 +1,6 @@
 import { api } from "./api";
 
-export async function login(email: string, password: string, setUser: any) {
+export const login = async(email: string, password: string) => {
   const response = await api.post("/login", {
     email,
     password,
@@ -9,10 +9,10 @@ export async function login(email: string, password: string, setUser: any) {
   localStorage.setItem("token", response.data.token);
   localStorage.setItem("user", JSON.stringify(response.data.user));
 
-  setUser(response.data.user);
+  return response.data;
 }
 
-export async function register(name: string, email: string, password: string) {
+export const register = async(name: string, email: string, password: string) => {
   const response = await api.post("/register", {
     name,
     email,
@@ -21,11 +21,10 @@ export async function register(name: string, email: string, password: string) {
 
   localStorage.setItem("token", response.data.token);
   localStorage.setItem("user", JSON.stringify(response.data.user));
-  return response.data.user;
+
+  return response.data;
 }
 
-export async function logout() {
+export const logout = async() => {
   await api.post('/logout');
-  localStorage.removeItem("token");
-  localStorage.removeItem("user");
 }

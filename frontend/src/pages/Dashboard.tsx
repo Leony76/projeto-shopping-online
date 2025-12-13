@@ -23,7 +23,7 @@ const Dashboard = () => {
         setIsLoading(true);
         const data = await getProductsForSale();
         setProducts(data);
-      } catch (err:any) {
+      } catch (err) {
         console.error("Erro ao carregar produtos: " + err);
       } finally {
         setIsLoading(false);

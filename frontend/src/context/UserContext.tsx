@@ -1,9 +1,11 @@
-import React, { useContext, createContext } from "react";
+import { useContext, createContext } from "react";
 import type { User } from "../types/User";
 
-type UserContextType = {
+export type UserContextType = {
   user: User | null;
   setUser: React.Dispatch<React.SetStateAction<User | null>>;
+  logout: () => void;
+  loading: boolean;
 };
 
 export const UserContext = createContext<UserContextType | null>(null);
@@ -12,8 +14,9 @@ export const useUser = () => {
   const context = useContext(UserContext);
 
   if (!context) {
-    throw new Error("useUser must be inside UserProvider");
+    throw new Error('useUser must be inside UserProvider.')
   }
-
+  
   return context;
-};
+}
+

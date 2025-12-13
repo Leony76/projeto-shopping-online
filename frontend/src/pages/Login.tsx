@@ -1,16 +1,16 @@
 import { login } from "../services/auth";
 import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
-import { useAuth } from "../context/AuthContext";
+import { useUser } from "../context/UserContext";
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
   const [toast, setToast] = useState<{type: 'success' | 'error', message: string} | null>(null);
-  const { setUser } = useAuth();
+  const { setUser } = useUser();
 
-  async function handleSubmit(e:React.FormEvent) {
+  const handleSubmit = async(e:React.FormEvent) => {
     e.preventDefault();
 
     if (email == '') {
@@ -24,9 +24,12 @@ const Login = () => {
     }
 
     try {
-      await login(email, password, setUser);
+      const data = await login(email, password);
+
+      setUser(data.user);
+      
       navigate("/dashboard");
-    } catch (e) {
+    } catch {
       setToast({type: 'error', message: 'Email ou senha inválidos'});
     }
   }

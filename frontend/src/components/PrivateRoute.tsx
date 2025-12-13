@@ -1,12 +1,15 @@
 import { Navigate } from "react-router-dom";
 import type { ReactNode } from "react";
+import { useUser } from "../context/UserContext";
 
 type PrivateRouteProps = {
   children: ReactNode;
 }
 
 export function PrivateRoute({ children }:PrivateRouteProps) {
-  const token = localStorage.getItem("token");
+  const { user, loading } = useUser();
 
-  return token ? children : <Navigate to="/login" />;
+  if (loading) return null;
+
+  return user ? children : <Navigate to="/login"/>;
 }

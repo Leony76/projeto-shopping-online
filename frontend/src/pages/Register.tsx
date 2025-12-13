@@ -1,6 +1,7 @@
 import { useState } from "react"
 import { useNavigate, Link } from "react-router-dom"
 import { register } from "../services/auth"
+import { useUser } from "../context/UserContext"
 
 const Register = () => {
   const [name, setName] = useState('');
@@ -8,21 +9,26 @@ const Register = () => {
   const [password, setPassword] = useState('');
   const [repeatPassword, setRepeatPassword] = useState('');
 
+  const { setUser } = useUser();
+
   const navigate = useNavigate();
 
   async function handleSubmit(e:React.FormEvent) {
     e.preventDefault();
 
-    if (password != repeatPassword) {
+    if (password !== repeatPassword) {
       window.alert('Senhas não se coincidem!');
       return;
     };
 
     try {
-      await register(name, email, password);
+      const data = await register(name, email, password);
+
+      setUser(data.user);
+
       navigate('/dashboard');
-    } catch (err:any) {
-      console.log(err.response?.data);
+    } catch {
+      console.log('Erro');
     }
   }
 

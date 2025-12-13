@@ -6,15 +6,15 @@ import { PrivateRoute } from './components/PrivateRoute';
 import AdminRoute from './components/AdminRoute';
 import Products from './pages/Products';
 import AdminProducts from './pages/AdminProducts';
-import { AuthProvider } from './context/AuthContext.tsx'
 import MyProducts from './pages/MyProducts.tsx';
 import Settings from './pages/Settings.tsx';
+import { UserProvider } from './context/UserProvider.tsx';
 
 function App() {
   return (
     <>
       <BrowserRouter>
-        <AuthProvider>
+        <UserProvider>
           <Routes>
             <Route path='/login' element={<Login/>}/>
             <Route path='/register' element={<Register/>}/>
@@ -54,7 +54,7 @@ function App() {
               }
             />
           </Routes>
-        </AuthProvider>
+        </UserProvider>
       </BrowserRouter>
     </>
   )

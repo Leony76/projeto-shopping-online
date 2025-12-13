@@ -14,12 +14,15 @@ Route::post('/register', [AuthController::class, 'register']);
 
 Route::middleware(['auth:sanctum'])->group(function() {
     Route::get('/user', [UserController::class, 'userData']);
+    Route::post('/user/update-data', [UserController::class, 'updateData']);
+    Route::post('/user/verify-password', [UserController::class, 'verifyPasswordBeforeUpdate']);
+    Route::post('/user/update-password', [UserController::class, 'updatePassword']);
     Route::get('/products', [ProductController::class, 'index']);
     Route::get('/products/get', [ProductController::class, 'listUserProducts']);
     Route::post('/products/buy', [ProductController::class, 'buyProduct']);
     Route::post('/logout', [AuthController::class, 'logout']);
-});
-
-Route::middleware(['auth:sanctum', 'is_admin'])->group(function() {
     Route::post('/admin/products', [ProductController::class, 'store']);
 });
+
+// Route::middleware(['auth:sanctum', 'is_admin'])->group(function() {
+// });

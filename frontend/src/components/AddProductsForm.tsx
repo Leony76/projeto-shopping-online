@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { validateProductBeforeSubmit } from "../utils/ValidateProductInfosBeforeSubmit";
 import { ProductPost } from "../services/ProductPost";
 import Toast from "./Toast";
@@ -73,22 +73,14 @@ const AddProductsForm = ({
     }
   }
 
-  useEffect(() => {
-    if (!toast)return;
-
-    const timer = setTimeout(() => {
-      setToast(null);
-    }, 3000);
-
-    return () => {
-      clearTimeout(timer);
-    }
-  }, [toast]);
-
   return (
     <form onSubmit={handleSubmit} className="add-product-form">
       {toast && (
-        <Toast message={toast.message} type={toast.type}/>
+        <Toast 
+          message={toast.message} 
+          type={toast.type}
+          onClose={() => setToast(null)}
+        />
       )}
 
       <div className="product-info">

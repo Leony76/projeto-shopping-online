@@ -1,6 +1,6 @@
 import { Navigate } from "react-router-dom";
 import type { ReactNode } from "react";
-import { useAuth } from "../context/AuthContext";
+import { useUser } from "../context/UserContext";
 
 type AdminRouteProps = {
   children: ReactNode;
@@ -8,9 +8,9 @@ type AdminRouteProps = {
 
 const AdminRoute = ({children}:AdminRouteProps) => {
   const token = localStorage.getItem("token");
-  const { user } = useAuth();
+  const { user } = useUser();
 
-  if (!token || !user || !user.admin) {
+  if (!token || !user?.admin) {
     return(<Navigate to={"/dashboard"}/>)
   }
 
