@@ -17,11 +17,14 @@ Route::middleware(['auth:sanctum'])->group(function() {
     Route::post('/user/update-data', [UserController::class, 'updateData']);
     Route::post('/user/verify-password', [UserController::class, 'verifyPasswordBeforeUpdate']);
     Route::post('/user/update-password', [UserController::class, 'updatePassword']);
+    Route::post('/user/update-recovery-email', [UserController::class, 'updateRecoveryEmail']);
+    Route::post('/user/update-recovery-phone', [UserController::class, 'updateRecoveryPhone']);
     Route::get('/products', [ProductController::class, 'index']);
     Route::get('/products/get', [ProductController::class, 'listUserProducts']);
     Route::post('/products/buy', [ProductController::class, 'buyProduct']);
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::post('/admin/products', [ProductController::class, 'store']);
+    Route::post('/admin/update-product', [ProductController::class, 'updateProduct']);
 });
 
 // Route::middleware(['auth:sanctum', 'is_admin'])->group(function() {

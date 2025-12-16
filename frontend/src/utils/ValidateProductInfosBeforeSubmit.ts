@@ -7,7 +7,9 @@ export type Product = {
 };
 
 export function validateProductBeforeSubmit(product: Product): string | null {
-  const { name, category, description, price, amount } = product;
+  const { 
+    name, category, description, price, amount,
+   } = product;
 
   if (!name) return "Insira o nome do produto";
   if (!category) return "Selecione a categoria do produto";

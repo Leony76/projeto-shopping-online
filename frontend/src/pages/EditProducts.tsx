@@ -8,23 +8,27 @@ import ProductCard from "../components/ProductCard";
 import SectionTitle from "../components/SectionTitle";
 import Title from "../components/Title";
 import loading from '../assets/loading.svg';
+import Toast from "../components/Toast";
 
-import { FaHouseUser } from '../assets/icons';
+import { 
+  MdEditSquare
+} from '../assets/icons';
 
 import "./Dashboard.css";
 import NoProducts from "../components/NoProducts";
 
-const Dashboard = () => {
+const EditProducts = () => {
   const [products, setProducts] = useState<Product[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
-  
+  const [toast, setToast] = useState<{message: string, type: 'success' | 'error' | 'alert'} | null>();
+
   useEffect(() => {
     async function loadProducts() {
       try {
         setIsLoading(true);
         const data = await getProductsForSale();
         setProducts(data);
-      } catch (err) {
+      } catch (err:any) {
         console.error("Erro ao carregar produtos: " + err);
       } finally {
         setIsLoading(false);
@@ -37,8 +41,15 @@ const Dashboard = () => {
   return (
     <AppLayout>
       <div className="dashboard">
-        <Title title="Home" icon={<FaHouseUser/>}/> 
-        <SectionTitle title="Principais produtos disponíveis"/>
+        {toast && (
+          <Toast
+            message={toast.message}
+            type={toast.type}
+            onClose={() => setToast(null)}
+          />
+        )}
+        <Title title="Editar Produto" icon={<MdEditSquare/>}/> 
+        <SectionTitle title="Escolha um produto para editar"/>
         {isLoading && (
           <div className="loading-container">
             <img className="loading" src={loading} alt="Carregando..." />
@@ -59,6 +70,7 @@ const Dashboard = () => {
               price={Number(product.price)}
               amount={Number(product.amount)}
               isnt_my_products_page={true}
+              admin_action={'edit'}
             />
           ))}
         </div>
@@ -68,4 +80,4 @@ const Dashboard = () => {
   )
 }
 
-export default Dashboard
+export default EditProducts

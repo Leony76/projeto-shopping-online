@@ -46,23 +46,23 @@
       font-size: 35px;
     }
 
-.account-tab-main-container {
+.tab-main-container {
   display: flex;
   flex-direction: column;
   gap: 10px;
-  padding-top: 10px;
-}.account-tab-main-container .info {
+  margin: 10px 5px;
+}.tab-main-container .info {
     display: flex;
     gap: 5px;
     align-items: center;
-}.account-tab-main-container .dot {
+}.tab-main-container .dot {
     color: rgb(0, 135, 135);
-  }.account-tab-main-container .info p {
+  }.tab-main-container .info p {
       font-size: 18px;
       color: rgb(92, 92, 92);
-    }.account-tab-main-container .info p:hover {
+    }.tab-main-container .info p:hover {
       text-decoration: underline;
-  }.account-tab-main-container button {
+  }.tab-main-container button {
       border: none;
       background-color: transparent;
       height: 25px;
@@ -70,9 +70,9 @@
       font-size: 25px;
       color: tomato;
       cursor: pointer;
-    }.account-tab-main-container button:hover {
+    }.tab-main-container button:hover {
       color: orange;
-  }.account-tab-main-container .info span {
+  }.tab-main-container .info span {
       display: flex;
       align-items: center;
       gap: 5px;

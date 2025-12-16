@@ -14,4 +14,5 @@ export type PropsType = {
   purchase_dates?: string[];
 
   isnt_my_products_page?: boolean;
+  admin_action?: 'edit' | 'remove';
 };

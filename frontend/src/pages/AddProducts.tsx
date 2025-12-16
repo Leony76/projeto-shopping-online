@@ -1,9 +1,9 @@
 import AppLayout from "../layout/AppLayout"
-import './AdminProducts.css';
+import './AddProducts.css';
 import useImagePreview from "../components/ImagePreview";
 import AddProductsForm from "../components/AddProductsForm";
 
-const AdminProducts = () => {
+const AddProducts = () => {
   const { 
     preview,
     inputRef, 
@@ -24,9 +24,9 @@ const AdminProducts = () => {
           handleClick={handleClick}
           resetImagePreview={resetImagePreview}
         />
-      </div>
+      </div> 
     </AppLayout>
   )
 }
 
-export default AdminProducts
+export default AddProducts

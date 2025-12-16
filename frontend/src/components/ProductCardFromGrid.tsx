@@ -8,8 +8,8 @@ import {
   LiaBroomSolid,
   FaCalendarAlt,
   FiEye,
+  MdEditSquare,
 } from '../assets/icons';
-
 
 const ProductCardFromGrid = ({
   image,
@@ -19,6 +19,7 @@ const ProductCardFromGrid = ({
   price,
   isnt_my_products_page,
   productAmount,
+  admin_action,
   setVisibleBuyCard
 }:CardPropsType) => {
   return (
@@ -42,8 +43,12 @@ const ProductCardFromGrid = ({
           ) : (
             <p className="amount-label"><LuBoxes/>{productAmount}</p>
           )}
-        </div>  
-        <button className="buy-button" style={{gap: '5px'}} onClick={() => setVisibleBuyCard(true)}><FiEye/>Ver Informações</button>
+        </div>
+        {admin_action === 'edit' ? (
+          <button className="buy-button" style={{gap: '5px'}} onClick={() => setVisibleBuyCard(true)}><MdEditSquare/>Editar</button>
+        ) : (
+          <button className="buy-button" style={{gap: '5px'}} onClick={() => setVisibleBuyCard(true)}><FiEye/>Ver Informações</button>
+        )}
       </div>
     </>
   )

@@ -170,4 +170,55 @@ class ProductController extends Controller {
             'products' => $result
         ], 200);
     }
+
+    public function updateProduct(Request $request) {
+        $request->validate([
+            'id' => 'required|integer',
+            'name' => 'sometimes|string|min:2|max:50',
+            'description' => 'sometimes|string|min:2|max:255',
+            'price' => 'sometimes|numeric|min:1',
+            'image' => 'nullable|image|mimes:jpg,jpeg,png,webp',
+            'amount' => 'sometimes|integer|min:0',
+        ] , [
+            'id' => 'O id do produto é requerido (falha no sistema)',
+
+            'name.min' => 'O nome não pode ter menos de 2 caractéres',
+            'name.max' => 'O nome não pode ter mais de 50 carctéres',
+
+            'description.min' => 'A descrição não pode ter menos de 2 carctéres',
+            'description.max' => 'A descrição não pode ter mais de 255 carctéres',
+
+            'price.min' => 'O preço não pode ser inferior a R$0,00',
+
+            'amount.min' => 'A quantidade não pode ser inferior a 0',
+        ]);
+
+        // $request->id = (int)$request->id;
+        // $request->amount = (int)$request->amount;
+        // $request->price = (float)$request->price;
+
+        $user = auth()->user();
+
+        $data = [];
+        
+        if ($request->filled('name')) $data['name'] = $request->name;
+        if ($request->filled('description')) $data['description'] = $request->description;
+        if ($request->filled('price')) $data['price'] = (float) $request->price;
+        if ($request->filled('amount')) $data['amount'] = (int) $request->amount;
+        if ($request->hasFile('image')) $data['image'] = $request->file('image')->store('products', 'public');
+
+        if (empty($data)) {
+            return reponse()->json([
+                'message' => 'Não é possível editar o produto sem ao menos 1 alteração',
+                'type' => 'error',
+            ], 400);
+        }
+
+        $user->products()->where('products.id', (int)$request->id)->update($data);
+
+        return response()->json([
+            'message' => 'Produto atualizado com sucesso!',
+            'type' => 'success',
+        ], 200);
+    }
 }

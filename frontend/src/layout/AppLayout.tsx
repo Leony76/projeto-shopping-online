@@ -47,7 +47,7 @@ const AppLayout = ({children}:PageProps) => {
               <li><Link className="link" to={'/my-products'}>Meus Produtos</Link></li>
             )}
             {user?.admin && (
-              <li><Link className="link" to={'/admin/products'}>Adicionar Produtos</Link></li>
+              <li><Link className="link" to={'/admin/products-management'}>Gerir Produtos</Link></li>
             )}
             <button onClick={() => setBurguerModalVisible(prev => !prev)} className="burguer-button">
               <IoMenu size={40} color={'white'}/>

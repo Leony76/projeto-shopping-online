@@ -1,0 +1,18 @@
+export type EditAction = 
+| 'change_name'
+| 'change_password' 
+| 'change_birthday'
+| 'change_phone' 
+| 'change_email' 
+| 'change_recovery_email' 
+| 'change_recovery_phone' 
+| 'verify_password'
+| 'change_public_place'
+| 'change_zip_code'
+| 'change_residence_number'
+| 'change_complement'
+| 'change_neighborhood'
+| 'change_city'
+| 'change_state'
+| 'change_country'
+;

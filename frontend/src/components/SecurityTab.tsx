@@ -1,61 +1,79 @@
 import { 
   MdOutlineSecurity,
   RiLockPasswordFill,
-  MdEditSquare,
-  ImCross,
-  RiErrorWarningLine,
-  MdVerifiedUser,
-  MdOutgoingMail
+  MdOutgoingMail,
+  BsFillTelephoneForwardFill,
  } from '../assets/icons';
 import Toast from './Toast';
 import { useState } from 'react';
 import '../pages/Settings.css';
 import { api } from '../services/api';
-import Loading from './Loading2';
 import { useUser } from '../context/UserContext';
+import { isValidEmail } from '../utils/validateEmail';
+import { formatPhone } from '../utils/formatPhone';
+import EditableInfo from './SettingsEditableInfo';
+import EditModal from './InfoEditModal';
 
-type SecurittFieldKey = 'password' | 'recovery_email' | 'recovery_phone';
+type SecurityFieldState = {
+  password: string;
+  recoveryEmail: string;
+  recoveryPhone: string;
+}
+type SecurityFieldKeys = keyof SecurityFieldState;
 
 const SecurityTab = () => {
-  const { user } = useUser();
+  const { user, setUser } = useUser();
 
   const [toast, setToast] = useState<{message: string, type: 'success' | 'error' | 'alert'} | null>();
   const [errorMessage, setErrorMessage] = useState<string | null>('');
   
-  const [password, setPassword] = useState<string>('');
-  const [recoveryEmail, setRecoveryEmail] = useState<string>('');
-  const [recoveryPhone, setRecoveryPhone] = useState<string>('');
+  const [securityFields, setSecurityField] = useState<SecurityFieldState>({
+    password: '',
+    recoveryEmail: '',
+    recoveryPhone: '',
+  });
 
-  const [showEditModal, setEditModal] = useState<SecurittFieldKey | null>(null);
+  const updateField = (key: SecurityFieldKeys, value: string) => {
+    setSecurityField(prev => ({
+      ...prev,
+      [key]: value
+    }));
+  };
+
+  const [showEditModal, setEditModal] = useState<SecurityFieldKeys | null>(null);
   const [showVerifyPasswordModal, setVerifyPasswordModal] = useState<boolean>(false);
   const [processingState, setProcessingState] = useState<boolean>(false);
 
-  const fields: Record<SecurittFieldKey, {
+  const fields: Record<SecurityFieldKeys, {
     route: string;
     payloadKey: string;
     value: string;
+    name: string;
   }> = {
     password: {
       route: 'user/update-password',
       payloadKey: 'new_password',
-      value: password,
+      value: securityFields.password,
+      name: 'senha'
     },
-    recovery_email: {
+    recoveryEmail: {
       route: 'user/update-recovery-email',
       payloadKey: 'recovery_email',
-      value: recoveryEmail,
+      value: securityFields.recoveryEmail,
+      name: 'e-mail de recuperação'
     },
-    recovery_phone: {
+    recoveryPhone: {
       route: 'user/update-recovery-phone',
       payloadKey: 'recovery_phone',
-      value: recoveryPhone,
+      value: securityFields.recoveryPhone,
+      name: 'telefone de recuperação'
     }
   }
 
   const handleVerifyCurrentPassword = async(e:React.FormEvent) => {
     e.preventDefault();
     
-    if (password === '') {
+    if (!securityFields.password) {
       setErrorMessage('Preencha com sua senha atual');
       setProcessingState(false);
       return;
@@ -63,7 +81,7 @@ const SecurityTab = () => {
 
     try {
       const response = await api.post('user/verify-password', {
-        password: password
+        password: securityFields.password
       })
 
       setEditModal(response.data.success);
@@ -73,7 +91,11 @@ const SecurityTab = () => {
     } catch (err:any) {
       setErrorMessage(err.response?.data?.message);
       setProcessingState(false);
-    }
+      setSecurityField(prev => ({
+        ...prev,
+        password: '',
+      }));
+    } 
   }
 
   const handleSubmit = async(e:React.FormEvent) => {
@@ -83,8 +105,21 @@ const SecurityTab = () => {
 
     const field = fields[showEditModal]; 
 
+    if (field.payloadKey === 'recovery_email' && !isValidEmail(field.value)) {
+      setErrorMessage('E-mail inválido');
+      setProcessingState(false);
+      return;
+    }
+
+    if (field.payloadKey === 'recovery_phone') {
+      const normalizedPhone = field.value.replace(/\D/g, '');
+
+      field.value = normalizedPhone;
+    }
+
     if (!field.value || field.value.trim() === '') {
-      setErrorMessage('Campo não pode estar vazio');
+      setErrorMessage(`O novo ${field.name} não pode estar vazio`);
+      setProcessingState(false);
       return;
     }    
 
@@ -93,12 +128,30 @@ const SecurityTab = () => {
         [field.payloadKey]: field.value,
       });
 
+      const new_data = response.data.update;
+
+      setUser(prev => {
+        if (!prev) return prev;
+
+        return {
+          ...prev,
+          [field.payloadKey]: new_data
+        }
+      });
+
       setEditModal(null);
       setProcessingState(false);
+      setErrorMessage(null);
       setToast({message: response.data.message, type: response.data.type})
     } catch (err:any) {
       setErrorMessage(err.response?.data?.message);
       setProcessingState(false);
+    } finally {
+      setSecurityField({
+        password: '',
+        recoveryEmail: '',
+        recoveryPhone: '',
+      });
     }
   }
 
@@ -114,89 +167,115 @@ const SecurityTab = () => {
         />
       )}
       <h2><MdOutlineSecurity/>Segurança</h2>
-      <div className="account-tab-main-container">
-        <div className={`password info`}>
-          <span title='Senha'><RiLockPasswordFill/>Senha:</span><p title='Senha'>********</p>
-          <span className='dot'>•</span>
-          <button onClick={() => setVerifyPasswordModal(true)} title='Editar'><MdEditSquare/></button>
-        </div>
+      <div className="tab-main-container">
+        <EditableInfo
+          labelIcon={RiLockPasswordFill}
+          label={'password'}
+          upperTranslatedLabel={'Senha'}
+          userAttribute={'*******'}
+          onClick={() => setVerifyPasswordModal(true)}
+        />
+        <EditableInfo
+          labelIcon={MdOutgoingMail}
+          label={'recovery_email'}
+          upperTranslatedLabel={'E-mail de recuperação'}
+          userAttribute={user?.recovery_email == null ? 'Não definido' : user?.recovery_email}
+          onClick={() => setEditModal('recoveryEmail')}
+        />
+        <EditableInfo
+          labelIcon={BsFillTelephoneForwardFill}
+          label={'recovery_phone'}
+          upperTranslatedLabel={'Telefone de recuperação'}
+          userAttribute={user?.recovery_phone == null ? 'Não definido' : formatPhone(user?.recovery_phone)}
+          onClick={() => setEditModal('recoveryPhone')}
+        />
       </div>
-      <div className="account-tab-main-container">
-        <div className={`password info`}>
-          <span title='Senha'><MdOutgoingMail size={25}/>Email de recuperação:</span><p title='E-mail de recuperação'>{user?.recovery_email == null ? 'Não definido' : user?.recovery_email}</p>
-          <span className='dot'>•</span>
-          <button onClick={() => setEditModal('recovery_email')} title='Editar'><MdEditSquare/></button>
-        </div>
-      </div>
+
       {isAnyModalOpen && (
         <div className='modal-overlay'></div>
       )}
       {showVerifyPasswordModal && (
-        <div className='setting-edit-modal'>
-          <h3>Verificar senha</h3>
-          <div className='label-input'>
-            <label>Insira sua senha atual:</label>
-            <input onChange={(e) => setPassword(e.target.value)} placeholder='Senha atual' type="password" maxLength={20}/>
-            {errorMessage && <p className="modal-error-message"><RiErrorWarningLine size={20}/>{errorMessage}</p>}
-          </div>
-          <form onSubmit={handleVerifyCurrentPassword} className='buttons'>
-            <button onClick={() => setProcessingState(true)} type='submit'>{processingState ? <Loading/> : <MdVerifiedUser size={20}/>}{processingState ? 'Verificando' : 'Verificar'}</button>
-            {processingState ? (
-              <button disabled style={{filter: 'brightness(.8)', cursor: 'not-allowed'}} type='button'><ImCross size={15}/>Cancelar</button>
-            ) : (
-              <button onClick={() => {
-                setEditModal(null);
-                setVerifyPasswordModal(false);
-                setErrorMessage(null);
-              }} type='button'><ImCross size={15}/>Cancelar</button>
-            )}
-          </form>
-        </div>
+        <EditModal
+          editAction={'verify_password'}
+          label={'password'}
+          upperTranslatedLabel={'Senha'}
+          errorMessage={errorMessage}
+          processingState={processingState}
+          onChange={(e) => {
+            updateField('password', e.target.value);
+            setErrorMessage(null);
+          }}
+          onSubmit={handleVerifyCurrentPassword}
+          value={securityFields.password}
+          onClickProceed={() => {setProcessingState(true)}}
+          onClickCancel={() => {
+            setEditModal(null);
+            setVerifyPasswordModal(false);
+            setErrorMessage(null);
+          }}
+        />
       )}
       {showEditModal === 'password' ? (
-        <div className='setting-edit-modal'>
-          <h3>Alterar senha</h3>
-          <div className='label-input'>
-            <label>Insira uma nova senha:</label>
-            <input onChange={(e) => setPassword(e.target.value)} placeholder='Senha' type="password" maxLength={20}/>
-            {errorMessage && <p className="modal-error-message"><RiErrorWarningLine size={20}/>{errorMessage}</p>}
-          </div>
-          <form onSubmit={handleSubmit} className='buttons'>
-            <button onClick={() => setProcessingState(true)} type='submit'>{processingState ? <Loading/> : <MdEditSquare size={20}/>}{processingState ? 'Alterando' : 'Alterar'}</button>
-            {processingState ? (
-              <button disabled style={{filter: 'brightness(.8)', cursor: 'not-allowed'}} type='button'><ImCross size={15}/>Cancelar</button>
-            ) : (
-              <button onClick={() => {
-                setEditModal(null);
-                setErrorMessage(null);
-              }} type='button'><ImCross size={15}/>Cancelar</button>
-            )}
-          </form>
-        </div>
-      ) : showEditModal === 'recovery_email' ? (
-        <div className='setting-edit-modal'>
-          <h3>{user?.recovery_email == null ? 'Definir e-mail de recuperação' : 'Alterar e-mail de recuperação'}</h3>
-          <div className='label-input'>
-            <label>{user?.recovery_email == null ? 'Defina um e-mail de recuperação:' : 'Insira um novo e-mail de recuperação:'}</label>
-            <input onChange={(e) => setPassword(e.target.value)} placeholder='E-mail de recuperação' type="email" maxLength={100}/>
-            {errorMessage && <p className="modal-error-message"><RiErrorWarningLine size={20}/>{errorMessage}</p>}
-          </div>
-          <form onSubmit={handleSubmit} className='buttons'>
-            {user?.recovery_email == null ? (
-              <button onClick={() => setProcessingState(true)} type='submit'>{processingState ? <Loading/> : <MdEditSquare size={20}/>}{processingState ? 'Definindo' : 'Definir'}</button>
-            ) : (
-              <button onClick={() => setProcessingState(true)} type='submit'>{processingState ? <Loading/> : <MdEditSquare size={20}/>}{processingState ? 'Alterando' : 'Alterar'}</button>
-            )}
-            {processingState ? (
-              <button disabled style={{filter: 'brightness(.8)', cursor: 'not-allowed'}} type='button'><ImCross size={15}/>Cancelar</button>
-            ) : (
-              <button onClick={() => {
-                setEditModal(null);
-                setErrorMessage(null);
-              }} type='button'><ImCross size={15}/>Cancelar</button>
-            )}
-          </form>
-        </div>
+        <EditModal
+          editAction={'change_password'}
+          label={'password'}
+          upperTranslatedLabel={'Senha'}
+          errorMessage={errorMessage}
+          processingState={processingState}
+          onChange={(e) => {
+            updateField('password', e.target.value);
+            setErrorMessage(null);
+          }}
+          onSubmit={handleSubmit}
+          onClickProceed={() => setProcessingState(true)}
+          onClickCancel={() => {
+            setEditModal(null);
+            setErrorMessage(null);
+          }}
+        />
+      ) : showEditModal === 'recoveryEmail' ? (
+        <EditModal
+          editAction={'change_recovery_email'}
+          userProperty={user?.recovery_email}
+          label={'recovery_email'}
+          upperTranslatedLabel={'E-mail'}
+          errorMessage={errorMessage}
+          processingState={processingState}
+          onChange={(e) => {
+            updateField('recoveryEmail', e.target.value);
+            setErrorMessage(null);
+          }}
+          onSubmit={handleSubmit}
+          onClickProceed={() => setProcessingState(true)}
+          onClickCancel={() => {
+            setEditModal(null);
+            setErrorMessage(null);
+          }}
+        />
+      ) : showEditModal === 'recoveryPhone' ? (
+        <EditModal
+          editAction={'change_recovery_phone'}
+          label={'phone'}
+          upperTranslatedLabel={'Telefone'}
+          errorMessage={errorMessage}
+          processingState={processingState}
+          userProperty={user?.recovery_phone}
+          onChange={(e) => {
+            const value = e.target.value;
+
+            if (!/^[0-9()\-\s]*$/.test(value)) return;
+
+            updateField('recoveryPhone', e.target.value);
+            setErrorMessage(null);
+          }}
+          value={securityFields.recoveryPhone}
+          onSubmit={handleSubmit}
+          onClickProceed={() => setProcessingState(true)}
+          onClickCancel={() => {
+            setEditModal(null);
+            setErrorMessage(null);
+          }}
+        />
       ) : (
         <></>
       )}

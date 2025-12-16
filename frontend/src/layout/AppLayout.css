@@ -195,3 +195,23 @@ main {
   color: red;
   font-size: 18px;
 }
+
+.no-products {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  color: tomato;
+}.no-products p {
+    font-size: 20px;
+    font-weight: 600;
+  }.no-products span {
+    font-size: 40px;
+  }.no-products span.lower {
+      margin-bottom: -15px;
+    }.no-products span.upper {
+      margin-bottom: -10px;
+    }

@@ -1,4 +1,5 @@
 export type CardPropsType = {
+  id?: number;
   image: string;
   name: string;
   category: string;
@@ -8,4 +9,5 @@ export type CardPropsType = {
   price: number | undefined;
   productAmount: number;
   setVisibleBuyCard: React.Dispatch<React.SetStateAction<boolean>>
+  admin_action?: 'edit' | 'remove';
 }

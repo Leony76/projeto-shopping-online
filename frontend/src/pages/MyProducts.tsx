@@ -6,6 +6,7 @@ import SectionTitle from "../components/SectionTitle";
 import loading from '../assets/loading.svg';
 import type { Product } from "../types/Product";
 import { getProducts } from "../services/getProducts";
+import NoProducts from "../components/NoProducts";
 
 import { BsBoxSeam } from '../assets/icons';
 
@@ -41,9 +42,7 @@ const MyProducts = () => {
             <img className="loading" src={loading} alt="Carregando..." />
           </div>
         )} {!isLoading && products.length === 0 && (
-          <div>
-            <p>Nenhum Produto Comprado no momento!</p>
-          </div>
+          <NoProducts section='my-products'/>
         )} {!isLoading && products.length > 0 && (
           <div className="cards-grid">
           {products.map((product) => (

@@ -1,5 +1,10 @@
 import { useState } from 'react';
-import { 
+import { useUser } from '../context/UserContext';
+import { api } from '../services/api';
+import { isValidEmail } from '../utils/validateEmail';
+import type { EditAction } from '../types/EditAction';
+import type { User } from '../types/User';
+import {
   MdAccountCircle,
   FaUser,
   IoMdMail,
@@ -7,110 +12,169 @@ import {
   FaBaby,
 } from '../assets/icons';
 import '../pages/Settings.css';
-import { useUser } from '../context/UserContext';
-import EditModal from './EditModal';
-import { api } from '../services/api';
-import Toast from './Toast';
-import SettingEditableInfos from './SettingEditableInfos';
+import type { IconType } from 'react-icons';
 
-type FieldKey = 'name' | 'email' | 'phone' | 'birthday';
+import Toast from './Toast';
+import EditableInfo from './SettingsEditableInfo';
+import EditModal from './InfoEditModal';
+
+type AccountFields = {
+  username: string;
+  email: string;
+  phone: string;
+  birthday: string;
+};
+
+type StringUserKeys = {
+  [K in keyof User]: User[K] extends string | null ? K : never
+}[keyof User];
+
+type AccountInputLabel = 'name' | 'email' | 'phone' | 'birthday';
+type AccountFieldKeys = keyof AccountFields;
 
 const AccountTab = () => {
   const { user, setUser } = useUser();
 
-  const [username, setUsername] = useState<string>('');
-  const [email, setEmail] = useState<string>('');
-  const [phone, setPhone] = useState<string>('');
-  const [birthday, setBirthday] = useState<string>('');
-  const [toast, setToast] = useState<{message: string, type: 'success' | 'error' | 'alert'} | null>();
-  
-  const [errorMessage, setErrorMessage] = useState<string | null>('');
-  const [showEditModal, setEditModal] = useState<'name' | 'email' | 'phone' | 'birthday' | null>(null);
+  const [accountFields, setAccountFields] = useState<AccountFields>({
+    username: '',
+    email: '',
+    phone: '',
+    birthday: '',
+  });
 
-  const fields:Record<FieldKey, {
-    value: string;
-    old: string | undefined;
-    emptyMsg: string;
-    sameMsg: string;
-    normalize: (v: string) => string;
+  const updateField = (key: AccountFieldKeys, value: string) => {
+    setAccountFields(prev => ({
+      ...prev,
+      [key]: value
+    }));
+  };
+
+  const mapUserField: Record<AccountFieldKeys, StringUserKeys> = {
+    username: 'name',
+    email: 'email',
+    phone: 'phone',
+    birthday: 'birthday',
+  };
+
+  const [fieldToBeEdited, setFieldToBeEdited] = useState<AccountFieldKeys | null>(null);
+
+  const [toast, setToast] = useState<{ message: string, type: 'success' | 'error' | 'alert' } | null>();
+  const [errorMessage, setErrorMessage] = useState<string | null>('');
+  const [processingState, setProcessingState] = useState<boolean>(false);
+
+  const editModalConfig: Record<AccountFieldKeys, {
+    editAction: EditAction;
+    label: AccountInputLabel; 
+    upperTranslatedLabel: string;
+    validate?: (v: string) => string | null;
   }> = {
-    name: {
-      value: username,
-      old: user?.name,
-      emptyMsg: "O novo nome não pode estar vazio",
-      sameMsg: "O novo nome não pode ser o mesmo do atual",
-      normalize: (v: string) => v.toLowerCase(),
+    username: {
+      editAction: 'change_name',
+      label: 'name',
+      upperTranslatedLabel: 'Nome',
     },
     email: {
-      value: email,
-      old: user?.email,
-      emptyMsg: "O novo email não pode estar vazio",
-      sameMsg: "O novo email não pode ser o mesmo do atual",
-      normalize: (v: string) => v.toLowerCase(),
+      editAction: 'change_email',
+      label: 'email',
+      upperTranslatedLabel: 'E-mail',
+      validate: v => !isValidEmail(v) ? 'E-mail inválido' : null,
     },
     phone: {
-      value: phone,
-      old: user?.phone,
-      emptyMsg: "O novo telefone não pode estar vazio",
-      sameMsg: "O novo telefone não pode ser o mesmo do atual",
-      normalize: (v: string) => v,
+      editAction: 'change_phone',
+      label: 'phone',
+      upperTranslatedLabel: 'Telefone',
     },
     birthday: {
-      value: birthday,
-      old: user?.birthday,
-      emptyMsg: "A nova data de nascimento não pode estar vazia",
-      sameMsg: "A nova data de nascimento não pode ser a mesma da atual",
-      normalize: (v: string) => v,
+      editAction: 'change_birthday',
+      label: 'birthday',
+      upperTranslatedLabel: 'Data de Nascimento',
     },
   };
 
-  const validateField = (field: FieldKey) => {
-    const { value, old, emptyMsg, sameMsg, normalize } = fields[field];
 
-    if (!value || value.trim() === "") {
-      setErrorMessage(emptyMsg);
-      return false;
-    }
+  const editableInfoConfig: {
+    key: AccountFieldKeys;
+    label: AccountInputLabel;
+    icon: IconType;
+    upperTranslatedLabel: string;
+  }[] = [
+    {
+      key: 'username',
+      label: 'name',
+      icon: FaUser,
+      upperTranslatedLabel: 'Nome',
+    },
+    {
+      key: 'email',
+      label: 'email',
+      icon: IoMdMail,
+      upperTranslatedLabel: 'E-mail',
+    },
+    {
+      key: 'phone',
+      label: 'phone',
+      icon: FaPhone,
+      upperTranslatedLabel: 'Telefone',
+    },
+    {
+      key: 'birthday',
+      label: 'birthday',
+      icon: FaBaby,
+      upperTranslatedLabel: 'Data de Nascimento',
+    },
+  ];
 
-    if (normalize(value) === normalize(old ?? "")) {
-      setErrorMessage(sameMsg);
-      return false;
-    }
-
-    return true;
-  };
-
-  const handleSubmit = async(e:React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
-    if (!showEditModal) return;
-    if (!validateField(showEditModal)) return;
+    if (!fieldToBeEdited) return;
+
+    const config = editModalConfig[fieldToBeEdited];
+    const value = accountFields[fieldToBeEdited];
+
+    if (!value.trim()) {
+      setErrorMessage('O campo não pode estar vazio');
+      setProcessingState(false);
+      return;
+    }
+
+    if (config.validate) {
+      const error = config.validate(value);
+      if (error) {
+        setErrorMessage(error);
+        setProcessingState(false);
+        return;
+      }
+    }
 
     try {
       const response = await api.post('/user/update-data', {
-        username: username,
-        email: email,
-        phone: phone,
-        birthday: birthday,
+        [fieldToBeEdited]: value,
       });
-
-      const newUserData = response.data.user_new_data;
 
       setUser(prev => ({
-        ...prev,
-        ...newUserData,
+        ...prev!,
+        [fieldToBeEdited]: response.data.update,
       }));
 
-      setToast({message:  response.data.message, type: response.data.type});
+      setToast({ message: response.data.message, type: response.data.type });
+      setFieldToBeEdited(null);
       setErrorMessage(null);
-      setEditModal(null);
-    } catch (err:any) {
+    } catch (err: any) {
       setToast({
-        message:  err.response?.data?.message || 'Erro inesperado!', 
+        message: err.response?.data?.message || 'Erro inesperado',
         type: 'error',
       });
+    } finally {
+      setProcessingState(false);
+      setAccountFields({
+        username: '',
+        email: '',
+        phone: '',
+        birthday: '',
+      });
     }
-  }
+  };
+
 
   return (
     <div className='account-tab'>
@@ -121,107 +185,37 @@ const AccountTab = () => {
           onClose={() => setToast(null)}
         />
       )}
-
-      <h2><MdAccountCircle/>Perfil/Conta</h2>
-      <div className='account-tab-main-container'>
-        <SettingEditableInfos
-          fieldname={'name'}
-          fieldLabel={'Nome'}
-          value={username}
-          user={user?.name}
-          fieldIcon={FaUser}
-          setEditModal={setEditModal}
-          resetFields={() => {
-            setUsername('');
-            setEmail('');
-            setPhone('');
-            setBirthday('');
-          }}
+      <h2><MdAccountCircle />Perfil/Conta</h2>
+      <div className="tab-main-container">
+      {editableInfoConfig.map(({ key, icon, label, upperTranslatedLabel }) => (
+        <EditableInfo
+          key={key}
+          label={label}                 
+          labelIcon={icon}
+          userAttribute={user?.[mapUserField[key]]}
+          upperTranslatedLabel={upperTranslatedLabel}
+          onClick={() => setFieldToBeEdited(key)}
         />
-        <SettingEditableInfos
-          fieldname={'email'}
-          fieldLabel={'E-mail'}
-          value={email}
-          user={user?.email}
-          fieldIcon={IoMdMail}
-          setEditModal={setEditModal}
-          resetFields={() => {
-            setUsername('');
-            setEmail('');
-            setPhone('');
-            setBirthday('');
-          }}
-        />
-        <SettingEditableInfos
-          fieldname={'phone'}
-          fieldLabel={'Telefone'}
-          value={phone}
-          user={user?.phone}
-          fieldIcon={FaPhone}
-          setEditModal={setEditModal}
-          resetFields={() => {
-            setUsername('');
-            setEmail('');
-            setPhone('');
-            setBirthday('');
-          }}
-        />
-        <SettingEditableInfos
-          fieldname={'birthday'}
-          fieldLabel={'Data de Nascimento'}
-          value={birthday}
-          user={user?.birthday}
-          fieldIcon={FaBaby}
-          setEditModal={setEditModal}
-          resetFields={() => {
-            setUsername('');
-            setEmail('');
-            setPhone('');
-            setBirthday('');
-          }}
-        />
-      </div>
-      {showEditModal && (
-        <div className='modal-overlay'></div>
-      )}
-      {showEditModal === 'name' ? (
+      ))}
+    </div>
+    {fieldToBeEdited && (
+      <>
+        <div className="modal-overlay" />
         <EditModal
-          handleSubmit={handleSubmit}
-          showEditModal={showEditModal}
-          setEditModal={setEditModal}
-          setSetterValue={setUsername}
+          {...editModalConfig[fieldToBeEdited]}
           errorMessage={errorMessage}
-          setErrorMessage={setErrorMessage}
+          processingState={processingState}
+          userProperty={user?.[mapUserField[fieldToBeEdited]]}
+          value={accountFields[fieldToBeEdited]}
+          onChange={e => {
+            updateField(fieldToBeEdited, e.target.value);
+            setErrorMessage(null);
+          }}
+          onSubmit={handleSubmit}
+          onClickProceed={() => setProcessingState(true)}
+          onClickCancel={() => setFieldToBeEdited(null)}
         />
-      ) : showEditModal === 'email' ? (
-        <EditModal
-          handleSubmit={handleSubmit}
-          showEditModal={showEditModal}
-          setEditModal={setEditModal}
-          setSetterValue={setEmail}
-          errorMessage={errorMessage}
-          setErrorMessage={setErrorMessage}
-        />
-      ) : showEditModal === 'phone' ? (
-        <EditModal
-          handleSubmit={handleSubmit}
-          showEditModal={showEditModal}
-          setEditModal={setEditModal}
-          setSetterValue={setPhone}
-          errorMessage={errorMessage}
-          setErrorMessage={setErrorMessage}
-        />
-      ) : showEditModal === 'birthday' ? (
-        <EditModal
-          handleSubmit={handleSubmit}
-          showEditModal={showEditModal}
-          setEditModal={setEditModal}
-          setSetterValue={setBirthday}
-          errorMessage={errorMessage}
-          setErrorMessage={setErrorMessage}
-        />
-      ) : (
-        <></>
+      </>
     )}
     </div>
   )

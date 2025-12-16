@@ -325,3 +325,52 @@
   font-size: 15px;
   margin-top: 1px;
 }
+
+.buy-card-info {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  margin: 0 10px;
+}.buy-card-info .field {
+  display: flex;
+  flex-direction: column;
+}.buy-card-info .field label {
+    font-weight: 700;
+    color: #0a0a0aa1; 
+}.buy-card-info .field input,
+.buy-card-info select,
+.buy-card-info textarea {
+    border: 2px solid #67676741;
+    border-radius: 10px;
+    padding: 5px;
+    text-indent: 5px;
+}.buy-card-info .image-amount-fields {
+    display: flex;
+    gap: 10px;
+    flex-direction: row;
+  }.buy-card-info .image-amount-fields .field {
+      flex: 1;
+    }.buy-card-info .image-amount-fields .image-field button {
+        height: 100%;
+        border-radius: 10px;
+        border: 2px solid darkcyan;
+        background-color: rgba(0, 255, 255, 0.187);
+        color: darkcyan;
+        font-weight: 700;
+        cursor: pointer;
+      }.buy-card-info .image-amount-fields .image-field button:hover {
+          filter: brightness(.8);
+}.buy-card-info .edit-button {
+    padding: 10px;
+    border-radius: 10px;
+    border: 2px solid tomato;
+    background-color: rgba(255, 166, 0, 0.301);
+    color: tomato;
+    font-weight: 700;
+    font-size: 20px;
+    cursor: pointer;
+    margin-top: 10px;
+  }.buy-card-info .edit-button:hover {
+      filter: brightness(.8);
+    }
+

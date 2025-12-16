@@ -34,4 +34,15 @@ export { RiErrorWarningLine } from "react-icons/ri";
 export { RiLockPasswordFill } from "react-icons/ri";
 export { MdVerifiedUser } from "react-icons/md";
 export { MdOutgoingMail } from "react-icons/md";
-
+export { BsFillTelephoneForwardFill } from "react-icons/bs";
+export { FaRoad } from "react-icons/fa";
+export { PiMailboxFill } from "react-icons/pi";
+export { FaHouseChimney } from "react-icons/fa6";
+export { FaBuildingFlag } from "react-icons/fa6";
+export { BsHousesFill } from "react-icons/bs";
+export { FaCity } from "react-icons/fa";
+export { FaMapLocationDot } from "react-icons/fa6";
+export { GiBrazilFlag } from "react-icons/gi";
+export { FaDropbox } from "react-icons/fa";
+export { BsBoxSeamFill } from "react-icons/bs";
+export { RiAdminFill } from "react-icons/ri";

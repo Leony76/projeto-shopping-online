@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import type { PropsType } from "../types/ProductCard";
 import { buyProduct } from "../services/buyProduct";
 import Toast from "./Toast";
@@ -20,6 +20,7 @@ const ProductCard = ({
   purchase_dates_prices_per_unit,
   purchase_dates_amounts,
   isnt_my_products_page,
+  admin_action,
 }:PropsType) => {
   const { user, setUser } = useUser();
 
@@ -80,9 +81,11 @@ const ProductCard = ({
         isnt_my_products_page={isnt_my_products_page}
         productAmount={productAmount}
         setVisibleBuyCard={setVisibleBuyCard}
+        admin_action={admin_action}
       />
       {visibleBuyCard && (
         <CardFromFocus
+          id={id}
           image={image}
           name={name}
           category={category}
@@ -106,6 +109,7 @@ const ProductCard = ({
           purchaseConfirmModal={purchaseConfirmModal}
           setPurchaseConfirmModal={setPurchaseConfirmModal}
           buyingState={buyingState}
+          admin_action={admin_action}
         />
       )}
     </div>

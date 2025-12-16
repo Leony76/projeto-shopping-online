@@ -12,6 +12,7 @@ import loading from '../assets/loading.svg';
 import { FaBasketShopping } from '../assets/icons';
 
 import "./Dashboard.css";
+import NoProducts from "../components/NoProducts";
 
 const Products = () => {
   const [products, setProducts] = useState<Product[]>([]);
@@ -43,9 +44,7 @@ const Products = () => {
             <img className="loading" src={loading} alt="Carregando..." />
           </div>
         )} {!isLoading && products.length === 0 && (
-          <div>
-            <p>Nenhum Produto Comprado no momento!</p>
-          </div>
+          <NoProducts section="dashboard/products"/>
         )} {!isLoading && products.length > 0 && (
           <div className="cards-grid">
           {products.map((product) => (

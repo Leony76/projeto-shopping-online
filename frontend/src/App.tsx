@@ -5,10 +5,13 @@ import Dashboard from './pages/Dashboard';
 import { PrivateRoute } from './components/PrivateRoute';
 import AdminRoute from './components/AdminRoute';
 import Products from './pages/Products';
-import AdminProducts from './pages/AdminProducts';
 import MyProducts from './pages/MyProducts.tsx';
 import Settings from './pages/Settings.tsx';
 import { UserProvider } from './context/UserProvider.tsx';
+import ProductManagement from './pages/ProductManagement.tsx';
+import AddProducts from './pages/AddProducts.tsx';
+import EditProducts from './pages/EditProducts.tsx';
+import RemoveProducts from './pages/RemoveProducts.tsx';
 
 function App() {
   return (
@@ -39,10 +42,31 @@ function App() {
               </PrivateRoute>
               }
             />
-            <Route path='/admin/products'
+            <Route path='/admin/products-management'
               element={
                 <AdminRoute>
-                  <AdminProducts/>
+                  <ProductManagement/>
+                </AdminRoute>
+              }
+            />
+            <Route path='/admin/products-management/add-product'
+              element={
+                <AdminRoute>
+                  <AddProducts/>
+                </AdminRoute>
+              }
+            />
+            <Route path='/admin/products-management/edit-product/'
+              element={
+                <AdminRoute>
+                  <EditProducts/>
+                </AdminRoute>
+              }
+            />
+            <Route path='/admin/products-management/remove-product'
+              element={
+                <AdminRoute>
+                  <RemoveProducts/>
                 </AdminRoute>
               }
             />
