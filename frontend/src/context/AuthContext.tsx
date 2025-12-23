@@ -1,54 +1,51 @@
-// import { 
-//   createContext,
-//   useContext,
-//   useEffect,
-//   useState,
-// } from "react"
+import { createContext, useContext, useEffect, useState } from "react";
+import { api } from "../services/api";
+import type { User } from "../types/User";
 
-// import type { ReactNode } from "react";
-// import { useNavigate } from "react-router-dom";
+type AuthContextType = {
+  user: User | null;
+  loading: Boolean;
+  setUser: React.Dispatch<React.SetStateAction<User | null>>
+  register: (name: string, email: string, password: string) => Promise<void>;
+  login: (email: string, password: string) => Promise<void>;
+  logout: () => Promise<void>;
+};
 
-// type User = {
-//   id: number;
-//   name: string;
-//   email: string;
-//   admin: boolean;
-// };
+const AuthContext = createContext<AuthContextType>({} as AuthContextType);
 
-// type AuthContextType = {
-//   user: User | null;
-//   setUser: (user: User | null) => void;
-//   logout: () => void;
-// };
+export const AuthProvider = ({ children }:{ children: React.ReactNode }) => {
+  const [user, setUser] = useState<User | null>(null);
+  const [loading, setLoading] = useState(true);
 
-// const AuthContext = createContext<AuthContextType>({} as AuthContextType);
+  useEffect(() => {
+    api.get("/user")
+      .then(res => setUser(res.data))
+      .catch(() => setUser(null))
+      .finally(() => setLoading(false));
+  }, []);
 
-// export const AuthProvider = ({children}:{children:ReactNode}) => {
-//   const [user, setUser] = useState<User | null>(null);
-//   const navigate = useNavigate();
+  const login = async(email: string, password: string) => {
+    await api.post("/login", { email, password });
+    const res = await api.get("/user");
+    setUser(res.data);  
+  }
 
-//   useEffect(() => {
-//     const storedUser = localStorage.getItem("user");
+  const register = async (name: string, email: string, password: string) => {
+    await api.post("/register", { name, email, password });
+    const res = await api.get("/user");
+    setUser(res.data);
+  };
 
-//     if (storedUser) {
-//       const parsed = JSON.parse(storedUser);
-//       setUser(parsed);
-//     }
-//   },[]);
+  const logout = async() => {
+    await api.post("/logout");
+    setUser(null);
+  }
 
-//   const logout = () => {
-//     localStorage.removeItem("user");
-//     localStorage.removeItem("token");
-//     setUser(null);
+  return (
+    <AuthContext.Provider value={{ user, setUser, register, login, logout, loading }}>
+      {children}
+    </AuthContext.Provider>
+  );
+}
 
-//     navigate("/login");
-//   }
-
-//   return (
-//     <AuthContext.Provider value={{user, setUser, logout}}>
-//       {children}
-//     </AuthContext.Provider>
-//   )
-// }
-
-// export const useAuth = () => useContext(AuthContext);
+export const useAuth = () => useContext(AuthContext);

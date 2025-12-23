@@ -1,8 +1,9 @@
-import type { Product } from "../types/Product";
-import { api } from "./api";
+import { api, getCsrf } from "./api";
+import type { ProductAPI } from "../types/ProductAPI";
 
-export async function getProducts() {
-  const response = await api.get<Product>('/products/get');
-
+export async function getProducts(): Promise<ProductAPI[]> {
+  await getCsrf();
+  const response = await api.get<{ products: ProductAPI[] }>('/products');
   return response.data.products;
 }
+

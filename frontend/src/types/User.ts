@@ -1,6 +1,5 @@
 export type User = {
   id: number;
-
   name: string;
   email: string;
   phone: string;
@@ -8,17 +7,17 @@ export type User = {
 
   recovery_email: string;
   recovery_phone: string;
+  password?: string;
 
   public_place: string;
   zip_code: string;
-  residence_number: string;
+  home_number: string;
   complement: string;
   neighborhood: string;
   city: string;
   state: string;
   country: string;
 
-  wallet: number;
+  wallet: string;
   admin: boolean;
-}
-
+};

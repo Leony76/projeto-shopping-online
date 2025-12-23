@@ -3,222 +3,142 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\User;
 use App\Models\Product;
+use Illuminate\Http\JsonResponse;
 use App\Models\Order;
-use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Facades\DB;
 
-class ProductController extends Controller {
-    public function index() {
-        return Product::orderBy('created_at', 'desc')->get();
+class ProductController extends Controller
+{
+    public function index(): JsonResponse {
+        return response()->json([
+            'products' => Product::all()
+        ]);
     }
 
     public function store(Request $request) {
         $request->validate([
-            'name'        => 'required|string',
-            'category'    => 'required|string',
-            'description' => 'required|string',
-            'price'       => 'required|numeric|min:0',
-            'image'       => 'required|image|mimes:jpg,jpeg,png,webp',
-            'amount'      => 'required|integer|min:1',
+            'name' => 'required|string|min:2|max:50',
+            'category' => 'required|string',
+            'description' => 'required|string|min:2|max:255',
+            'image' => 'required|image|mimes:jpg,jpeg,png,webp',
+            'amount' => 'required|integer|min:1',
+            'price' => 'required|numeric|min:1',
         ]);
 
         $path = $request->file('image')->store('products', 'public');
 
-        $product = Product::Create([
-            'name'        => $request->name,
-            'category'    => $request->category,
+        Product::create([
+            'name' => $request->name,
+            'category' => $request->category,
             'description' => $request->description,
-            'price'       => $request->price,
-            'amount'      => $request->amount, 
-            'image'       => $path,
+            'datePutToSale' => now(),
+            'amount' => (int) $request->amount,
+            'price' => (float) $request->price,
+            'image' => $path,
         ]);
 
         return response()->json([
             'message' => 'Produto adicionado com sucesso!',
             'type' => 'success',
-            'product' => $product,
-        ], 201);
-    }
-
-    public function buyProduct(Request $request) {
-        $request->validate([
-           'product_id' => 'required|exists:products,id',
-           'product_amount_bought' => 'required|integer|min:1'
         ]);
-
-        return DB::transaction(function() use ($request) {
-            $user = User::lockForUpdate()->find(auth()->id());
-            $product = Product::lockForUpdate()->findOrFail($request->product_id);
-            
-            if ($product->amount < 1) {
-                return response()->json([
-                    'message' => 'Produto fora de estoque!',
-                    'type' => 'error'
-                ], 400);
-            }
-    
-            if ($user->wallet < ($product->price * $request->product_amount_bought)) {
-                return response()->json([
-                    'message' => 'Saldo Insuficiente',
-                    'type' => 'error'
-                ], 400);
-            }
-
-            if ($request->product_amount_bought > $product->amount) {
-                return response()->json([
-                    'message' => 'Não há no estoque a quantidade comprada!',
-                    'type' => 'error'
-                ], 400);
-            }
-    
-            $user->wallet -= ($product->price * $request->product_amount_bought);
-    
-            $existing = $user->products()->where(
-                'product_id', $product->id
-            )->first();
-    
-            if ($existing) {
-                $current_amount = $existing->pivot->amount;
-    
-                $user->products()->updateExistingPivot($product->id, [
-                   'amount' => ($current_amount + $request->product_amount_bought),
-                   'updated_at' => now()
-                ]);
-            } else {
-                 $user->products()->attach($product->id, [
-                    'amount' => $request->product_amount_bought,
-                    'created_at' => now(),
-                    'updated_at' => now()
-                ]);
-            }
-    
-            $product->amount -= $request->product_amount_bought;
-            
-            $product_price_multiplied = ($product->price * $request->product_amount_bought);
-
-            Order::create([
-                'price' => $product_price_multiplied,
-                'price_per_unit' => $product->price,
-                'amount' => $request->product_amount_bought,
-                'user_id' => $user->id,
-                'product_id' => $product->id
-            ]);
-            
-            $product->save();
-            $user->save();
-    
-            return response()->json([
-                'message' => 'Compra realizada com sucesso!',
-                'type' => 'success',
-                'wallet' => $user->wallet,
-                'remaining_stock' => $product->amount,
-                'product_amount_bought' => $request->product_amount_bought,
-                'total_price' => $product_price_multiplied,
-                'price_per_unit' => $product->price,
-            ], 201);
-        });
     }
 
-    public function listUserProducts() {
-        $user = auth()->user();
-        $products = $user->products()->get();
-
-        $result = $products->map(function ($product) use ($user) {
-            $dates = $user->orders()->where(
-                'product_id', $product->id
-            )->orderBy(
-                'created_at', 'desc'
-            )->pluck(
-                'created_at'
-            );
-            
-            $prices = $user->orders()->where(
-                'product_id', $product->id
-            )->orderBy(
-                'created_at', 'desc'
-            )->pluck(
-                'price'
-            );
-
-            $prices_per_unit = $user->orders()->where(
-                'product_id', $product->id
-            )->orderBy(
-                'created_at', 'desc'
-            )->pluck(
-              'price_per_unit'  
-            );
-
-            $amouts = $user->orders()->where(
-                'product_id', $product->id
-            )->orderBy(
-                'created_at', 'desc'
-            )->pluck(
-                'amount'
-            );
-                
-            $product->purchase_dates = $dates;
-            $product->prices = $prices;
-            $product->prices_per_unit = $prices_per_unit;
-            $product->amounts = $amouts;
-
-            return $product;
-        });
-
-        return response()->json([
-            'products' => $result
-        ], 200);
-    }
-
-    public function updateProduct(Request $request) {
+    public function create(Request $request) {
         $request->validate([
             'id' => 'required|integer',
-            'name' => 'sometimes|string|min:2|max:50',
-            'description' => 'sometimes|string|min:2|max:255',
-            'price' => 'sometimes|numeric|min:1',
-            'image' => 'nullable|image|mimes:jpg,jpeg,png,webp',
-            'amount' => 'sometimes|integer|min:0',
-        ] , [
-            'id' => 'O id do produto é requerido (falha no sistema)',
-
-            'name.min' => 'O nome não pode ter menos de 2 caractéres',
-            'name.max' => 'O nome não pode ter mais de 50 carctéres',
-
-            'description.min' => 'A descrição não pode ter menos de 2 carctéres',
-            'description.max' => 'A descrição não pode ter mais de 255 carctéres',
-
-            'price.min' => 'O preço não pode ser inferior a R$0,00',
-
-            'amount.min' => 'A quantidade não pode ser inferior a 0',
+            'amount' => 'required|integer',
         ]);
-
-        // $request->id = (int)$request->id;
-        // $request->amount = (int)$request->amount;
-        // $request->price = (float)$request->price;
 
         $user = auth()->user();
 
-        $data = [];
-        
-        if ($request->filled('name')) $data['name'] = $request->name;
-        if ($request->filled('description')) $data['description'] = $request->description;
-        if ($request->filled('price')) $data['price'] = (float) $request->price;
-        if ($request->filled('amount')) $data['amount'] = (int) $request->amount;
-        if ($request->hasFile('image')) $data['image'] = $request->file('image')->store('products', 'public');
+        $product = Product::where('id', $request->id)->first();
 
-        if (empty($data)) {
-            return reponse()->json([
-                'message' => 'Não é possível editar o produto sem ao menos 1 alteração',
-                'type' => 'error',
+        if ($user->wallet < ($product->price * $request->amount)) {
+            return response()->json([
+                'message' => 'Saldo insuficente!',
+                'type' => 'error'
             ], 400);
         }
 
-        $user->products()->where('products.id', (int)$request->id)->update($data);
+        if ($product->amount < 1) {
+            return response()->json([
+                'message' => 'Produto fora de estoque!',
+                'type' => 'error'
+            ], 400);
+        }
+ 
+        Order::create([
+            'user_id' => $user->id,
+            'product_id' => $product->id,
+            'quantity' => $request->amount,
+            'unit_price' => $product->price,
+            'total_price' => ($product->price * $request->amount),
+        ]);
+
+        $product->amount -= $request->amount;
+        $user->wallet -= ($product->price * $request->amount);
+
+        $product->save();
+        $user->save();
 
         return response()->json([
-            'message' => 'Produto atualizado com sucesso!',
+            'message' => 'Produto comprado com sucesso!',
             'type' => 'success',
+            'product_bought' => $product,
+            'wallet' => $user->wallet,
+        ], 200);
+    }
+
+   public function list() {
+        $user = auth()->user();
+
+        $productIds = $user->orders()->pluck('product_id');
+        $userOrders = $user->orders()->get();
+
+        $products = Product::whereIn('id', $productIds)->withTrashed()->get();
+
+        return response()->json([
+            'products' => $products,
+            'transactions' => $userOrders,
+        ]);
+    }
+
+    public function destroy(int $id) {
+        Product::destroy($id);
+
+        return response()->json([
+            'message' => 'Produto removido com sucesso',
+            'type' => 'success',
+        ], 200);
+    }
+
+    public function update(int $id, Request $request) {
+        $product = Product::findOrFail($id);
+
+        $validate = $request->validate([
+            'name' => 'required|string|max:255',
+            'category' => 'required|string',
+            'description' => 'required|string',
+            'amount' => 'required|integer|min:0',
+            'price' => 'required|numeric|min:0',
+            'image' => 'nullable',
+        ]);
+
+        unset($validate['image']);
+
+        $product->update($validate);
+
+        if ($request->hasFile('image')) {
+            $path = $request->file('image')->store('products', 'public');
+            $product->update([
+                'image' => $path
+            ]);
+        }
+
+        return response()->json([
+            'message' => 'Produto editado com sucesso',
+            'type' => 'success',
+            'product' => $product,
         ], 200);
     }
 }

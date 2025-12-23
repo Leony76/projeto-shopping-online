@@ -1,17 +1,11 @@
 export type Product = {
-  id: number;
+  id?: number;
   name: string;
-  category: string;
+  category: 'Artesanal' | 'Cozinha' | 'Limpeza' | '';
   description: string;
-  price: string;
-  image: string;
-  created_at: string;
-  amount: string;
-  purchase_dates: string[];
-  prices: number[];
-  prices_per_unit: number[];
-  amounts: number[];
-  pivot: any;
-
-  products: any[];
-};
+  price: number | string;
+  amount: number | string;
+  image: string | File | null;
+  image_url?: string;
+  datePutToSale?: string;
+}

@@ -1,31 +1,69 @@
-<?php
+<?php 
+  use App\Models\User;
+  use App\Models\Product;
+  use App\Http\Controllers;
+  use Illuminate\Http\Request;
+  use Illuminate\Support\Facades\Auth;
+  use Illuminate\Support\Facades\Route;
+  use App\Http\Controllers\UserController;
+  use App\Http\Controllers\ProductController;
 
-use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\AuthController;
-use App\Http\Controllers\ProductController;
-use App\Http\Controllers\UserController;
+  Route::get('/test-session', function () {
+    session(['teste' => 'ok']);
+    return session('teste');
+  });
+  
+  Route::post('/register', function (Request $request) {
+    $data = $request->validate([
+      'name' => 'required|string',
+      'email' => 'required|email|unique:users',
+      'password' => 'required|min:6'
+    ]);
+    
+    $user = User::create([
+      'name' => $data['name'],
+      'email' => $data['email'],
+      'password' => bcrypt($data['password']),
+    ]);
+    
+    Auth::login($user);
+    
+    return response()->json($user);
+  });
+  
+  Route::post('/login', function (Request $request) {
+    $credentials = $request->validate([
+      'email' => 'required|email',
+      'password' => 'required'
+    ]);
+    
+    if (!Auth::attempt($credentials)) {
+      return response()->json(['message' => 'Credenciais inválidas'], 401);
+    }
+    
+    return response()->json(Auth::user());
+  });
+  
+  Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
+    return $request->user();
+  });
+  
+  Route::post('/logout', function () {
+    Auth::logout();
+    return response()->json(['message' => 'Logout realizado']);
+  });
+  
+  /* Main Routes */
 
-Route::get('/', function() {
-    redirect('/login');
-});
+  Route::get('/products', [ProductController::class, 'index']);
+  Route::post('/admin/add-product', [ProductController::class, 'store']);
+  Route::post('/buy-product', [ProductController::class, 'create']);
+  Route::get('/user-products', [ProductController::class, 'list']);
+  Route::delete('/product/{id}', [ProductController::class, 'destroy']);
+  Route::patch('/product/{id}', [ProductController::class, 'update']);
 
-Route::post('/login', [AuthController::class, 'login']);
-Route::post('/register', [AuthController::class, 'register']);
-
-Route::middleware(['auth:sanctum'])->group(function() {
-    Route::get('/user', [UserController::class, 'userData']);
-    Route::post('/user/update-data', [UserController::class, 'updateData']);
-    Route::post('/user/verify-password', [UserController::class, 'verifyPasswordBeforeUpdate']);
-    Route::post('/user/update-password', [UserController::class, 'updatePassword']);
-    Route::post('/user/update-recovery-email', [UserController::class, 'updateRecoveryEmail']);
-    Route::post('/user/update-recovery-phone', [UserController::class, 'updateRecoveryPhone']);
-    Route::get('/products', [ProductController::class, 'index']);
-    Route::get('/products/get', [ProductController::class, 'listUserProducts']);
-    Route::post('/products/buy', [ProductController::class, 'buyProduct']);
-    Route::post('/logout', [AuthController::class, 'logout']);
-    Route::post('/admin/products', [ProductController::class, 'store']);
-    Route::post('/admin/update-product', [ProductController::class, 'updateProduct']);
-});
-
-// Route::middleware(['auth:sanctum', 'is_admin'])->group(function() {
-// });
+  Route::patch('/user/update-data', [UserController::class, 'update']);
+  Route::post('/passwordCheck', [UserController::class, 'checkPassword']);
+?>
+  
+  

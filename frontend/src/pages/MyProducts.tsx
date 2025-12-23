@@ -1,72 +1,115 @@
-import AppLayout from "../layout/AppLayout";
+import CardsGrid from "../components/system/CardsGrid"
+import PageSectionTitle from "../components/ui/PageSectionTitle"
+import PageTitle from "../components/ui/PageTitle"
+import AppLayout from "../layout/AppLayout"
+import { BsDropbox } from "react-icons/bs"
 import { useEffect, useState } from "react";
-import ProductCard from "../components/ProductCard";
-import Title from "../components/Title";
-import SectionTitle from "../components/SectionTitle";
-import loading from '../assets/loading.svg';
-import type { Product } from "../types/Product";
-import { getProducts } from "../services/getProducts";
-import NoProducts from "../components/NoProducts";
+import GridUserProductCard from "../components/system/GridUserProductCard";
+import CardFocusOverlay from "../components/ui/CardFocusOverlay";
 
-import { BsBoxSeam } from '../assets/icons';
+import '../css/scrollbar.css';
+import Loading from "../components/ui/Loading";
+import type { ProductAPI } from "../types/ProductAPI";
+import UserProductCard from "../components/system/UserProductCard"
+import { api } from "../services/api"
+import axios from "axios"
+import { useToast } from "../context/ToastContext"
+import type { TransactionAPI } from "../types/TransactionAPI"
 
 const MyProducts = () => {
 
-  const [products, setProducts] = useState<Product[]>([]); 
+  const [products, setProduct] = useState<ProductAPI[]>([]);
+  const [transactions, setTransactions] = useState<TransactionAPI[]>([]);
+  const [selectedProduct, setSelectedProduct] = useState<ProductAPI | null>(null);
+
+  const { showToast } = useToast();
+
   const [isLoading, setIsLoading] = useState<boolean>(true);
-  
-  const loadProducts = async() => {
+
+  const listUserProducts = async() => {
+
     try {
-      setIsLoading(true);
-      const data = await getProducts();
-      setProducts(data);
+      const response = await api.get('/user-products');
+      console.log(response.data);
+
+      setProduct(response.data.products);
+      setTransactions(response.data.transactions);
     } catch (err:any) {
-      console.error(err);
-      return;
+      if (axios.isAxiosError(err) && err.response) {
+        showToast(err.response.data.message, "error");
+      } else {
+        showToast("Erro inesperado", "error");
+      }
     } finally {
       setIsLoading(false);
     }
   }
-  
+
   useEffect(() => {
-    loadProducts();
-  }, []);
+    listUserProducts();
+  },[])
+
+  const [showProductInfo, setShowProductInfo] = useState<boolean>(false);
+  const [showProductAmount, setShowProductAmount] = useState<boolean>(false);
+  const [showConfirmPurchase, setShowConfirmPurchase] = useState<boolean>(false);
+  const [processingState, setProcessingState] = useState<boolean>(false);
+
+  const productTransactions = transactions.filter(
+    t => t.product_id === selectedProduct?.id
+  );
 
   return (
-    <AppLayout>
-      <div className="dashboard">
-        <Title title="Meus Produtos" icon={<BsBoxSeam/>}/> 
-        <SectionTitle title=""/>
-        {isLoading && (
-          <div className="loading-container">
-            <img className="loading" src={loading} alt="Carregando..." />
-          </div>
-        )} {!isLoading && products.length === 0 && (
-          <NoProducts section='my-products'/>
-        )} {!isLoading && products.length > 0 && (
-          <div className="cards-grid">
+    <AppLayout pageSelected="myProducts">
+      <PageTitle title="Meus Produtos" icon={BsDropbox}/>
+      <PageSectionTitle icon={BsDropbox}/>
+      {isLoading && <Loading size={50} style="text-cyan-500 translate-x-[-50%] fixed top-1/2 left-1/2"/>}
+
+      {!isLoading && products.length < 1 && (
+        <p className="text-center text-gray-400 mt-5">Nenhum Produto encontrado!</p>
+      )}
+
+      {!isLoading && products.length > 0 && (
+        <CardsGrid>
           {products.map((product) => (
-            <ProductCard
-              id={product.id}
+            <GridUserProductCard
               key={product.id}
-              image={`http://localhost:8000/storage/${product.image}`}
-              name={product.name}
-              category={product.category}
-              date_put_to_sale={new Date(product.created_at).toLocaleDateString('pt-BR')}
-              description={product.description}
-              amount={Number(product.pivot.amount)}
-              purchase_dates={product.purchase_dates}
-              purchase_dates_prices={product.prices}
-              purchase_dates_prices_per_unit={product.prices_per_unit}
-              purchase_dates_amounts={product.amounts}
-              isnt_my_products_page={false}
+              elements={product}
+              transactionData={transactions}
+              actions={{
+                setShowProductInfo: () => {
+                  setSelectedProduct(product);
+                  setShowProductInfo(true);
+                }
+              }}
             />
           ))}
-        </div>
+        </CardsGrid>
+      )}
+  
+        {showProductInfo && (
+          <>
+            <CardFocusOverlay/>
+            <UserProductCard
+              flags={{
+                showProductAmount,
+                showConfirmPurchase,
+                processingState,
+              }}
+              product={selectedProduct}
+              transactions={productTransactions}
+              actions={{
+                setShowProductInfo,
+                setShowProductAmount,
+                setShowConfirmPurchase,
+                setProcessingState,
+                setProduct: setSelectedProduct,
+              }}
+            />
+          </>
         )}
-      </div>
     </AppLayout>
   )
 }
 
 export default MyProducts
+
