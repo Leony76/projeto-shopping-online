@@ -1,6 +1,11 @@
-const CardFocusOverlay = ({zIndex}:{zIndex?: number}) => {
+type CardFocusOverlay = {
+  style?: string;
+  onClick?: () => void;
+}
+
+const CardFocusOverlay = ({style, onClick}:CardFocusOverlay) => {
   return (
-    <div className={`inset-0 bg-black/50 fixed top-0 ${zIndex ? zIndex : 'z-40'}`}></div>
+    <div onClick={onClick} className={`inset-0 bg-black/50 z-40 fixed top-0 ${style && style}`}></div>
   )
 }
 

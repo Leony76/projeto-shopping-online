@@ -2,7 +2,7 @@ import CardsGrid from "../components/system/CardsGrid"
 import PageSectionTitle from "../components/ui/PageSectionTitle"
 import PageTitle from "../components/ui/PageTitle"
 import AppLayout from "../layout/AppLayout"
-import { BsDropbox } from "react-icons/bs"
+import { BsBoxSeamFill, BsDropbox } from "react-icons/bs"
 import { useEffect, useState } from "react";
 import GridUserProductCard from "../components/system/GridUserProductCard";
 import CardFocusOverlay from "../components/ui/CardFocusOverlay";
@@ -15,6 +15,8 @@ import { api } from "../services/api"
 import axios from "axios"
 import { useToast } from "../context/ToastContext"
 import type { TransactionAPI } from "../types/TransactionAPI"
+import EmptyCardGrid from "../components/ui/EmptyCardGrid"
+import { searchFilter } from "../utils/ui/searchFilter"
 
 const MyProducts = () => {
 
@@ -49,10 +51,12 @@ const MyProducts = () => {
     listUserProducts();
   },[])
 
-  const [showProductInfo, setShowProductInfo] = useState<boolean>(false);
-  const [showProductAmount, setShowProductAmount] = useState<boolean>(false);
-  const [showConfirmPurchase, setShowConfirmPurchase] = useState<boolean>(false);
-  const [processingState, setProcessingState] = useState<boolean>(false);
+  const [flags, setFlags] = useState({
+    showProductInfo: false,
+    showProductAmount: false,
+    showConfirmPurchase: false,
+    processingState: false,
+  });
 
   const productTransactions = transactions.filter(
     t => t.product_id === selectedProduct?.id
@@ -60,53 +64,69 @@ const MyProducts = () => {
 
   return (
     <AppLayout pageSelected="myProducts">
-      <PageTitle title="Meus Produtos" icon={BsDropbox}/>
-      <PageSectionTitle icon={BsDropbox}/>
-      {isLoading && <Loading size={50} style="text-cyan-500 translate-x-[-50%] fixed top-1/2 left-1/2"/>}
+      {({search, filter}) => {
 
-      {!isLoading && products.length < 1 && (
-        <p className="text-center text-gray-400 mt-5">Nenhum Produto encontrado!</p>
-      )}
+        const filteredProducts = searchFilter({
+          products,
+          search,
+          filter,
+        });
 
-      {!isLoading && products.length > 0 && (
-        <CardsGrid>
-          {products.map((product) => (
-            <GridUserProductCard
-              key={product.id}
-              elements={product}
-              transactionData={transactions}
-              actions={{
-                setShowProductInfo: () => {
-                  setSelectedProduct(product);
-                  setShowProductInfo(true);
-                }
-              }}
-            />
-          ))}
-        </CardsGrid>
-      )}
-  
-        {showProductInfo && (
+        return (
           <>
-            <CardFocusOverlay/>
-            <UserProductCard
-              flags={{
-                showProductAmount,
-                showConfirmPurchase,
-                processingState,
-              }}
-              product={selectedProduct}
-              transactions={productTransactions}
-              actions={{
-                setShowProductInfo,
-                setShowProductAmount,
-                setShowConfirmPurchase,
-                setProcessingState,
-                setProduct: setSelectedProduct,
-              }}
-            />
+            <PageTitle title="Meus Produtos" icon={BsDropbox}/>
+            <PageSectionTitle icon={BsDropbox}/>
+
+            {isLoading && <Loading size={50} style="text-cyan-500 translate-x-[-50%] fixed top-1/2 left-1/2"/>}
+
+            {!isLoading && filteredProducts.length < 1 && (
+              <EmptyCardGrid 
+                search={search}
+                text="Nenhum produto comprado ainda"
+                icon={BsBoxSeamFill}
+              />
+            )}
+
+            {!isLoading && filteredProducts.length > 0 && (
+              <CardsGrid>
+                {products.filter(
+                  p => p.name.toLowerCase().includes(search.toLowerCase())
+                ).map((product) => (
+                  <GridUserProductCard
+                    key={product.id}
+                    elements={product}
+                    transactionData={transactions}
+                    actions={{
+                      setShowProductInfo: () => {
+                        setSelectedProduct(product);
+                        setFlags(prev => ({...prev, showProductInfo:true}));
+                      }
+                    }}
+                  />
+                ))}
+              </CardsGrid>
+            )}
+            {flags.showProductInfo && (
+              <>
+                <CardFocusOverlay onClick={() => setFlags(prev => ({...prev, showProductInfo:false}))}/>
+                <UserProductCard
+                  flags={{
+                    showProductAmount: flags.showProductAmount,
+                    showConfirmPurchase: flags.showConfirmPurchase,
+                  }}
+                  product={selectedProduct}
+                  transactions={productTransactions}
+                  actions={{
+                    setShowProductInfo:     (value:boolean) => setFlags(prev => ({...prev, showProductInfo: value})),
+                    setShowProductAmount:   (value:boolean) => setFlags(prev => ({...prev, showProductAmount: value})),
+                    setProduct: setSelectedProduct,
+                  }}
+                />
+              </>
+            )}
           </>
-        )}
+        );
+      }}
     </AppLayout>
   )
 }

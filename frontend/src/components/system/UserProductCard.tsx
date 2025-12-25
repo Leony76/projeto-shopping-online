@@ -14,15 +14,12 @@ import type { TransactionAPI } from "../../types/TransactionAPI";
 type Actions = {
   setShowProductInfo: (value: boolean) => void;
   setShowProductAmount: (value: boolean) => void;
-  setShowConfirmPurchase: (value: boolean) => void;
-  setProcessingState: (value: boolean) => void;
   setProduct: React.Dispatch<React.SetStateAction<ProductAPI | null>>;
 };
 
 type Flags = {
   showProductAmount: boolean;
   showConfirmPurchase: boolean;
-  processingState: boolean;
 }
 
 type UserProductCard = {
@@ -59,7 +56,7 @@ const UserProductCard = ({
           <div className="flex items-center font-normal text-[#104E64] mt-[-5px] gap-1 py-1">
             <p className="flex text-sm items-center gap-[2px]"><FaKitchenSet/>{product?.category}</p>
             <span className="text-[10px]">●</span>
-            <p className="flex text-sm items-center gap-[1px]"><BiCalendarAlt/>{(dateTime(product?.datePutToSale))}</p>
+            <p className="flex text-sm items-center gap-[1px]"><BiCalendarAlt/>{(dateTime(product?.created_at))}</p>
           </div>
           {!flags.showProductAmount && (
             <>

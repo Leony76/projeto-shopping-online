@@ -1,7 +1,6 @@
 import type { User } from "../../types/User";
 import { MdEditSquare } from "react-icons/md";
 import CardFocusOverlay from "../ui/CardFocusOverlay";
-import { BiErrorCircle } from "react-icons/bi";
 import ProceedActionButton from "../ui/ProceedActionButton";
 import XCloseTopRight from "../ui/XCloseTopRight";
 import Input from "./InputForm";
@@ -13,6 +12,7 @@ import { api, getCsrf } from "../../services/api";
 import type { ToastType } from "../../context/ToastContext";
 import { maskCEP } from "../../utils/mask/maskCEP";
 import { maskPhone } from "../../utils/mask/maskPhone";
+import WarnError from "../ui/WarnError";
 
 type EditSettingsField = {
   element: {
@@ -40,7 +40,7 @@ type EditSettingsField = {
       fieldType: FieldType;
     } | null>) => void;
   }
-
+  
   flag: {
     processingState: boolean;
   }
@@ -122,6 +122,7 @@ const EditSettingsField = ({
               {element.fieldKey && (
                 <Input
                   fieldType={element.edit.fieldType}
+                  placeholderValue={element.edit.field}
                   fieldName={`${element.edit.fieldType === 'password' ? 'Nova' : 'Novo'} ${element.edit.field.toLocaleLowerCase()}`}
                   value={data?.[element.fieldKey] ?? ''}
                   onChange={(e) => {
@@ -139,7 +140,7 @@ const EditSettingsField = ({
               )}
             </>
           )}
-          {element.error && <p className="flex items-center gap-[2px] text-red-500 text-sm"><BiErrorCircle size={16} className="mt-[3px]"/>{element.error}</p>}
+          {element.error && <WarnError error={element.error}/>}
           {element.edit && (
             <ProceedActionButton
               iconButton={MdEditSquare}
@@ -176,7 +177,7 @@ const EditSettingsField = ({
               )}
             </>
           )}
-          {error && <p className="flex items-center gap-[2px] text-red-500 text-sm"><BiErrorCircle size={16} className="mt-[3px]"/>{error}</p>}
+          {error && <WarnError error={element.error}/>}
           {element.edit && (
             <ProceedActionButton
               iconButton={IoShieldCheckmarkSharp}

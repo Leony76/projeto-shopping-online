@@ -1,6 +1,5 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import type { ProductCart, CartContextType } from "../types/ProductCart";
-
 const CartContext = createContext<CartContextType | null>(null);
 
 export function CartProvider({ children }: { children: React.ReactNode }) {
@@ -26,7 +25,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
             : p
         );
       }
-
+      
       return [...prev, item];
     });
   }
@@ -40,12 +39,13 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
 
     setCart(prev =>
       prev.map(item =>
-        item.productId === productId
-          ? { ...item, amount }
+        item.productId === productId 
+          ? {...item, amount: Math.min(amount, item.stock)}
           : item
       )
     );
   }
+
 
   function clearCart() {
     setCart([]);

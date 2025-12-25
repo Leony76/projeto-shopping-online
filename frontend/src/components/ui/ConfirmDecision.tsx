@@ -14,7 +14,7 @@ type ConfirmDecision = {
   decisionDescription: string;
   descisionConsequence?: boolean;
   processingState?: boolean;
-  processingLabel: 'Removendo' | 'Editando' | 'Comprando' | 'Adicionando';
+  processingLabel: 'Removendo' | 'Editando' | 'Comprando' | 'Adicionando' | 'Efetuando compra';
   userWalletIfProductBought?: React.ReactNode;
   onAccept?: React.Dispatch<React.FormEvent<HTMLFormElement>>;
   onAcceptWithoutForm?: () => void;

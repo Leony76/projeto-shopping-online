@@ -141,4 +141,51 @@ class ProductController extends Controller
             'product' => $product,
         ], 200);
     }
+
+    public function storeCartProducts(Request $request) {
+        $data = $request->validate([
+            'items' => 'required|array|min:1',
+            'items.*.product_id' => 'required|exists:products,id',
+            'items.*.amount' => 'required|integer|min:1',
+        ]);
+
+        $user = auth()->user();
+
+        $orders = [];
+
+        foreach($data['items'] as $item) {
+            $product = Product::findOrFail($item['product_id']);
+
+            $unitPrice = $product->price;
+            $quantity = $item['amount'];
+            $totalPrice = $unitPrice * $quantity;
+
+            if ($product->amount < $quantity) {
+                return response()->json([
+                    'message' => "Estoque insuficiente para $product->name"
+                ], 422);
+            }
+
+            $user->wallet -= $totalPrice;
+            $product->amount -= $quantity;
+
+            $product->save();
+            $user->save();
+
+            $orders[] = Order::create([
+                'user_id' => $user->id,
+                'product_id' => $product->id,
+                'quantity' => $quantity,
+                'unit_price' => $unitPrice,
+                'total_price' => $totalPrice,
+            ]);
+        }
+
+        return response()->json([
+            'message' => 'Compra do carrinho efetuada com sucesso',
+            'type' => 'success',
+            'cart_products' => $orders,
+            'wallet' => $user->wallet,
+        ], 201);
+    }
 }

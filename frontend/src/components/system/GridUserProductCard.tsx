@@ -1,4 +1,3 @@
-import { FaKitchenSet } from "react-icons/fa6";
 import { BiCalendarAlt } from "react-icons/bi";
 import { FaMoneyBill } from "react-icons/fa6";
 import { LuBoxes } from "react-icons/lu";
@@ -7,6 +6,7 @@ import ProceedActionButton from "../ui/ProceedActionButton";
 import { BRLmoney } from "../../utils/formatation/BRLmoney";
 import { date } from "../../utils/formatation/date";
 import type { TransactionAPI } from "../../types/TransactionAPI";
+import CategoryIcon from "../ui/CategoryIcon";
 
 type Actions = {
   setShowProductInfo: (value: boolean) => void;
@@ -17,8 +17,8 @@ export type ProductFromApi = {
   image: string;
   image_url: string;
   name: string;
-  category: string;
-  datePutToSale: string;
+  category: "Artesanal" | "Cozinha" | "Limpeza" | "Eletrônico" | "Móveis" | "";
+  created_at: string;
   price: number;
   amount: number;
 };
@@ -50,9 +50,9 @@ const GridProductCard = ({
       <div>
         <h3 className="text-lg font-semibold text-[#7E2A0C]">{elements.name}</h3>
         <div className="flex items-center font-normal text-[#104E64] mt-[-5px] gap-1 py-1">
-          <small className="flex items-center gap-[2px]"><FaKitchenSet/>{elements.category}</small>
+          <CategoryIcon category={elements.category ?? 'Artesanal'}/>
           <span className="text-[10px]">●</span>
-          <small className="flex items-center text-xs gap-[1px]"><BiCalendarAlt/>{date(elements.datePutToSale)}</small>
+          <small className="flex items-center text-xs gap-[1px]"><BiCalendarAlt/>{date(elements.created_at)}</small>
         </div>
         <div className="flex justify-between mx-1 py-1 font-semibold border-y-2 border-gray-300">
           <p className="text-green-800 text-sm flex items-center gap-1"><FaMoneyBill/>R$ {BRLmoney(totalSpent)}</p>
@@ -61,7 +61,7 @@ const GridProductCard = ({
         <div className="flex gap-1 mt-2 pb-2 border-b-2 border-gray-300">
           <ProceedActionButton
             iconButtonSize={20}
-            buttonLabel={'Ver informações'}
+            buttonLabel={'Mais informações'}
             iconButton={BsEyeFill}
             onClick={() => actions.setShowProductInfo(true)}
           />

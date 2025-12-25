@@ -8,9 +8,10 @@ export const useAddProducts = () => {
     name: "",
     amount: "",
     category: "",
-    datePutToSale: "",
+    created_at: "",
     description: "",
     price: "",
+    updated_at: "",
   };
 
   const [addProduct, setAddProduct] = useState<Product>(initialProduct);

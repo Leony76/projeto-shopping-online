@@ -9,12 +9,15 @@ import type { UIFlags } from "../../types/UIFlags";
 import { date } from "../../utils/formatation/date";
 import { useAuth } from "../../context/AuthContext";
 import type { ProductAPI } from "../../types/ProductAPI";
-import { FaKitchenSet, FaTrashCan } from "react-icons/fa6";
+import { FaTrashCan } from "react-icons/fa6";
 import { BRLmoney } from "../../utils/formatation/BRLmoney";
 import ProceedActionButton from "../ui/ProceedActionButton";
 
 import EditProductForm from "../form/EditProductForm";
 import ConfirmDecision from "../ui/ConfirmDecision";
+import CategoryIcon from "../ui/CategoryIcon";
+import CardTitle from "../ui/GridProductCardTitle";
+import { FaCalendarAlt } from "react-icons/fa";
 
 type Actions = {
   setFlags:           React.Dispatch<React.SetStateAction<UIFlags>>;
@@ -63,15 +66,15 @@ const GridProductCard = ({
   
   return (
     <div className="border-x-4 p-1 bg-gray-100 border-double border-cyan-800">
-      <div className="py-1 border-y-2 border-gray-300">
-        <img className="rounded" src={elements.image_url} alt={'placeholder'} />
+      <div className="py-1 h-[120px] border-y-2 border-gray-300">
+        <img className="rounded h-full object-cover" src={elements.image_url} alt={'placeholder'} />
       </div>
-      <div>
-        <h3 className="text-lg font-semibold text-[#7E2A0C]">{elements.name}</h3>
+      <div className="flex flex-col">
+        <CardTitle name={elements.name}/>
         <div className="flex items-center font-normal text-[#104E64] mt-[-5px] gap-1 py-1">
-          <small className="flex items-center gap-[2px]"><FaKitchenSet/>{elements.category}</small>
+          <CategoryIcon category={elements.category ?? 'Artesanal'}/>
           <span className="text-[10px]">●</span>
-          <small className="flex items-center text-xs gap-[1px]"><BiCalendarAlt/>{date(elements.datePutToSale)}</small>
+          <small className="flex items-center text-xs gap-[3px]"><FaCalendarAlt size={11}/>{date(elements.created_at)}</small>
         </div>
         <div className="flex justify-between mx-1 py-1 font-semibold border-y-2 border-gray-300">
           <p className="text-green-800 text-sm flex items-center gap-1"><FaMoneyBill/>R$ {BRLmoney(elements.price)}</p>
@@ -80,7 +83,7 @@ const GridProductCard = ({
         <div className="flex gap-1 mt-2 pb-2 border-b-2 border-gray-300">
           <ProceedActionButton
             iconButtonSize={20}
-            buttonLabel={'Ver informações'}
+            buttonLabel={'Mais informações'}
             iconButton={BsEyeFill}
             onClick={() => actions.setShowProductInfo(true)}
           />

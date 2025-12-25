@@ -61,6 +61,7 @@
   Route::get('/user-products', [ProductController::class, 'list']);
   Route::delete('/product/{id}', [ProductController::class, 'destroy']);
   Route::patch('/product/{id}', [ProductController::class, 'update']);
+  Route::post('/cart-products', [ProductController::class, 'storeCartProducts']);
 
   Route::patch('/user/update-data', [UserController::class, 'update']);
   Route::post('/passwordCheck', [UserController::class, 'checkPassword']);

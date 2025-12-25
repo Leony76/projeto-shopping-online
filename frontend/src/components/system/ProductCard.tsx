@@ -1,8 +1,7 @@
 import ProceedActionButton from "../ui/ProceedActionButton";
 import ReturnActionButton from "../ui/ReturnActionButton";
 import { IoClose } from "react-icons/io5";
-import { FaCircleArrowRight, FaKitchenSet } from "react-icons/fa6";
-import { BiCalendarAlt } from "react-icons/bi";
+import { FaCircleArrowRight } from "react-icons/fa6";
 import { FaMoneyBill } from "react-icons/fa6";
 import { LuBoxes } from "react-icons/lu";
 import { BiDollar } from "react-icons/bi";
@@ -19,6 +18,12 @@ import XCloseTopRight from "../ui/XCloseTopRight";
 import { useState } from "react";
 import ConfirmDecision from "../ui/ConfirmDecision";
 import { useCart } from "../../context/CartContext";
+import { TbCurrencyDollarOff } from "react-icons/tb";
+import { GiCardboardBox } from "react-icons/gi";
+import CategoryIcon from "../ui/CategoryIcon";
+import { CiTextAlignLeft } from "react-icons/ci";
+import { FaCalendarAlt } from "react-icons/fa";
+import { AiFillEdit } from "react-icons/ai";
 
 type Actions = {
   setFlags: React.Dispatch<React.SetStateAction<UIFlags>>;
@@ -50,8 +55,8 @@ const ProductCard = ({
 
   return (
     <div className="flex gap-3 fixed top-1/2 w-[1000px] z-50 py-1 left-1/2 translate-[-50%] border-y-4 border-double border-cyan-500 bg-gray-100">
-      <figure className="flex-[1] ml-1 flex items-center justify-center">
-        <img className="max-h-[400px] object-contain w-full border-2 border-gray-200 p-1 my-1 ml-1.5" src={product?.image_url} alt={product?.name} />
+      <figure className="flex-[1] max-h-[400px] ml-1 flex items-center justify-center">
+        <img className="h-full w-full border-2 border-gray-200 p-1 my-1 ml-1.5" src={product?.image_url} alt={product?.name} />
       </figure>
       <div className="flex flex-col justify-between flex-[1.5] mr-[16px]">
         <div>
@@ -63,12 +68,13 @@ const ProductCard = ({
           </div>
           <h4 className="text-xl font-semibold text-orange-800">{product?.name}</h4>
           <div className="flex items-center font-normal text-[#104E64] mt-[-5px] gap-1 py-1">
-            <p className="flex text-sm items-center gap-[2px]"><FaKitchenSet/>{product?.category}</p>
+            <CategoryIcon category={product?.category ?? 'Artesanal'}/>
             <span className="text-[10px]">●</span>
-            <p className="flex text-sm items-center gap-[1px]"><BiCalendarAlt/>{(dateTime(product?.datePutToSale))}</p>
+            <p className="flex text-xs items-center gap-[3px]"><FaCalendarAlt/> Foi à venda - {(dateTime(product?.created_at))}</p>
+            {product?.created_at !== product?.updated_at && (<p className="flex text-xs items-center gap-[1px] border-l-2 border-gray-300 pl-1"><AiFillEdit/> Sofreu alteração - {(dateTime(product?.updated_at))}</p>)} 
           </div>
-          <label>Decrição:</label>
-          <p className="custom-scroll text-[13px] border-gray-400 col max-h-30  overflow-y-auto">{product?.description}</p>
+          <label className="flex items-center gap-1"><CiTextAlignLeft className="mt-[2px]"/>Decrição:</label>
+          <p className="custom-scroll text-gray-700 text-[13px] border-gray-400 col max-h-30  overflow-y-auto">{product?.description}</p>
         </div>
         
         {!flags.showProductAmount ? (
@@ -78,8 +84,16 @@ const ProductCard = ({
               <p className={`flex items-center gap-1 text-orange-500 ${product && product?.amount > 0 ? 'text-orange-500' : 'text-red-500 bg-gradient-to-r pr-1 from-transparent via-red-200 to-red-200'}`}><LuBoxes/>{product?.amount}</p>
             </div>
             <div className="flex gap-2">
-              {!user?.admin && (
-                product && product?.amount > 0 ? (
+              {product && !user?.admin && (
+                product && Number(user?.wallet) < product.price ? (
+                  <ProceedActionButton
+                    iconButton={TbCurrencyDollarOff}
+                    iconButtonSize={20}
+                    styles="text-red-500 bg-red-100 border-red-500 hover:brightness-[.9] cursor-not-allowed"
+                    buttonLabel={"Saldo Insuficiente para a compra"}
+                    disable={true}
+                  />
+                ) : product.amount > 0 ? (
                   <ProceedActionButton
                     onClick={() => actions.setFlags(prev => ({...prev, showProductAmount: true}))}
                     iconButton={FaCircleArrowRight}
@@ -89,7 +103,7 @@ const ProductCard = ({
                 ) : (
                   <ProceedActionButton
                     onClick={() => actions.setFlags(prev => ({...prev, showProductAmount: true}))}
-                    iconButton={BiDollar}
+                    iconButton={GiCardboardBox}
                     iconButtonSize={20}
                     styles="text-red-500 bg-red-100 hover:brightness-[.9] cursor-not-allowed"
                     buttonLabel={"Produto Fora de Estoque"}
@@ -101,24 +115,55 @@ const ProductCard = ({
           </div>
         ) : (
           <div className="mb-3">
-            <div className="flex border-t-1 gap-2 my-[5px] border-gray-400 mx-1 py-1 font-semibold">
-              <p className="text-green-800 flex items-center border-r-1 pr-3 gap-1"><FaMoneyBill/>R$ {formattedTotalPrice} <IoClose color="gray"/> <span className="text-orange-500">{product?.selectedAmount}</span></p>
-              <p className="flex items-center gap-1 text-orange-500"><LuBoxes/>{product?.amount}</p>
+            <div className="flex justify-between border-t-1 gap-2 my-[5px] border-gray-400 mx-1 py-1 font-semibold">
+              {product && (
+                <>
+                  <div className="flex gap-3">
+                    <p className="text-green-800 flex items-center border-r-1 pr-3 gap-1"><FaMoneyBill/>R$ {totalPrice !== 0 ? formattedTotalPrice : BRLmoney( product.price)} <IoClose color="gray"/> <span className="text-orange-500">{product.selectedAmount !== 0 ? product.selectedAmount : 1}</span></p>
+                    <p className={`flex items-center gap-1 text-orange-500 ${(product.selectedAmount && product.amount - product.selectedAmount === 0 ) ? 'text-red-500 bg-gradient-to-r pr-1 from-transparent via-red-200 to-red-200' : ''}`}><LuBoxes/>{(product.selectedAmount ? (product.amount - product.selectedAmount) : product.amount - 1)}</p>
+                  </div>
+                  <p className={`flex items-center text-sm gap-1 ${totalPrice > Number(user?.wallet) ? 'text-red-500' : 'text-green-800'}`}><FaWallet size={15}/> R$ {BRLmoney(user?.wallet)} - <FaMoneyBill size={15}/> R$ {(BRLmoney(totalPrice))} = <FaWallet size={15}/> R$ {BRLmoney(Number(user?.wallet) - totalPrice)}</p>
+                </>
+              )}
             </div>
             <div className="flex gap-2">
               <div className="flex items-center gap-1">
                 <label className="flex items-center gap-1 text-gray-600" htmlFor="units"><LuBoxes color="#FF6900"/>Unidades</label>
-                <input onChange={(e) => actions.setProduct(prev => prev ? 
-                 { ...prev, selectedAmount: Number(e.target.value)} : prev,
-                )} min={1} value={product?.selectedAmount ?? 1} max={product?.amount} className="text-center bg-gray-200 pl-3 font-bold text-[#FF6900] border-x-2 border-cyan-600 w-15 focus:outline-none" type="number" />
+                <input onChange={(e) => {
+                  let value = Number(e.target.value);
+
+                  if (value <= 0) {
+                    value = 1;
+                  }
+
+                  if (product && (value > product?.amount)) {
+                    value = product.amount;
+                  }
+                  
+                  actions.setProduct(prev => prev ? 
+                  { ...prev, selectedAmount: value} : prev,
+
+                )}} min={1} value={product?.selectedAmount ?? 1} max={product?.amount} className="text-center bg-gray-200 pl-3 font-bold text-[#FF6900] border-x-2 border-cyan-600 h-full w-15 focus:outline-none" type="number" />
               </div>
-              <ProceedActionButton
-                onClick={() => actions.setFlags(prev => ({...prev, showConfirmPurchase: true}))}
-                iconButton={BiDollar}
-                iconButtonSize={20}
-                buttonLabel={"Comprar"}
-              />
-              <button onClick={() => setAddToCartConfirm(true)} className="cursor-pointer hover:brightness-[1.1] transition flex justify-center items-center bg-cyan-200 flex-[.25] rounded border-y-4  border-double border-cyan-500 text-cyan-600 font-semibold"><TiShoppingCart size={20}/></button>
+              {totalPrice < Number(user?.wallet) ? (
+                <>
+                  <ProceedActionButton
+                    onClick={() => actions.setFlags(prev => ({...prev, showConfirmPurchase: true}))}
+                    iconButton={BiDollar}
+                    iconButtonSize={20}
+                    buttonLabel={"Comprar"}
+                  />
+                  <button onClick={() => setAddToCartConfirm(true)} className="cursor-pointer hover:brightness-[1.1] transition flex justify-center items-center bg-cyan-200 flex-[.25] rounded border-y-4  border-double border-cyan-500 text-cyan-600 font-semibold"><TiShoppingCart size={20}/></button>
+                </>
+              ) : (
+                <ProceedActionButton
+                  iconButton={TbCurrencyDollarOff}
+                  iconButtonSize={20}
+                  styles="text-red-500 border-red-500 bg-red-100 hover:brightness-[.9] cursor-not-allowed"
+                  buttonLabel={"Saldo Insuficiente para a compra"}
+                  disable={true}
+                />
+              )}
             </div>
           </div>
         )}
@@ -166,7 +211,8 @@ const ProductCard = ({
                 name: product.name,
                 price: product.price,
                 amount: product.selectedAmount ?? 1,
-                image: product?.image_url
+                image: product?.image_url,
+                stock: product.amount ?? 1,
               });
               setAddToCartConfirm(false);
             }}

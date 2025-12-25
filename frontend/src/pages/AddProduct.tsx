@@ -13,17 +13,22 @@ const AddProduct = () => {
   } = useAddProduct();
   
   return (
-    <AppLayout pageSelected={"addProduct"} >
-      <AddProductForm 
-        actions={{
-          handleAddProductSubmit,
-          updateProduct,
-          handleImageChange: (e) => handleImageChange(e, (file) => updateProduct('image', file))
-        }} 
-        flags={{ processing: processingState }}
-        product={addProduct} 
-        imagePreview={imagePreview}        
-      />
+    <AppLayout pageSelected={"addProduct"}>
+      {({search}) => {
+        console.log(search)
+        return (          
+          <AddProductForm 
+            actions={{
+              handleAddProductSubmit,
+              updateProduct,
+              handleImageChange: (e) => handleImageChange(e, (file) => updateProduct('image', file))
+            }} 
+            flags={{ processing: processingState }}
+            product={addProduct} 
+            imagePreview={imagePreview}        
+          />
+        )
+      }}
     </AppLayout>
   )
 }

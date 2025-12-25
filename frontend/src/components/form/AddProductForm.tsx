@@ -1,14 +1,14 @@
 import type { Product } from "../../types/Product";
 import Input from "./InputForm";
 import PageTitle from "../ui/PageTitle";
-import { BiCategory, BiImage, BiPlus } from "react-icons/bi";
-import { CgNametag } from "react-icons/cg";
-import { MdDescription } from "react-icons/md";
+import { BiCategory, BiImage } from "react-icons/bi";
+import { MdDescription, MdDriveFileRenameOutline } from "react-icons/md";
 import { LuBoxes } from "react-icons/lu";
-import { CiMoneyBill } from "react-icons/ci";
 import ProceedActionButton from "../ui/ProceedActionButton";
 import ImagePreview from "../ui/ImagePreviewContainer";
 import CardFocusOverlay from "../ui/CardFocusOverlay";
+import { FaMoneyBill, FaPlus } from "react-icons/fa6";
+import { FaPlusCircle } from "react-icons/fa";
 
 type Actions = {
   handleAddProductSubmit?: (e:React.FormEvent) => Promise<void>;
@@ -38,13 +38,14 @@ type ProductForm = {
 const ProductForm = ({actions, product, flags, imagePreview, imageBeforeEdit}:ProductForm) => {
   return (
     <>
-    {flags.isAModal && <CardFocusOverlay zIndex={10}/>}
-    <form onSubmit={actions.handleAddProductSubmit} className={`flex m-auto gap-3 bg-gray-100 border-y-4 border-double p-2 w-[900px] ${flags.isAModal ? 'fixed top-1/2 left-1/2 translate-[-50%]' : ''}`}>
+    {flags.isAModal && <CardFocusOverlay style={'z-10'}/>}
+    <form onSubmit={actions.handleAddProductSubmit} className={`flex m-auto gap-3 bg-gray-100 border-y-6 border-cyan-500 border-double p-2 w-[900px] ${flags.isAModal ? 'fixed top-1/2 left-1/2 translate-[-50%]' : ''}`}>
       <div className="flex flex-col flex-1">
-        <PageTitle style="!text-2xl gap-[2px]" title={`${flags.forEdit ? 'Editar' : 'Adicionar'} produto`} icon={BiCategory}/>
+        <PageTitle style="!text-2xl gap-[2px]" title={`${flags.forEdit ? 'Editar' : 'Adicionar'} produto`} icon={FaPlus}/>
         <Input 
           fieldType={"text"} 
-          fieldIcon={CgNametag}
+          fieldIcon={MdDriveFileRenameOutline}
+          placeholderValue="Produto X"
           value={product.name} 
           fieldName={"Nome"} 
           onChange={(e) => {actions.updateProduct("name", e.target.value)}}
@@ -52,6 +53,7 @@ const ProductForm = ({actions, product, flags, imagePreview, imageBeforeEdit}:Pr
         <Input 
           fieldType={"select"} 
           fieldIcon={BiCategory}
+          placeholderValue="Categoria X"
           value={product.category} 
           fieldName={"Categoria"} 
           onSelect={(e) => {actions.updateProduct("category", e.target.value as Product['category'])}}
@@ -59,6 +61,7 @@ const ProductForm = ({actions, product, flags, imagePreview, imageBeforeEdit}:Pr
         <Input 
           fieldType={"textArea"} 
           fieldIcon={MdDescription}
+          placeholderValue="Este Produto é isso, isso e isso..."
           value={product.description}
           fieldName={"Descrição"} 
           onTextArea={(e) => {actions.updateProduct("description", e.target.value)}}
@@ -67,19 +70,29 @@ const ProductForm = ({actions, product, flags, imagePreview, imageBeforeEdit}:Pr
           <Input 
             fieldType={"number"}
             fieldIcon={LuBoxes}
+            placeholderValue="3"
             value={product.amount}
             style="flex-1" 
             fieldName={"Quantidade"} 
-            onChange={(e) => {actions.updateProduct("amount", Number(e.target.value))}}
+            onChange={(e) => {
+              let value = Number(e.target.value);
+              if (value < 1) value = 1;
+              actions.updateProduct("amount", value)
+            }}
             min={1}
           /> 
           <Input 
             fieldType={"number"} 
-            fieldIcon={CiMoneyBill}
+            fieldIcon={FaMoneyBill}
+            placeholderValue="50"
             style="flex-1" 
             value={product.price}
             fieldName={"Preço (R$)"} 
-            onChange={(e) => {actions.updateProduct("price", Number(e.target.value))}}
+            onChange={(e) => {
+              let value = Number(e.target.value);
+              if (value < 0) value = 0;
+              actions.updateProduct("price", value)
+            }}
             min={0}
           /> 
         </div>
@@ -90,7 +103,7 @@ const ProductForm = ({actions, product, flags, imagePreview, imageBeforeEdit}:Pr
           onChange={actions.handleImageChange}
         /> 
         <ProceedActionButton
-          iconButton={BiPlus} 
+          iconButton={FaPlusCircle} 
           styles="mt-2 bg-green-500 border-green-800 text-green-800"
           iconButtonSize={20} 
           buttonLabel={"Adicionar"}
