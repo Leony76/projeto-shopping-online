@@ -3,7 +3,6 @@ import { useCart } from "../../context/CartContext";
 import { BRLmoney } from "../../utils/formatation/BRLmoney";
 import ClearCart from "../ui/ProceedActionButton";
 import PageTitle from "../ui/PageTitle";
-import { CgShoppingCart } from "react-icons/cg";
 import { BsBoxSeamFill } from "react-icons/bs";
 import RemoveProduct from "../ui/ReturnActionButton";
 import { FaSackDollar, FaTrashCan } from "react-icons/fa6";
@@ -21,6 +20,7 @@ import { useAuth } from "../../context/AuthContext";
 import { useProducts } from "../../context/ProductContext";
 import ProceedActionButton from "../ui/ProceedActionButton";
 import { TbCurrencyDollarOff } from "react-icons/tb";
+import '../../css/scrollbar.css';
 
 const ProductCartModal = () => {
   const { cart, total, removeFromCart, updateQuantity, clearCart } = useCart();
@@ -68,17 +68,18 @@ const ProductCartModal = () => {
         }
       });
 
-      response.data.cart_products.forEach((order:any) => {
-        setProducts(prev =>
-          prev.map((p) => 
-            p.id === order.product_id
-              ? {...p, amount: p.amount - order.quantity}
-              : p
-          )
-        )
-      });
+      setProducts(prev =>
+        prev.map(product => {
+          const updated = response.data.products.find(
+            (p: any) => p.id === product.id
+          );
+
+          return updated ? updated : product;
+        })
+      );
 
       showToast(response.data.message, response.data.type);
+      clearCart();
     } catch (err:unknown) {
       catchError(err);
     } finally {
@@ -96,34 +97,41 @@ const ProductCartModal = () => {
         />
       ) : (
         <>
-          <PageTitle style="!text-2xl mb-3" title={"Carrinho"} icon={CgShoppingCart}/>
-          {cart.map(item => (
-            <div key={item.productId} className="flex items-center items-center justify-between mb-2 border-b border-cyan-300 pb-2">
-              <figure className="border-1 border-gray-400 rounded p-1 h-[70px] w-[130px]">
-                <img className="w-full h-full" src={item.image} alt={item.name} />
-              </figure>
-              <div className="flex h-[35px] mb-4 flex-col justify-between">
-                <p className="font-semibold text-md flex items-center gap-1 text-yellow-600"><BsBoxSeamFill/>{item.name.length > 10 ? item.name.slice(0,10) : item.name}</p>
-                <p className="text-md text-gray-500 font-semibold"><span className="text-green-700">R$ {BRLmoney(item.price)}</span> x <span className="text-orange-600">{item.amount}</span></p>
+          <PageTitle 
+            style="!text-2xl mb-3 !gap-[3px]" 
+            title={"Carrinho"} 
+            IconSize={35} 
+            icon={TiShoppingCart}
+          />
+          <div className="max-h-[250px] overflow-y-auto custom-scroll pr-4">
+            {cart.map(item => (
+              <div key={item.productId} className="flex items-center items-center justify-between mb-2 border-b border-cyan-300 pb-2">
+                <figure className="border-1 border-gray-400 rounded p-1 h-[70px] w-[130px]">
+                  <img className="w-full h-full" src={item.image} alt={item.name} />
+                </figure>
+                <div className="flex h-[35px] mb-4 flex-col justify-between">
+                  <p className="font-semibold text-md flex items-center gap-1 text-yellow-600"><BsBoxSeamFill/>{item.name.length > 10 ? item.name.slice(0,10) : item.name}</p>
+                  <p className="text-md text-gray-500 font-semibold"><span className="text-green-700">R$ {BRLmoney(item.price)}</span> x <span className="text-orange-600">{item.amount}</span></p>
+                </div>
+                <div className="flex items-center gap-2">
+                  <input
+                    type="number"
+                    min={1}
+                    value={item.amount}
+                    onChange={(e) => updateQuantity(item.productId, Number(e.target.value))}
+                    className="text-center bg-gray-100 pl-3 font-bold text-[#FF6900] border-x-2 border-cyan-600 w-15 h-10 focus:outline-none"
+                  />
+                  <RemoveProduct
+                    iconButtonSize={20}
+                    style="!pl-2"
+                    buttonLabel={''}
+                    iconButton={FaTrashCan}
+                    onClick={() => removeFromCart(item.productId)}
+                  />
+                </div>
               </div>
-              <div className="flex items-center gap-2">
-                <input
-                  type="number"
-                  min={1}
-                  value={item.amount}
-                  onChange={(e) => updateQuantity(item.productId, Number(e.target.value))}
-                  className="text-center bg-gray-100 pl-3 font-bold text-[#FF6900] border-x-2 border-cyan-600 w-15 h-10 focus:outline-none"
-                />
-                <RemoveProduct
-                  iconButtonSize={20}
-                  style="!pl-2"
-                  buttonLabel={''}
-                  iconButton={FaTrashCan}
-                  onClick={() => removeFromCart(item.productId)}
-                />
-              </div>
-            </div>
-          ))}
+            ))}
+          </div>
           <div className="mt-3 flex items-center text-green-700 gap-1 font-bold"><span className="flex items-center gap-1 text-yellow-600">
             <GiCash size={20}/>Total:
           </span> R$ {BRLmoney(total)}</div>

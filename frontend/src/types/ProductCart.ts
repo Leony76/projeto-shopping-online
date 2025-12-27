@@ -1,17 +1,18 @@
 export type ProductCart = {
   productId: number;
-  name: string;
-  price: number;
   amount: number;
+  price: number;
+  name: string;
   image: string | undefined;
   stock: number;
 };
 
 export type CartContextType = {
   cart: ProductCart[];
-  addToCart: (item: ProductCart) => void;
+  addToCart: (productId: number, amount: number, price: number) => void;
   removeFromCart: (productId: number) => void;
   updateQuantity: (productId: number, amount: number) => void;
   clearCart: () => void;
   total: number;
 };
+

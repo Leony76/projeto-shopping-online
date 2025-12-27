@@ -6,12 +6,20 @@ use Illuminate\Http\Request;
 use App\Models\Product;
 use Illuminate\Http\JsonResponse;
 use App\Models\Order;
+use App\Models\ProductRate;
+use App\Models\User;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\ValidationException;
 
 class ProductController extends Controller
 {
     public function index(): JsonResponse {
         return response()->json([
-            'products' => Product::all()
+            'products' => Product::query()
+                ->withAvg('productRate', 'rating')
+                ->withCount('productRate')
+                ->withSum('orders', 'quantity')
+                ->get()
         ]);
     }
 
@@ -44,52 +52,59 @@ class ProductController extends Controller
     }
 
     public function create(Request $request) {
-        $request->validate([
+        $data = $request->validate([
             'id' => 'required|integer',
             'amount' => 'required|integer',
         ]);
 
         $user = auth()->user();
 
-        $product = Product::where('id', $request->id)->first();
+        return DB::transaction(function () use ($data, $user){
+            
+            $product = Product::lockForUpdate()->findOrFail($data['id']);
+            $user = User::lockForUpdate()->findOrFail($user->id);
+            
+            if ($product->amount < $data['amount']) {
+                throw ValidationException::withMessages([
+                    'stock' => 'Produto Fora de estoque'
+                ]);
+            }
 
-        if ($user->wallet < ($product->price * $request->amount)) {
+            $totalPrice = ($product->price * $data['amount']);
+
+            if ($user->wallet < $totalPrice) {
+                throw ValidationException::withMessages([
+                    'wallet' => 'Saldo insuficiente'
+                ]);
+            }    
+        
+            $product->decrement('amount', $data['amount']);
+            $user->decrement('wallet', $totalPrice);
+
+            Order::create([
+                'user_id' => $user->id,
+                'product_id' => $product->id,
+                'quantity' => $data['amount'],
+                'unit_price' => $product->price,
+                'total_price' => $totalPrice,
+            ]);
+               
+            $product = Product::query()
+                ->withAvg('productRate', 'rating')
+                ->withCount('productRate')
+                ->withSum('orders', 'quantity')
+                ->findOrFail($product->id);
+    
             return response()->json([
-                'message' => 'Saldo insuficente!',
-                'type' => 'error'
-            ], 400);
-        }
-
-        if ($product->amount < 1) {
-            return response()->json([
-                'message' => 'Produto fora de estoque!',
-                'type' => 'error'
-            ], 400);
-        }
- 
-        Order::create([
-            'user_id' => $user->id,
-            'product_id' => $product->id,
-            'quantity' => $request->amount,
-            'unit_price' => $product->price,
-            'total_price' => ($product->price * $request->amount),
-        ]);
-
-        $product->amount -= $request->amount;
-        $user->wallet -= ($product->price * $request->amount);
-
-        $product->save();
-        $user->save();
-
-        return response()->json([
-            'message' => 'Produto comprado com sucesso!',
-            'type' => 'success',
-            'product_bought' => $product,
-            'wallet' => $user->wallet,
-        ], 200);
+                'message' => 'Produto comprado com sucesso!',
+                'type' => 'success',
+                'product_bought' => $product,
+                'wallet' => $user->wallet,
+            ], 200);
+        });
     }
 
-   public function list() {
+    public function list() {
         $user = auth()->user();
 
         $productIds = $user->orders()->pluck('product_id');
@@ -151,41 +166,86 @@ class ProductController extends Controller
 
         $user = auth()->user();
 
-        $orders = [];
+        $totalCartPrice = 0;
 
         foreach($data['items'] as $item) {
             $product = Product::findOrFail($item['product_id']);
+            $totalCartPrice += $product->price * $item['amount'];
+        }
 
-            $unitPrice = $product->price;
-            $quantity = $item['amount'];
-            $totalPrice = $unitPrice * $quantity;
-
-            if ($product->amount < $quantity) {
-                return response()->json([
-                    'message' => "Estoque insuficiente para $product->name"
-                ], 422);
-            }
-
-            $user->wallet -= $totalPrice;
-            $product->amount -= $quantity;
-
-            $product->save();
-            $user->save();
-
-            $orders[] = Order::create([
-                'user_id' => $user->id,
-                'product_id' => $product->id,
-                'quantity' => $quantity,
-                'unit_price' => $unitPrice,
-                'total_price' => $totalPrice,
+        if ($user->wallet < $totalCartPrice) {
+            throw ValidationException::withMessages([
+                'wallet' => 'Saldo insuficiente para finalizar a compra'
             ]);
         }
 
+        return DB::transaction(function () use ($data, $user) {
+            $orderIds = [];
+
+            foreach($data['items'] as $item) {
+                $product = Product::lockForUpdate()->findOrFail($item['product_id']);
+
+                $unitPrice = round($product->price, 2);
+                $quantity = $item['amount'];
+                $totalPrice = round(($unitPrice * $quantity), 2);
+
+                if ($product->amount < $quantity) {
+                    throw ValidationException::withMessages([
+                        'stock' => "Estoque insuficiente para $product->name"
+                    ]);
+                }
+
+                if ($user->wallet < $totalPrice) {
+                    throw ValidationException::withMessages([
+                        'wallet' => "Saldo insuficiente"
+                    ]);
+                }
+
+                $product->decrement('amount', $quantity);
+                $user->decrement('wallet', $totalPrice);
+
+                $order = Order::create([
+                    'user_id'     => $user->id,
+                    'product_id'  => $product->id,
+                    'quantity'    => $quantity,
+                    'unit_price'  => $unitPrice,
+                    'total_price' => $totalPrice,
+                ]);
+
+                $orderIds[] = $order->id;
+            }
+
+            $products = Product::whereIn('id', collect($data['items'])->pluck('product_id'))
+                ->withAvg('productRate', 'rating')
+                ->withCount('productRate')
+                ->withSum('orders', 'quantity')
+                ->get()
+            ;
+
+            return response()->json([
+                'message' => 'Compra do carrinho efetuada com sucesso',
+                'type'    => 'success',
+                'products' => $products,
+                'wallet'  => round($user->fresh()->wallet, 2),
+            ], 201);
+        });
+    }
+
+    public function updateRating(int $id, Request $request) {
+        $data = $request->validate([
+            'rating' => 'required|integer|min:1|max:5',
+        ]);
+
+        ProductRate::updateOrCreate([
+            'product_id' => $id,
+            'user_id' => auth()->id(),
+        ],[
+            'rating' => $data['rating'],
+        ]);
+
         return response()->json([
-            'message' => 'Compra do carrinho efetuada com sucesso',
-            'type' => 'success',
-            'cart_products' => $orders,
-            'wallet' => $user->wallet,
-        ], 201);
+            'message' => 'Produto avaliado',
+            'type' => 'info'
+        ], 200);
     }
 }

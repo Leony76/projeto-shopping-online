@@ -7,7 +7,6 @@ import React, { useEffect, useState } from 'react';
 import ProductCartModal from '../components/system/ProductCartModal';
 import InputForm from '../components/form/InputForm';
 import ClearSearch from '../components/ui/ProceedActionButton';
-import { useCart } from '../context/CartContext';
 import type { Product } from '../types/Product';
 import type { ProductAPI } from '../types/ProductAPI';
 import Menu from '../components/system/Menu';
@@ -26,17 +25,12 @@ const AppLayout = ({children, pageSelected}:AppLayout) => {
 
   const { logout, user } = useAuth();
   const { products } = useProducts();
-  const { clearCart } = useCart();
 
   const [showCart, setShowCart] = useState<boolean>(false);
 
   const [showMenu, setShowMenu] = useState<boolean>(false);
   const [search, setSearch] = useState<string>('');
   const [filter, setFilter] = useState<"Artesanal" | "Cozinha" | "Limpeza" | "Eletrônico" | "Móveis" | "">('');
-
-  useEffect(() => {
-    clearCart();
-  },[logout])
 
   useEffect(() => {
     setShowCart(false);

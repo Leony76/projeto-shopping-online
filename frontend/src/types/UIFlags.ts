@@ -3,4 +3,6 @@ export type UIFlags = {
   showProductAmount: boolean;
   showConfirmPurchase: boolean;
   processingState: boolean;
+  closeEditModal: boolean;
+  isLoading: boolean;
 }

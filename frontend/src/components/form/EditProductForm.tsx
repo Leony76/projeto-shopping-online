@@ -30,8 +30,8 @@ type EditProductForm = {
 const EditProductForm = ({actions, flags, extra, product}:EditProductForm) => {
   return (
     <>
-      <CardFocusOverlay style={'z-10'}/>
-      <form onSubmit={actions.handleEditProduct} className={`flex m-auto gap-3 bg-gray-100 border-y-6 border-cyan-500 border-double p-2 w-[900px] fixed top-1/2 left-1/2 translate-[-50%]`}>
+      <CardFocusOverlay onClick={() => flags.setShowEditProduct(false)} style={'z-10'}/>
+      <form onSubmit={actions.handleEditProduct} className={`flex m-auto gap-3 bg-gray-100 border-y-6 border-cyan-500 border-double p-2 w-[900px] fixed z-50 top-1/2 left-1/2 translate-[-50%]`}>
         <button onClick={() => {flags.setShowEditProduct(false)}} className="absolute top-2 cursor-pointer left-1/2 translate-x-[-100%] text-orange-800 hover:text-orange-500 rounded hover:bg-cyan-100"><IoClose size={20}/></button>
         <div className="flex flex-col flex-1">
           <PageTitle style="!text-2xl gap-[2px]" title={`Editar produto`} icon={MdEditSquare}/>

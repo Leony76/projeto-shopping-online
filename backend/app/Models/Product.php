@@ -5,6 +5,8 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\Order;
+use App\Models\ProductRate;
 
 class Product extends Model
 {
@@ -19,6 +21,7 @@ class Product extends Model
         'datePutToSale',
         'description',
         'price',
+        'rating',
     ];
 
     protected $appends = ['image_url'];
@@ -29,5 +32,9 @@ class Product extends Model
 
     public function orders() {
         return $this->hasMany(Order::class);
+    }
+
+    public function productRate() {
+        return $this->hasMany(ProductRate::class);
     }
 }
