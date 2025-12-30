@@ -2,21 +2,23 @@ import { IoIosStar, IoIosStarHalf, IoIosStarOutline } from "react-icons/io";
 
 type RatingStars = {
   elements: {
-    name: string
+    name?: React.ReactNode;
+    rating: number;
     hoverRating?: number;
-    rating: number | undefined;
-  }
+  };
   actions?: {
     setHoverRating: React.Dispatch<React.SetStateAction<number>>;
-    setRating: React.Dispatch<React.SetStateAction<number | null>>;
-    handleRatingSubmit: (rating: number | null) => Promise<void>;
-  }
-  flags: {
+    onRate: (rating: number) => void | Promise<void>;
+  };
+  flags?: {
     hovering: boolean;
-  }
-}
+  };
+  style?: {
+    stars: string;
+  } 
+};
 
-const RatingStars = ({elements, actions, flags}:RatingStars) => {
+const RatingStars = ({elements, actions, flags, style}:RatingStars) => {
 
   const currentRating = elements.hoverRating !== undefined && elements.hoverRating > 0
     ? elements.hoverRating
@@ -33,8 +35,8 @@ const RatingStars = ({elements, actions, flags}:RatingStars) => {
         return (
           <label
             key={star}
-            onMouseEnter={() => flags.hovering && actions?.setHoverRating(star)}
-            onMouseLeave={() => flags.hovering && actions?.setHoverRating(0)}
+            onMouseEnter={() => flags?.hovering && actions?.setHoverRating(star)}
+            onMouseLeave={() => flags?.hovering && actions?.setHoverRating(0)}
             className={`${flags?.hovering ? 'cursor-pointer' : ''}`}
           >
             <input
@@ -42,18 +44,15 @@ const RatingStars = ({elements, actions, flags}:RatingStars) => {
               name="rating"
               value={star}
               hidden
-              onChange={() => {
-                actions?.setRating(star);
-                actions?.handleRatingSubmit(star);
-              }}
+              onClick={() => actions?.onRate(star)}
             />
 
             {isFull ? (
-              <IoIosStar className="text-yellow-600 text-xl" />
+              <IoIosStar className={`text-yellow-600 text-xl ${style?.stars}`} />
             ) : isHalf ? (
-              <IoIosStarHalf className="text-yellow-600 text-xl"/>
+              <IoIosStarHalf className={`text-yellow-600 text-xl ${style?.stars}`}/>
             ) : (
-              <IoIosStarOutline className="text-yellow-600 text-xl" />
+              <IoIosStarOutline className={`text-yellow-600 text-xl ${style?.stars}`} />
             )}
           </label>
         )

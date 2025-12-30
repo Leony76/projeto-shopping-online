@@ -17,7 +17,7 @@ const EmptyCardGrid = ({
   container
 }:EmptyCardGrid) => {
   return (
-    <div className={`flex flex-col items-center mt-5 text-gray-400 ${container ? container.style : ''}`}>     
+    <div className={`flex flex-col items-center pb-4 text-gray-400 ${container ? container.style : ''}`}>     
       <div className="flex">
         <FaQuestion className="-rotate-45"/>
         <FaQuestion className="mb-1"/>

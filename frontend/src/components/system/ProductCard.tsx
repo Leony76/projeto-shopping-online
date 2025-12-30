@@ -29,6 +29,11 @@ import ReturnActionButton from "../ui/ReturnActionButton";
 import ConfirmDecision from "../ui/ConfirmDecision";
 import CategoryIcon from "../ui/CategoryIcon";
 import RatingStars from "../ui/RatingStars";
+import RatingCount from "../ui/RatingCount";
+import SoldAmount from "../ui/SoldAmount";
+import Money from "../ui/Money";
+import Stock from "../ui/Stock";
+import GoBackArrow from "../ui/ProductCardGoBackArrow";
 
 type Actions = {
   setFlags: React.Dispatch<React.SetStateAction<UIFlags>>;
@@ -77,6 +82,7 @@ const ProductCard = ({
       <div className="flex flex-col justify-between flex-[1.5] mr-[16px]">
         <div>
           <div>
+            {flags.showProductAmount && <GoBackArrow onClick={() => actions.setFlags(prev => ({...prev, showProductAmount: false}))}/>}
             <XCloseTopRight closeSetter={() => {
               actions.setFlags(prev => ({...prev, showProductInfo: false}));
               actions.setFlags(prev => ({...prev, showProductAmount: false}));
@@ -97,21 +103,19 @@ const ProductCard = ({
           <div className="mb-3">
             <div className="flex items-center border-t-1 border-gray-500 justify-between">
               <div className="flex gap-1 my-[5px] border-gray-400 mx-1 py-1 font-semibold">
-                <p title="Preço" className="text-green-800 flex items-center gap-1"><FaMoneyBill/>R$ {BRLmoney(product?.price)}</p>
-                <p title="No Estoque" className={`flex items-center gap-1 border-l-2 pl-2 ml-2 border-gray-400 text-orange-500 ${product && product?.amount > 0 ? 'text-orange-500' : 'text-red-500 bg-gradient-to-r pr-1 from-transparent via-red-200 to-red-200'}`}><LuBoxes/>{product?.amount}</p>
-                <p title="$ Vendas" className={`flex items-center gap-1 border-l-2 pl-2 ml-2 border-gray-400 text-blue-400`}><FaCashRegister />{product?.orders_sum_quantity ?? 0}</p>
+                <Money value={product?.price}/>
+                <Stock border="left" stock={product?.amount}/>
+                <SoldAmount border="left" soldAmount={product?.orders_sum_quantity}/>
               </div>
               <div className="flex items-center">
                 <RatingStars
                   elements={{
                     name: `${!product?.product_rate_avg_rating ? 'Nenhuma avaliação' : '' + product.product_rate_avg_rating.toFixed(1).replace('.',',')}`,
-                    rating: product?.product_rate_avg_rating,
+                    rating: product?.product_rate_avg_rating ?? 0,
                   }}
-                  flags={{
-                    hovering: false,
-                  }}
+                  flags={{hovering: false}}
                 />
-                <p className="flex items-center gap-1 font-semibold border-l-2 border-yellow-600 ml-1 pl-1 text-yellow-600"><MdPeopleAlt size={18}/>{product?.product_rate_count}</p>
+                <RatingCount border="left" rateCount={product?.product_rate_count}/>
               </div>
             </div>
             <div className="flex gap-2">

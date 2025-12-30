@@ -46,7 +46,7 @@ type EditSettingsField = {
   }
 
   data: User | null;
-  staticData: User | null;
+  staticDataRef: React.RefObject<User | null>;
 }
 
 const EditSettingsField = ({
@@ -54,7 +54,7 @@ const EditSettingsField = ({
   action,
   flag,
   data,
-  staticData,
+  staticDataRef,
 }:EditSettingsField) => {
 
   const [editable, setEditable] = useState({
@@ -115,19 +115,20 @@ const EditSettingsField = ({
           {flag.processingState ? (<XCloseTopRight/>) : (<XCloseTopRight closeSetter={() => {
             action.setEdit(null),
             action.setError('');
+            action.setData(staticDataRef.current);
           }}/>)}
           {element.edit && (
             <>
-              <h3 className="flex items-center gap-1 text-xl font-bold text-yellow-600"><MdEditSquare/>{element.edit.field === 'Senha' ? 'Alterar' : !staticData?.[element.fieldKey] ? 'Definir'  : 'Editar'} {element.edit.field.toLocaleLowerCase()}</h3>
+              <h3 className="flex items-center gap-1 text-xl font-bold text-yellow-600"><MdEditSquare/>{element.edit.field === 'Senha' ? 'Alterar' : !staticDataRef.current?.[element.fieldKey] ? 'Definir'  : 'Editar'} {element.edit.field.toLocaleLowerCase()}</h3>
               {element.fieldKey && (
                 <Input
                   fieldType={element.edit.fieldType}
                   placeholderValue={element.edit.field}
+                  password={{newPassword: true}}
                   fieldName={`${element.edit.fieldType === 'password' ? 'Nova' : 'Novo'} ${element.edit.field.toLocaleLowerCase()}`}
                   value={data?.[element.fieldKey] ?? ''}
                   onChange={(e) => {
                     action.setError('');
-
                     if (element.edit && element.edit.field === 'CEP') {
                       action.setData(prev => prev ? {...prev, [element.fieldKey]: maskCEP(e.target.value)} : prev)
                     } else if (element.edit && element.edit.fieldType === 'tel') {
@@ -140,15 +141,15 @@ const EditSettingsField = ({
               )}
             </>
           )}
-          {element.error && <WarnError error={element.error}/>}
+          {element.error && <WarnError error={!element.error ? error : element.error}/>}
           {element.edit && (
             <ProceedActionButton
               iconButton={MdEditSquare}
               iconButtonSize={15}
-              buttonLabel={`${element.edit.field === 'Senha' ? 'Alterar' : !staticData?.[element.fieldKey] ? 'Definir' : 'Editar'}`}
+              buttonLabel={`${element.edit.field === 'Senha' ? 'Alterar' : !staticDataRef.current?.[element.fieldKey] ? 'Definir' : 'Editar'}`}
               styles="px-2 !flex-1 my-2 bg-yellow-100 text-yellow-600 border-yellow-600"
               processingState={flag.processingState}
-              buttonLabelWhileProcessing={`${element.edit.field === 'Senha' ? 'Alterando' : !staticData?.[element.fieldKey] ? 'Definindo' : 'Editando'}`}
+              buttonLabelWhileProcessing={`${element.edit.field === 'Senha' ? 'Alterando' : !staticDataRef.current?.[element.fieldKey] ? 'Definindo' : 'Editando'}`}
               actionType="submit"
             />
           )}
@@ -156,7 +157,7 @@ const EditSettingsField = ({
       )}
 
       {(showCurrentPasswordCheckout && !editable.password) && (
-        <form onSubmit={handleCheckoutCurrentPassword} className="z-50 w-[400px] fixed left-1/2 top-1/2 translate-[-50%] bg-white border-x-6 border-cyan-600 border-double px-2 pt-2">
+        <form autoComplete="off" onSubmit={handleCheckoutCurrentPassword} className="z-50 w-[400px] fixed left-1/2 top-1/2 translate-[-50%] bg-white border-x-6 border-cyan-600 border-double px-2 pt-2">
           {processingState ? (<XCloseTopRight/>) : (<XCloseTopRight closeSetter={() => {
             action.setEdit(null),
             action.setError('');
@@ -168,6 +169,7 @@ const EditSettingsField = ({
                 <Input
                   fieldType={'password'}
                   fieldName={`Insira sua senha atual`}
+                  password={{currentPassword: true}}
                   value={password}
                   onChange={(e) => {
                     setError(''),
@@ -177,7 +179,7 @@ const EditSettingsField = ({
               )}
             </>
           )}
-          {error && <WarnError error={element.error}/>}
+          {error && <WarnError error={!element.error ? error : element.error}/>}
           {element.edit && (
             <ProceedActionButton
               iconButton={IoShieldCheckmarkSharp}

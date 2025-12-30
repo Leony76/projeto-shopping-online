@@ -42,6 +42,12 @@ const useEditUserData = ({actions}:useEditUserData) => {
       return;
     }
 
+    if (!data[fieldKey]) {
+      actions.setError(`O ${edit?.field} não pode estar vazio`);
+      actions.setFlag(prev => ({...prev, processingState: false}));
+      return;
+    }
+
     if (data[fieldKey] == staticData[fieldKey]) {
       actions.setError(`O ${edit?.field} não pode ser o mesmo`);
       actions.setFlag(prev => ({...prev, processingState: false}));

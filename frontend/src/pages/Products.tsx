@@ -25,6 +25,8 @@ import AppLayout from "../layout/AppLayout";
 
 import '../css/scrollbar.css';
 import { searchFilter } from "../utils/ui/searchFilter";
+import InputForm from "../components/form/InputForm";
+import type { AdvancedFilter } from "../types/AdvancedFilter";
 
 const Products = () => {
   toastAppearOnce();
@@ -34,6 +36,7 @@ const Products = () => {
 
   const {products, setProducts} = useProducts();
   const [selectedProduct, setSelectedProduct] = useState<ProductAPI | null>(null);
+  const [advancedFilter, setAdvancedFilter] = useState<AdvancedFilter['filter']>(null);
 
   const [editProduct, setEditProduct] = useState<Product>({
     id: 0,
@@ -102,51 +105,77 @@ const Products = () => {
   return (
     <AppLayout pageSelected="products">
       {({search, filter}) => {
-
+        
         const filteredProducts = searchFilter({
           products,
           search,
           filter,
+          advancedFilter,
         });
-             
+
+        const hasProducts = products.length > 0;
+        const hasFilteredProducts = filteredProducts.length > 0;
+
         return (
           <>
-            <PageTitle title="Produtos" icon={BsBoxSeamFill}/>
-            <PageSectionTitle title="" icon={BsBoxSeamFill}/>
+            {flags.isLoading && <Loading size={50} style="text-cyan-500 translate-[-50%] fixed top-1/2 left-1/2"/>}
 
-            {flags.isLoading && <Loading size={50} style="text-cyan-500 translate-x-[-50%] fixed top-1/2 left-1/2"/>}
+            <PageTitle title="Produtos" icon={BsBoxSeamFill}/>  
 
-            {!flags.isLoading && filteredProducts.length === 0 && (
-              <EmptyCardGrid 
-                search={search}
-                text="Nenhum produto disponível no estoque no momento"
-                icon={BsBoxSeamFill}
-              />
+            {!flags.isLoading && hasProducts && (
+              <>
+                <PageSectionTitle title="" icon={BsBoxSeamFill}/>
+                <InputForm
+                  fieldType={"advancedFilter"}
+                  onSelect={(e) => setAdvancedFilter(e.target.value as AdvancedFilter['filter'])}
+                />
+              </>
             )}
-            {!flags.isLoading && products.length > 0 && (
-              <CardsGrid>
-                {products.map((product) => (
-                  <GridProductCard
-                    key={product.id}
-                    product={product}
-                    productForEdit={editProduct}
-                    imagePreview={imagePreview}
-                    flags={{
-                      processingState:flags.processingState,
-                      closeEditModal:flags.closeEditModal
-                    }}
-                    actions={{
-                      setFlags:setFlags,
-                      setSelectedProduct:setSelectedProduct,
-                      handleImageChange:handleImageChange,
-                      handleEditProduct: handleEditProduct,
-                      handleRemoveProduct:handleRemoveProduct,
-                      setEditProduct:setEditProduct,
-                    }}
-                  />
-                ))}
+
+            {!flags.isLoading && (            
+              <CardsGrid grid={{sm: 2, md: 3, lg: 4, xl: 5}} style="border-y-2 py-2 border-gray-200">
+                {hasProducts && hasFilteredProducts ? (
+                  filteredProducts.map((product) => (
+                    <GridProductCard
+                      key={product.id}
+                      product={product}
+                      productForEdit={editProduct}
+                      imagePreview={imagePreview}
+                      flags={{
+                        processingState:flags.processingState,
+                        closeEditModal:flags.closeEditModal
+                      }}
+                      actions={{
+                        setFlags:setFlags,
+                        setSelectedProduct:setSelectedProduct,
+                        handleImageChange:handleImageChange,
+                        handleEditProduct: handleEditProduct,
+                        handleRemoveProduct:handleRemoveProduct,
+                        setEditProduct:setEditProduct,
+                      }}
+                    />
+                  ))
+                ) : hasProducts && !hasFilteredProducts ? (
+                  <div className="col-span-full py-21">
+                    <EmptyCardGrid 
+                      search={search}
+                      text="Nenhum produto encontrado nesse filtro"
+                      icon={BsBoxSeamFill}
+                    />
+                  </div>
+                ) : (
+                  <div className="col-span-full py-21">
+                    <EmptyCardGrid 
+                      search={search}
+                      text="Nenhum produto comprado ainda"
+                      icon={BsBoxSeamFill}
+                    />
+                  </div>
+                )}        
               </CardsGrid>
             )}
+
+
             {flags.showProductInfo && (
               <>
                 <CardFocusOverlay onClick={() => setFlags(prev => ({...prev, showProductInfo:false}))}/>

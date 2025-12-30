@@ -9,7 +9,6 @@ import { date } from "../../utils/formatation/date";
 import { useAuth } from "../../context/AuthContext";
 import type { ProductAPI } from "../../types/ProductAPI";
 import { FaTrashCan } from "react-icons/fa6";
-import { BRLmoney } from "../../utils/formatation/BRLmoney";
 import ProceedActionButton from "../ui/ProceedActionButton";
 
 import EditProductForm from "../form/EditProductForm";
@@ -17,8 +16,10 @@ import ConfirmDecision from "../ui/ConfirmDecision";
 import CategoryIcon from "../ui/CategoryIcon";
 import CardTitle from "../ui/GridProductCardTitle";
 import { FaCalendarAlt } from "react-icons/fa";
-import { IoIosStar } from "react-icons/io";
-import { IoStarOutline } from "react-icons/io5";
+import Price from "../ui/Money";
+import Rating from "../ui/Rating";
+import Stock from "../ui/Stock";
+import Date from "../ui/Date";
 
 type Actions = {
   setFlags:           React.Dispatch<React.SetStateAction<UIFlags>>;
@@ -69,16 +70,16 @@ const GridProductCard = ({
         <img className="rounded h-full object-cover" src={product.image_url} alt={'placeholder'} />
       </div>
       <div className="flex flex-col">
-        <CardTitle name={product.name}/>
+        <CardTitle textLength={20} name={product.name}/>
         <div className="flex items-center font-normal text-[#104E64] mt-[-5px] gap-1 py-1">
           <CategoryIcon category={product.category ?? 'Artesanal'}/>
           <span className="text-[10px]">●</span>
-          <small className="flex items-center text-xs gap-[3px]"><FaCalendarAlt size={11}/>{date(product.created_at)}</small>
+          <Date timeStamp={product.created_at}/>
         </div>
         <div className="flex text-sm justify-between mx-1 py-1 font-semibold border-y-2 border-gray-300">
-          <p className="text-green-800 flex items-center gap-1"><FaMoneyBill/>R$ {BRLmoney(product.price)}</p>
-          <p className="flex items-center gap-1 text-yellow-600 ">{product.product_rate_avg_rating > 0 ? <IoIosStar  size={18}/> : <IoStarOutline size={18}/>}{!product.product_rate_avg_rating ? 'N/A' : product.product_rate_avg_rating.toFixed(1).replace('.',',')}</p>
-          <p className={`flex items-center gap-1 ${product.amount > 0 ? 'text-orange-500' : 'text-red-500 bg-gradient-to-r pr-1 from-transparent via-red-200 to-red-200'}`}><LuBoxes/>{product.amount}</p>
+          <Price value={product.price}/>
+          <Rating rate={product.product_rate_avg_rating}/>
+          <Stock stock={product.amount}/>
         </div>
         <div className="flex gap-1 mt-2 pb-2 border-b-2 border-gray-300">
           <ProceedActionButton

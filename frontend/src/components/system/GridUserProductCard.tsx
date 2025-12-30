@@ -20,7 +20,6 @@ type GridProductCard = {
       showProductInfo: boolean;
       showProductTransactions: boolean;
       showConfirmPurchase: boolean;
-      processingState: boolean;
     }>>
     setSelectedProduct: React.Dispatch<React.SetStateAction<ProductAPI | null>>;
   }
@@ -38,11 +37,11 @@ const GridProductCard = ({
 
   return (
     <div className="border-x-4 p-1 bg-gray-100 border-double border-cyan-800">
-      <div className="py-1 border-y-2 border-gray-300">
-        <img className="rounded" src={product.selected.image_url} alt={'placeholder'} />
+      <div className="py-1 h-[120px] border-y-2 border-gray-300">
+        <img className="rounded h-full object-cover" src={product.selected.image_url} alt={'placeholder'} />
       </div>
       <div>
-        <CardTitle name={product.selected.name}/>
+        <CardTitle textLength={20} name={product.selected.name}/>
         <div className="flex items-center font-normal text-[#104E64] mt-[-5px] gap-1 py-1">
           <CategoryIcon category={product.selected.category ?? 'Artesanal'}/>
           <span className="text-[10px]">●</span>

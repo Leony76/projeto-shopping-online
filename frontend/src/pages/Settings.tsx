@@ -49,8 +49,6 @@ const Settings = () => {
     }
   });
 
-  /* AJEITAR A SENHA */
-
   const handleEditData = async(e:React.FormEvent<HTMLFormElement>):Promise<void> => {
     e.preventDefault();
 
@@ -268,7 +266,7 @@ const Settings = () => {
                   }}
                   flag={{processingState: flag.processingState}}
                   data={data}
-                  staticData={staticDataRef.current}
+                  staticDataRef={staticDataRef}
                 />
             )}   
           </>

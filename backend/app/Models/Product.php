@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Order;
 use App\Models\ProductRate;
+use App\Models\UserReviews;
 
 class Product extends Model
 {
@@ -24,7 +25,7 @@ class Product extends Model
         'rating',
     ];
 
-    protected $appends = ['image_url'];
+    protected $appends = ['image_url', 'user_rating'];
 
     public function getImageUrlAttribute() {
         return asset('storage/' . $this->image);
@@ -34,7 +35,19 @@ class Product extends Model
         return $this->hasMany(Order::class);
     }
 
+    public function ratings() {
+        return $this->hasMany(ProductRate::class, 'product_id');
+    }
+
+    public function getUserRatingAttribute() {
+        return $this->ratings->first()->rating ?? null;
+    }
+
     public function productRate() {
         return $this->hasMany(ProductRate::class);
+    }
+
+    public function userReviews() {
+        return $this->hasMany(UserReviews::class);
     }
 }

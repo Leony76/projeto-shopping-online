@@ -1,12 +1,16 @@
 <?php 
-  use App\Models\User;
-  use App\Models\Product;
   use App\Http\Controllers;
   use Illuminate\Http\Request;
   use Illuminate\Support\Facades\Auth;
   use Illuminate\Support\Facades\Route;
+
+  use App\Models\User;
+  use App\Models\Product;
+  use App\Models\UserReview;
+
   use App\Http\Controllers\UserController;
   use App\Http\Controllers\ProductController;
+  use App\Http\Controllers\UserReviewController;
 
   Route::get('/test-session', function () {
     session(['teste' => 'ok']);
@@ -62,7 +66,12 @@
   Route::delete('/product/{id}', [ProductController::class, 'destroy']);
   Route::patch('/product/{id}', [ProductController::class, 'update']);
   Route::post('/cart-products', [ProductController::class, 'storeCartProducts']);
+
   Route::post('/product-rating/{id}', [ProductController::class, 'updateRating']);
+  Route::post('/user-review/{id}', [UserReviewController::class, 'store']);
+  Route::get('/users-reviews', [UserReviewController::class, 'index']);
+  Route::post('/like-dislike-comment/{id}', [UserReviewController::class, 'updateLikeDislike']);
+  Route::get('/users-current-reactions', [UserReviewController::class, 'usersCurrentReactions']);
 
   Route::patch('/user/update-data', [UserController::class, 'update']);
   Route::post('/passwordCheck', [UserController::class, 'checkPassword']);

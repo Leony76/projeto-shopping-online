@@ -8,6 +8,7 @@ use Illuminate\Http\JsonResponse;
 use App\Models\Order;
 use App\Models\ProductRate;
 use App\Models\User;
+use App\Models\UserReview;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
 
@@ -108,15 +109,25 @@ class ProductController extends Controller
         $user = auth()->user();
 
         $productIds = $user->orders()->pluck('product_id');
-        $userOrders = $user->orders()->get();
 
-        $products = Product::whereIn('id', $productIds)->withTrashed()->get();
+        $products = Product::whereIn('id', $productIds)
+            ->withTrashed()
+            ->with([
+                'ratings' => function ($query) use ($user) {
+                    $query->where('user_id', $user->id)
+                        ->select('id', 'product_id', 'rating');
+                }
+            ])
+            ->get();
+
+        $userOrders = $user->orders()->get();
 
         return response()->json([
             'products' => $products,
             'transactions' => $userOrders,
         ]);
     }
+
 
     public function destroy(int $id) {
         Product::destroy($id);
@@ -242,6 +253,12 @@ class ProductController extends Controller
         ],[
             'rating' => $data['rating'],
         ]);
+
+        UserReview::where('product_id', $id)
+            ->where('user_id', auth()->id())
+            ->update([
+                'rate' => $data['rating']
+            ]);
 
         return response()->json([
             'message' => 'Produto avaliado',

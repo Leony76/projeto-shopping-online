@@ -65,6 +65,7 @@ const ProductForm = ({actions, product, flags, imagePreview, imageBeforeEdit}:Pr
           value={product.description}
           fieldName={"Descrição"} 
           onTextArea={(e) => {actions.updateProduct("description", e.target.value)}}
+          maxLength={255}
         />
         <div className="flex gap-2 justify-between">
           <Input 

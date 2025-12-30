@@ -4,6 +4,7 @@ import { BiImage } from "react-icons/bi";
 import { useState } from "react";
 import { BsEyeFill } from "react-icons/bs";
 import '../../css/scrollbar.css';
+import { FaFilter } from "react-icons/fa6";
 
 type InputForm = {
   fieldType: 
@@ -17,6 +18,7 @@ type InputForm = {
   | 'imageSelect'
   | 'tel'
   | 'search'
+  | 'advancedFilter'
   ;
   fieldName?: string;
   placeholderValue?: string;
@@ -27,8 +29,14 @@ type InputForm = {
   inputStyle?: string;
   min?: number;
   max?: number; 
+  maxLength?: number;
 
   forSearchInput?: boolean;
+  password?: {
+    newPassword?: boolean;
+    currentPassword?: boolean;
+  }
+  userProducts?: boolean;
 
   onChange?: React.ChangeEventHandler<HTMLInputElement>;
   onSelect?: React.ChangeEventHandler<HTMLSelectElement>;
@@ -43,12 +51,14 @@ const InputForm = ({
   value,
   forSearchInput,
   placeholderValue,
+  userProducts,
   style,
+  maxLength,
+  password,
   fieldIcon: Icon,
   min,
   max,
   onChange,
-  onClick,
   onSelect,
   onTextArea,
 }:InputForm) => {
@@ -73,7 +83,7 @@ const InputForm = ({
         </div>
       ) : fieldType === "textArea" ? (
         <div className="flex flex-col gap-[2px] font-semibold">
-          <label className="flex items-center gap-[2px] text-orange-800" htmlFor={'textArea'}>{Icon && <Icon/>}{fieldName}:</label>
+          <label className="flex items-center gap-[2px] text-orange-800" htmlFor={'textArea'}>{Icon && <Icon/>}{fieldName ? `${fieldName}:` : ''}</label>
           <textarea
             className={`custom-scroll text-sm font-normal h-20 border-1 p-1 pl-2 ${mainInputStyle} ${inputStyle}`}
             onChange={onTextArea}
@@ -81,6 +91,7 @@ const InputForm = ({
             placeholder={placeholderValue}
             name="textArea"
             id="textArea"
+            maxLength={maxLength}
           />
         </div>
       ) : fieldType === "imageSelect" ? (
@@ -127,6 +138,7 @@ const InputForm = ({
               onChange={onChange}
               placeholder={placeholderValue}
               value={value}
+              autoComplete={password?.currentPassword ? 'current-password' : password?.newPassword ? 'new-password' : 'on'}
               name="password"
               id="password"
             />
@@ -143,6 +155,36 @@ const InputForm = ({
             placeholder={placeholderValue}
           />
         </div>
+      ) : fieldType === 'advancedFilter' ? (
+        userProducts ? (
+          <div className="flex border-y-4 border-double rounded-none !border-cyan-400 w-fit items-center px-2 font-semibold">
+            <label className="flex items-center gap-1 text-orange-800" htmlFor="category"><FaFilter/></label>
+            <select value={value} onChange={onSelect} className={`cursor-pointer py-[5px] pl-1 text-orange-700 focus:outline-none font-normal text-sm ${inputStyle}`} name="category" id="category">
+              <option value="">-- Filtro avançado --</option>
+              <option className="text-gray-500" value="Nenhum">Nenhum</option>
+              <option value="Mais comprados">Mais comprados</option>
+              <option value="Menos comprados">Menos comprados</option>
+              <option value="Maiores gastos">Maiores gastos</option>
+              <option value="Menores gastos">Menores gastos</option>
+              <option value="Favoritos">Favoritos</option>
+              <option value="Menos Favoritos">Menos Favoritos</option>
+              <option value="Avaliados">Avaliados</option>
+              <option value="Não avaliados">Não avaliados</option>
+            </select>
+          </div>
+        ) : (
+          <div className="flex border-y-4 border-double rounded-none !border-cyan-400 w-fit items-center px-2 font-semibold">
+            <label className="flex items-center gap-1 text-orange-800" htmlFor="category"><FaFilter/></label>
+            <select value={value} onChange={onSelect} className={`cursor-pointer py-[5px] pl-1 text-orange-700 focus:outline-none font-normal text-sm ${inputStyle}`} name="category" id="category">
+              <option value="">-- Filtro avançado --</option>
+              <option className="text-gray-500" value="Nenhum">Nenhum</option>
+              <option value="Maiores preços">Maiores preço</option>
+              <option value="Menores preços">Menores preço</option>
+              <option value="Mais vendidos">Mais vendas</option>
+              <option value="Mais bem avaliados">Mais bem avaliados</option>
+            </select>
+          </div>
+        )
       ) : (
         <div className={`flex flex-col gap-[2px] font-semibold ${style}`}>
           <label className="flex items-center gap-[3px] text-orange-800" htmlFor={fieldType}>{Icon && <Icon/>}{fieldName}:</label>

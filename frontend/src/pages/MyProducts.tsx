@@ -16,12 +16,15 @@ import Loading from "../components/ui/Loading";
 import AppLayout from "../layout/AppLayout"
 
 import '../css/scrollbar.css';
+import InputForm from "../components/form/InputForm";
+import type { AdvancedFilter } from "../types/AdvancedFilter";
 
 const MyProducts = () => {
 
   const [products, setProduct] = useState<ProductAPI[]>([]);
   const [productTransactions, setProductTransactions] = useState<TransactionAPI[]>([]);
   const [selectedProduct, setSelectedProduct] = useState<ProductAPI | null>(null);
+  const [advancedFilter, setAdvancedFilter] = useState<AdvancedFilter['filter']>(null);
 
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
@@ -37,7 +40,6 @@ const MyProducts = () => {
     showProductInfo: false,
     showProductTransactions: false,
     showConfirmPurchase: false,
-    processingState: false,
   });
 
   const listUserProducts = async() => {
@@ -55,43 +57,66 @@ const MyProducts = () => {
         const transactions = productTransactions.filter(t => t.product_id === selectedProduct?.id);
         const filteredProducts = searchFilter({
           products,
+          transactions: productTransactions,
           search,
           filter,
+          advancedFilter,
         });
+
+        const hasProducts = products.length > 0;
+        const hasFilteredProducts = filteredProducts.length > 0;
 
         return (
           <>
+            {isLoading && <Loading size={50} style="text-cyan-500 translate-[-50%] fixed top-1/2 left-1/2"/>}
+
             <PageTitle title="Meus Produtos" icon={BsDropbox}/>
-            <PageSectionTitle icon={BsDropbox}/>
 
-            {isLoading && <Loading size={50} style="text-cyan-500 translate-x-[-50%] fixed top-1/2 left-1/2"/>}
-
-            {!isLoading && filteredProducts.length < 1 && (
-              <EmptyCardGrid 
-                search={search}
-                text="Nenhum produto comprado ainda"
-                icon={BsBoxSeamFill}
-              />
+            {(!isLoading && hasProducts) && (
+              <>
+                <PageSectionTitle icon={BsDropbox}/>
+                <InputForm
+                  fieldType={"advancedFilter"}
+                  userProducts={true}
+                  onSelect={(e) => setAdvancedFilter(e.target.value as AdvancedFilter['filter'])}
+                />
+              </>
             )}
 
-            {!isLoading && filteredProducts.length > 0 && (
-              <CardsGrid>
-                {products.filter(
-                  p => p.name.toLowerCase().includes(search.toLowerCase())
-                ).map((product) => (
-                  <GridUserProductCard
-                    key={product.id}
-                    actions={{
-                      setFlags:setFlags,
-                      setSelectedProduct:setSelectedProduct
-                    }}               
-                    product={{
-                      selected: product,
-                      transactions:productTransactions
-                    }}
-                  />
-                ))}
-              </CardsGrid>
+            {!isLoading && (         
+              <CardsGrid grid={{sm: 2, md: 3, lg: 4, xl: 5}} style="border-y-2 py-2 border-gray-200">
+                {hasProducts && hasFilteredProducts ? (
+                  filteredProducts.map((product) => (
+                    <GridUserProductCard
+                      key={product.id}
+                      actions={{
+                        setFlags:setFlags,
+                        setSelectedProduct:setSelectedProduct
+                      }}               
+                      product={{
+                        selected: product,
+                        transactions:productTransactions
+                      }}
+                    />
+                  ))
+                ) : hasProducts && !hasFilteredProducts ? (
+                  <div className="col-span-full py-21">
+                    <EmptyCardGrid 
+                      search={search}
+                      text="Nenhum produto encontrado nesse filtro"
+                      icon={BsBoxSeamFill}
+                    />
+                  </div>
+                ) : (
+                  <div className="col-span-full py-21">
+                    <EmptyCardGrid 
+                      search={search}
+                      text="Nenhum produto comprado ainda"
+                      icon={BsBoxSeamFill}
+                    />
+                  </div>
+                )}        
+              </CardsGrid>            
             )}
             
             {flags.showProductInfo && (
@@ -107,8 +132,9 @@ const MyProducts = () => {
                     showConfirmPurchase:flags.showConfirmPurchase,
                   }}
                   actions={{
-                    setFlag:setFlags,
+                    setFlags:setFlags,
                     setSelectedProduct:setSelectedProduct,
+                    setProduct:setProduct,
                   }}
                 />
               </>

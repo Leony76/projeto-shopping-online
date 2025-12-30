@@ -11,7 +11,8 @@ export type ProductAPI = {
   updated_at: string;
   selectedAmount?: number;
   quantity: number;
-  product_rate_avg_rating: number;
-  product_rate_count: number;
-  orders_sum_quantity: number;
+  product_rate_avg_rating: number | null;
+  product_rate_count: number | null;
+  orders_sum_quantity: number | null;
+  user_rating?: number | null;
 };
