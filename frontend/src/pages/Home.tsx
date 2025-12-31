@@ -36,6 +36,7 @@ import type { ProductSuggest } from "../types/SuggestProduct";
 import { useToast } from "../context/ToastContext";
 import SuggestedProductCard from "../components/system/SuggestedProductCard";
 import ConfirmDecision from "../components/ui/ConfirmDecision";
+import { TbBulbOff } from "react-icons/tb";
 
 const Home = () => {
   toastAppearOnce();
@@ -121,11 +122,9 @@ const Home = () => {
     }
   }
 
-  const handleAcceptDenyProductSuggestion = async (
-    id: number | null,
-    isAccept: boolean
-  ) => {
-    if (!id) return;
+  const handleAcceptDenyProductSuggestion = async ( id: number | null, isAccept: boolean) => {
+    if (!id || flags.processingState) return;
+    setFlags(prev => ({...prev, processingState: true}));
 
     try {
       const response = await api.patch(`/suggested-product-answer/${id}`, {
@@ -139,6 +138,9 @@ const Home = () => {
       );
     } catch (err) {
       catchError(err);
+    } finally {
+      setFlags(prev => ({...prev, showConfirmSuggestion: { accept: false, deny: false }}));
+      setFlags(prev => ({...prev, processingState: false}));
     }
   };
 
@@ -219,6 +221,7 @@ const Home = () => {
       {({search}) => {
 
         const hasProducts = products.length > 0;
+        const pendingSuggestions = suggestedProducts.filter(sp => !sp.accepted && !sp.denied);
 
         return (
           <>
@@ -310,17 +313,22 @@ const Home = () => {
                   <>
                     <PageSectionTitle position="left" title="Sugestões dos usuários" iconSize={35} icon={HiLightBulb} />
                     <CardsGrid gridType={"productSuggests"} style="border-y-2 py-2 border-gray-200 px-2 custom-scroll max-h-[465px] overflow-y-auto">
-                      {suggestedProducts.filter(sp => !sp.accepted && !sp.denied).map((suggestProduct) => (
-                        <SuggestedProductCard
-                          key={suggestProduct.id}
-                          suggestProduct={suggestProduct}
-                          flags={flags}
-                          actions={{
-                            setFlags,
-                            setSelectedSuggestionId
-                          }}
-                        />
-                      ))}
+                      {(pendingSuggestions.length > 0) ? (
+                        pendingSuggestions.map((suggestProduct) => (
+                          <SuggestedProductCard
+                            key={suggestProduct.id}
+                            suggestProduct={suggestProduct}
+                            actions={{
+                              setFlag:setFlags,
+                              setSelectedSuggestionId
+                            }}
+                          />
+                        ))
+                      ) : (
+                        <div className="col-span-full pb-2 pt-5">
+                          <EmptyCardGrid text={"Nenhuma sugestão ainda"} icon={TbBulbOff}/>
+                        </div>
+                      )}
                     </CardsGrid>
                   </>
                 )}
@@ -329,39 +337,27 @@ const Home = () => {
 
             {(flags.showConfirmSuggestion.accept || flags.showConfirmSuggestion.deny) && (
               <>
-                <CardFocusOverlay
-                  onClick={() => {
+                <CardFocusOverlay onClick={() => {
                     setSelectedSuggestionId(null);
-                    setFlags(prev => ({
-                      ...prev,
-                      showConfirmSuggestion: { accept: false, deny: false }
-                    }));
+                    setFlags(prev => ({...prev, showConfirmSuggestion: { accept: false, deny: false }}));
                   }}
                 />
 
                 <ConfirmDecision
                   overlayOff
-                  decisionTitle={
-                    flags.showConfirmSuggestion.accept
-                      ? 'Aceitar sugestão'
-                      : 'Recusar sugestão'
-                  }
-                  decisionDescription={`Tem certeza que deseja ${
-                    flags.showConfirmSuggestion.accept ? 'aceitar' : 'negar'
-                  } essa sugestão de produto?`}
+                  decisionTitle={flags.showConfirmSuggestion.accept ? 'Aceitar sugestão' : 'Recusar sugestão'}
+                  decisionDescription={`Tem certeza que deseja ${flags.showConfirmSuggestion.accept ? 'aceitar' : 'negar'} essa sugestão de produto?`}
                   onCancel={() => {
                     setSelectedSuggestionId(null);
-                    setFlags(prev => ({
-                      ...prev,
-                      showConfirmSuggestion: { accept: false, deny: false }
-                    }));
+                    setFlags(prev => ({...prev, showConfirmSuggestion: { accept: false, deny: false }}));
                   }}
-                  onAcceptWithoutForm={() =>
-                    handleAcceptDenyProductSuggestion(
+                  onAcceptWithoutForm={() => handleAcceptDenyProductSuggestion(
                       selectedSuggestionId,
                       flags.showConfirmSuggestion.accept
                     )
                   }
+                  processingState={flags.processingState}
+                  processingLabel={flags.showConfirmSuggestion.accept ? 'Aceitando' : 'Negando'}
                 />
               </>
             )}

@@ -10,8 +10,9 @@ export type ProductSuggest = {
   created_at?: string;
   updated_at?: string;
   image_url?: string;
-  accepted?: number;
-  denied?: number;
+  accepted?: boolean;
+  denied?: boolean;
+  for_sale?: boolean;
   user?: {
     id: number;
     name: string;

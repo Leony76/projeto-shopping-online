@@ -69,6 +69,8 @@
   Route::post('/product-suggest/{id}', [ProductController::class, 'productSuggest']);
   Route::get('/suggested-products',[ProductController::class, 'suggestedProducts']);
   Route::patch('/suggested-product-answer/{id}', [ProductController::class, 'suggestedProductAnswer']);
+  Route::get('/accepted-suggested-products', [ProductController::class, 'acceptedSuggestedProducts']);
+  Route::post('/add-suggested-product/{id}', [ProductController::class, 'addSuggestedProduct']);
 
   Route::post('/product-rating/{id}', [ProductController::class, 'updateRating']);
   Route::post('/user-review/{id}', [UserReviewController::class, 'store']);

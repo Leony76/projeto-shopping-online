@@ -15,7 +15,16 @@ type ConfirmDecision = {
   descisionConsequence?: boolean;
   overlayOff?: boolean;
   processingState?: boolean;
-  processingLabel?: 'Removendo' | 'Editando' | 'Comprando' | 'Adicionando' | 'Efetuando compra';
+  processingLabel?: 
+  | 'Removendo' 
+  | 'Editando' 
+  | 'Comprando' 
+  | 'Adicionando' 
+  | 'Efetuando compra'
+  | 'Aceitando'
+  | 'Negando'
+  | 'Pondo'
+  ;
   userWalletIfProductBought?: React.ReactNode;
   onAccept?: React.Dispatch<React.FormEvent<HTMLFormElement>>;
   onAcceptWithoutForm?: () => void;
@@ -54,7 +63,7 @@ const ConfirmDecision = ({
       {formRequired ? (
         <form onSubmit={onAccept} className="fixed w-[550px] border-x-5 border-cyan-500 translate-[-50%] p-3 border-double z-50 bg-gray-100 top-1/2 left-1/2">
           <h3 className="text-xl font-semibold text-orange-800 mb-2">{decisionTitle}</h3>
-          <p className="text-sm mb-2 flex gap-2">{decisionDescription}</p>
+          <p className="text-sm text-cyan-800 mb-4 flex gap-2">{decisionDescription}</p>
           {descisionConsequence && (
             <small className="flex gap-2">Seu saldo após compra será de <span className="flex items-center gap-1 text-green-800 font-bold"><FaWallet className="mt-[2px]" size={15}/>R$ {userWalletIfProductBought}</span></small>
           )}
@@ -81,7 +90,7 @@ const ConfirmDecision = ({
       ) : (
         <div className="fixed w-[550px] border-x-5 border-cyan-500 translate-[-50%] p-3 border-double z-50 bg-gray-100 top-1/2 left-1/2">
           <h3 className="text-xl font-semibold text-orange-800 mb-2">{decisionTitle}</h3>
-          <p className="text-sm mb-2 flex gap-2">{decisionDescription}</p>
+          <p className="text-sm mb-4 text-cyan-800 flex gap-2">{decisionDescription}</p>
           {descisionConsequence && (
             <small className="flex gap-2">Seu saldo após compra será de <span className="flex items-center gap-1 text-green-800 font-bold"><FaWallet className="mt-[2px]" size={15}/>R$ {userWalletIfProductBought}</span></small>
           )}

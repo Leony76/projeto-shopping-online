@@ -15,7 +15,7 @@ use Illuminate\Validation\ValidationException;
 
 class ProductController extends Controller
 {
-    public function index(): JsonResponse {
+    public function index():JsonResponse {
         return response()->json([
             'products' => Product::query()
                 ->withAvg('productRate', 'rating')
@@ -25,7 +25,7 @@ class ProductController extends Controller
         ]);
     }
 
-    public function store(Request $request) {
+    public function store(Request $request):JsonResponse {
         $request->validate([
             'name' => 'required|string|min:2|max:50',
             'category' => 'required|string',
@@ -53,7 +53,7 @@ class ProductController extends Controller
         ]);
     }
 
-    public function create(Request $request) {
+    public function create(Request $request):JsonResponse {
         $data = $request->validate([
             'id' => 'required|integer',
             'amount' => 'required|integer',
@@ -106,7 +106,7 @@ class ProductController extends Controller
         });
     }
 
-    public function list() {
+    public function list():JsonResponse {
         $user = auth()->user();
 
         $productIds = $user->orders()->pluck('product_id');
@@ -130,7 +130,7 @@ class ProductController extends Controller
     }
 
 
-    public function destroy(int $id) {
+    public function destroy(int $id):JsonResponse {
         Product::destroy($id);
 
         return response()->json([
@@ -139,7 +139,7 @@ class ProductController extends Controller
         ], 200);
     }
 
-    public function update(int $id, Request $request) {
+    public function update(int $id, Request $request):JsonResponse {
         $product = Product::findOrFail($id);
 
         $validate = $request->validate([
@@ -169,7 +169,7 @@ class ProductController extends Controller
         ], 200);
     }
 
-    public function storeCartProducts(Request $request) {
+    public function storeCartProducts(Request $request):JsonResponse {
         $data = $request->validate([
             'items' => 'required|array|min:1',
             'items.*.product_id' => 'required|exists:products,id',
@@ -243,7 +243,7 @@ class ProductController extends Controller
         });
     }
 
-    public function updateRating(int $id, Request $request) {
+    public function updateRating(int $id, Request $request):JsonResponse {
         $data = $request->validate([
             'rating' => 'required|integer|min:1|max:5',
         ]);
@@ -267,7 +267,7 @@ class ProductController extends Controller
         ], 200);
     }
 
-    public function productSuggest(Request $request, int $userId) {
+    public function productSuggest(Request $request, int $userId):JsonResponse {
         $data = $request->validate([
             'name' => 'required|string|max:255',
             'category' => 'required|string',
@@ -294,7 +294,7 @@ class ProductController extends Controller
         ], 201);
     }
 
-    public function suggestedProducts(): JsonResponse {
+    public function suggestedProducts():JsonResponse {
         $suggestedProducts = ProductSuggest::with('user:id,name')->get();
 
         return response()->json([
@@ -302,7 +302,7 @@ class ProductController extends Controller
         ]);
     }
 
-    public function suggestedProductAnswer(int $id, Request $request): JsonResponse {
+    public function suggestedProductAnswer(int $id, Request $request):JsonResponse {
         $request->validate(['answer' => 'required|string']);
 
         $productSuggest = ProductSuggest::findOrFail($id);
@@ -317,5 +317,37 @@ class ProductController extends Controller
             'message' => 'Sugestão de produto foi aceita',
             'type' => 'info'
         ]);
+    }
+
+    public function acceptedSuggestedProducts():JsonResponse {
+        return response()->json([      
+            'accepted_suggestions' => ProductSuggest::where('accepted', true)->with('user:id,name')->get()
+        ]);
+    }
+
+    public function addSuggestedProduct(Request $request, int $id):JsonResponse {
+        $data = $request->validate([
+            'amount' => 'required|integer|min:1'
+        ]);
+
+        $suggestedProduct = ProductSuggest::findOrFail($id);
+
+        $suggestedProduct->update(['for_sale' => true]);
+
+        $newProduct = Product::create([
+            'name' => $suggestedProduct->name,
+            'category' => $suggestedProduct->category,
+            'description' => $suggestedProduct->description,
+            'datePutToSale' => now(),
+            'amount' => (int) $data['amount'],
+            'price' => (float) $suggestedProduct->price,
+            'image' => $suggestedProduct->image,
+        ]);
+
+        return response()->json([
+            'message' => 'Produto sugerido posto à venda com sucesso',
+            'type' => 'success',
+            'new_product' => $newProduct,
+        ], 201);
     }
 }

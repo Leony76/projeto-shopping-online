@@ -37,7 +37,7 @@ const MainSearchTopBar = ({value, actions}:MainSearchTopBar) => {
         iconButton={IoClose} 
         iconButtonSize={20} 
         buttonLabel={''}
-        styles='h-full px-1 rounded !border-y-2 border-r-15 border-double rounded-tl-[0] rounded-bl-[0]'
+        styles='h-full px-1 !bg-orange-100 border-orange-700 rounded !border-y-2 border-r-15 border-double rounded-tl-[0] rounded-bl-[0]'
         onClick={() => {
           actions.setSearch('');
           actions.setFilter('');

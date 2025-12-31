@@ -18,6 +18,7 @@ class ProductSuggest extends Model
         'image',
         'accepted',
         'denied',
+        'for_sale',
     ];
 
     protected $appends = [

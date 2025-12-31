@@ -1,6 +1,5 @@
 import { BiCategory, BiImage } from "react-icons/bi"
-import { CgNametag } from "react-icons/cg"
-import { MdDescription } from "react-icons/md"
+import { MdDescription, MdOutlineDriveFileRenameOutline } from "react-icons/md"
 import type { Product } from "../../types/Product"
 import ProceedActionButton from "../ui/ProceedActionButton" 
 import Input from "./InputForm"
@@ -30,7 +29,7 @@ const SuggestProductForm = ({actions, flags, imagePreview, productSuggest}:Sugge
       <div className="flex flex-col flex-1">
         <Input 
           fieldType={"text"} 
-          fieldIcon={CgNametag}
+          fieldIcon={MdOutlineDriveFileRenameOutline }
           placeholderValue="ProdutoX"
           value={productSuggest.name} 
           fieldName={"Nome"} 
