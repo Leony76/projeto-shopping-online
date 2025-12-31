@@ -47,7 +47,7 @@ const GridProductCard = ({
           <span className="text-[10px]">●</span>
           <small className="flex items-center text-xs gap-[3px]"><FaCalendarAlt/>{date(product.selected.created_at)}</small>
         </div>
-        <div className="flex text-sm justify-between mx-1 py-1 font-semibold border-y-2 border-gray-300">
+        <div className="flex text-xs justify-between mx-1 py-1 font-semibold border-y-2 border-gray-300">
           <p className="text-red-500 flex items-center gap-1"><GiCash/>-R$ {BRLmoney(totalSpent)}</p>
           <p className="flex items-center gap-1 text-orange-500"><LuBoxes/>{totalUnits}</p>
         </div>

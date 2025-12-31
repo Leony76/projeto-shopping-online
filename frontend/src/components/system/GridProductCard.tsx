@@ -1,11 +1,8 @@
-import { LuBoxes } from "react-icons/lu";
 import { BsEyeFill } from "react-icons/bs";
 import { useEffect, useState } from "react";
 import { MdEditSquare } from "react-icons/md";
-import { FaMoneyBill } from "react-icons/fa6";
 import type { Product } from "../../types/Product";
 import type { UIFlags } from "../../types/UIFlags";
-import { date } from "../../utils/formatation/date";
 import { useAuth } from "../../context/AuthContext";
 import type { ProductAPI } from "../../types/ProductAPI";
 import { FaTrashCan } from "react-icons/fa6";
@@ -15,7 +12,6 @@ import EditProductForm from "../form/EditProductForm";
 import ConfirmDecision from "../ui/ConfirmDecision";
 import CategoryIcon from "../ui/CategoryIcon";
 import CardTitle from "../ui/GridProductCardTitle";
-import { FaCalendarAlt } from "react-icons/fa";
 import Price from "../ui/Money";
 import Rating from "../ui/Rating";
 import Stock from "../ui/Stock";
@@ -76,7 +72,7 @@ const GridProductCard = ({
           <span className="text-[10px]">●</span>
           <Date timeStamp={product.created_at}/>
         </div>
-        <div className="flex text-sm justify-between mx-1 py-1 font-semibold border-y-2 border-gray-300">
+        <div className="flex text-xs justify-between mx-1 py-1 font-semibold border-y-2 border-gray-300">
           <Price value={product.price}/>
           <Rating rate={product.product_rate_avg_rating}/>
           <Stock stock={product.amount}/>

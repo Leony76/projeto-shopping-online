@@ -8,7 +8,7 @@ type Menu = {
   admin: boolean | undefined;
   wallet: number | string | undefined;
   logout: () => Promise<void>;
-  pageSelected: 'home' | 'products' | 'myProducts' | 'addProduct' | 'settings';
+  pageSelected: 'home' | 'products' | 'myProducts' | 'addProduct' | 'settings' | 'suggestions';
 }
 
 const Menu = ({admin, logout, pageSelected, wallet}:Menu) => {

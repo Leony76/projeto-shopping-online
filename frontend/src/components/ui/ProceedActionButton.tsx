@@ -8,7 +8,7 @@ type ProceedActionButton = {
   buttonLabel: string;
 
   actionType?: 'submit' | 'button';
-  styles?: string;
+  styles?: string | undefined;
   disable?: boolean;
   buttonLabelWhileProcessing?: string;
   processingState?: boolean;
@@ -29,9 +29,9 @@ const ProceedActionButton = ({
 }:ProceedActionButton) => {
   return (
     !processingState ? (
-      <button disabled={disable} title={title} type={actionType} onClick={onClick} className={`flex justify-center transition items-center flex-[1] py-1 gap-1 rounded border-y-4 border-double hover:brightness-[1.1] bg-orange-200 text-orange-600 border-orange-500 cursor-pointer font-semibold ${styles ? styles : ''}`}>{processingState ? <Processing size={20}/> : <Icon size={iconButtonSize}/>}{processingState ? buttonLabelWhileProcessing : buttonLabel}</button>  
+      <button disabled={disable} title={title} type={actionType} onClick={onClick} className={`flex justify-center transition items-center flex-[1] py-1 gap-1 rounded border-y-4 border-double hover:brightness-[1.1]  cursor-pointer font-semibold ${styles ? styles : 'bg-orange-200 text-orange-600 border-orange-500'}`}>{processingState ? <Processing size={20}/> : <Icon size={iconButtonSize}/>}{processingState ? buttonLabelWhileProcessing : buttonLabel}</button>  
     ) : (
-      <button disabled={disable} type={actionType} onClick={onClick} className={`flex justify-center cursor-wait transition items-center flex-[1] py-1 gap-1 rounded border-y-4 border-double hover:brightness-[1.1] bg-orange-200 text-orange-600 border-orange-500 cursor-pointer font-semibold ${styles ? styles : ''}`}>{processingState ? <Processing size={20}/> : <Icon size={iconButtonSize}/>}{processingState ? buttonLabelWhileProcessing : buttonLabel}</button>  
+      <button disabled={disable} type={actionType} onClick={onClick} className={`flex justify-center cursor-wait transition items-center flex-[1] py-1 gap-1 rounded border-y-4 border-double hover:brightness-[1.1]  cursor-pointer font-semibold ${styles ? styles : 'bg-orange-200 text-orange-600 border-orange-500'}`}>{processingState ? <Processing size={20}/> : <Icon size={iconButtonSize}/>}{processingState ? buttonLabelWhileProcessing : buttonLabel}</button>  
     )
   )
 }

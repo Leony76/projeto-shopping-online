@@ -4,11 +4,12 @@ import { MdTableRestaurant } from "react-icons/md";
 
 type CategoryIcon = {
   category: "Artesanal" | "Cozinha" | "Limpeza" | "Eletrônico" | "Móveis" | "";
+  style?: string;
 }
 
-const CategoryIcon = ({category}:CategoryIcon) => {
+const CategoryIcon = ({category, style}:CategoryIcon) => {
   return (
-    <p className="flex text-xs items-center gap-[2px]">
+    <p className={`flex text-xs items-center gap-[2px] ${style && style}`}>
       {category === 'Cozinha' ?
         <FaKitchenSet/>
       : category === 'Artesanal' ?

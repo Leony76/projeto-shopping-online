@@ -173,6 +173,7 @@ const ProductCartModal = () => {
             <ConfirmDecision
               decisionTitle={'Efetuar compra do carrinho?'}
               formRequired={true}
+              style={{procced: '!bg-green-400 !border-green-700 !text-green-700'}}
               decisionDescription={`Tem certeza que deseja efetuar a compra dos items no carrinho?`}
               descisionConsequence={true}
               userWalletIfProductBought={BRLmoney(Number(user?.wallet) - total)}

@@ -9,6 +9,7 @@ import { PrivateAdminRoute } from "./privateRoutes/PrivateAdminRoute";
 import AddProduct from "./pages/AddProduct";
 import Settings from "./pages/Settings";
 import RootLayout from "./layout/RootLayout";
+import Suggestions from "./pages/Suggestions";
 
 export const router = createBrowserRouter([
   {
@@ -49,6 +50,12 @@ export const router = createBrowserRouter([
       { path: "/add-products", element:(
         <PrivateAdminRoute>
           <AddProduct/>
+        </PrivateAdminRoute>
+      )},
+
+      { path: "/suggestions", element:(
+        <PrivateAdminRoute>
+          <Suggestions/>
         </PrivateAdminRoute>
       )},
     ]

@@ -66,6 +66,9 @@
   Route::delete('/product/{id}', [ProductController::class, 'destroy']);
   Route::patch('/product/{id}', [ProductController::class, 'update']);
   Route::post('/cart-products', [ProductController::class, 'storeCartProducts']);
+  Route::post('/product-suggest/{id}', [ProductController::class, 'productSuggest']);
+  Route::get('/suggested-products',[ProductController::class, 'suggestedProducts']);
+  Route::patch('/suggested-product-answer/{id}', [ProductController::class, 'suggestedProductAnswer']);
 
   Route::post('/product-rating/{id}', [ProductController::class, 'updateRating']);
   Route::post('/user-review/{id}', [UserReviewController::class, 'store']);

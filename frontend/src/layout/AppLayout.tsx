@@ -2,19 +2,16 @@ import LRC from '../assets/LericoriaFire.png';
 import { Link } from 'react-router-dom';
 import { TiShoppingCart, TiThMenuOutline } from "react-icons/ti";
 import { useAuth } from '../context/AuthContext';
-import { IoClose } from 'react-icons/io5';
 import React, { useEffect, useState } from 'react';
 import ProductCartModal from '../components/system/ProductCartModal';
-import InputForm from '../components/form/InputForm';
-import ClearSearch from '../components/ui/ProceedActionButton';
-import type { Product } from '../types/Product';
 import type { ProductAPI } from '../types/ProductAPI';
 import Menu from '../components/system/Menu';
 import CardFocusOverlay from '../components/ui/CardFocusOverlay';
 import { useProducts } from '../context/ProductContext';
+import MainSearchTopBar from '../components/form/MainSearchTopBar';
 
 type AppLayout = {
-  pageSelected: 'home' | 'products' | 'myProducts' | 'addProduct' | 'settings';
+  pageSelected: 'home' | 'products' | 'myProducts' | 'addProduct' | 'settings' | 'suggestions';
   children: (props: { 
     search: string;
     filter: ProductAPI['category'];
@@ -71,40 +68,18 @@ const AppLayout = ({children, pageSelected}:AppLayout) => {
             <li className='flex items-center gap-2 text-orange-300 font-semibold italic'><img className='h-10' src={LRC} alt={'LRC'}/> Lehinshoppin'</li>
           </ul>
           {(pageSelected === 'products' || pageSelected === 'myProducts') && (
-            <ul className='flex fixed h-8 top-[14px] left-1/2 translate-x-[-50%]'>  
-              <InputForm
-                fieldType={'search'}
-                placeholderValue={'Buscar'}
-                inputStyle='h-full !bg-orange-100 border-orange-700 border-r border-l-15 rounded-tr-[0] rounded-br-[0]'
-                value={search}
-                style='w-[300px]'
-                onChange={(e) => setSearch(e.target.value)}
-              />
-              <InputForm
-                fieldType={'select'}
-                forSearchInput={true}
-                placeholderValue={'Buscar'}
-                inputStyle='h-full mt-[-2px] !bg-orange-100 border-orange-700 rounded-none'
-                value={filter}
-                onSelect={(e) => setFilter(e.target.value as Product['category'])}
-              />
-              <ClearSearch 
-                iconButton={IoClose} 
-                iconButtonSize={20} 
-                buttonLabel={''}
-                onClick={() => {
-                  setSearch('');
-                  setFilter('');
-                }}
-                styles='h-full px-1 rounded !border-y-2 border-r-15 border-double rounded-tl-[0] rounded-bl-[0]'
-              />
+            <ul className={`flex fixed h-8 top-[14px] left-1/2 ${user?.admin ? 'translate-x-[-80%]' : 'translate-x-[-50%]'}`}> 
+              <MainSearchTopBar value={{filter, search}} actions={{setSearch, setFilter}}/> 
             </ul>
           )}
           <ul className='flex gap-5 items-center'>
             <li><Link className={`font-semibold hover:text-yellow-400 ${pageSelected === 'home' ? 'text-yellow-400' : 'text-yellow-600'}`} to={'/home'}>Home</Link></li>
             <li><Link className={`font-semibold hover:text-yellow-400 ${pageSelected === 'products' ? 'text-yellow-400' : 'text-yellow-600'}`} to={'/products'}>Produtos</Link></li>
             {user?.admin ? (
-              <li><Link className={`font-semibold hover:text-yellow-400 ${pageSelected === 'addProduct' ? 'text-yellow-400' : 'text-yellow-600'}`} to={'/add-products'}>Adicionar produtos</Link></li>
+              <>
+                <li><Link className={`font-semibold hover:text-yellow-400 ${pageSelected === 'addProduct' ? 'text-yellow-400' : 'text-yellow-600'}`} to={'/add-products'}>Adicionar produtos</Link></li>
+                <li><Link className={`font-semibold hover:text-yellow-400 ${pageSelected === 'suggestions' ? 'text-yellow-400' : 'text-yellow-600'}`} to={'/suggestions'}>Sugestões</Link></li>
+              </>
             ) : (
               <>
                 <li><Link className={`font-semibold hover:text-yellow-400 ${pageSelected === 'myProducts' ? 'text-yellow-400' : 'text-yellow-600'}`} to={'/my-products'}>Meus Produtos</Link></li>

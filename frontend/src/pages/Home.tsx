@@ -1,5 +1,5 @@
 import { BiHomeAlt } from "react-icons/bi";
-import { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { BsBoxSeamFill } from "react-icons/bs";
 import { useAuth } from "../context/AuthContext";
 import { getProducts } from "../services/getProducts";
@@ -27,21 +27,30 @@ import AppLayout from "../layout/AppLayout";
 import '../css/scrollbar.css';
 import { FaCommentDots } from "react-icons/fa6";
 import UsersRateCommentCard from "../components/system/UsersRateCommentCard";
-import { api } from "../services/api";
+import { api, getCsrf } from "../services/api";
 import type { UserCommentaryRate } from "../types/UserCommentaryRate";
 import { useCatchError } from "../utils/ui/useCatchError";
+import { HiLightBulb } from "react-icons/hi";
+import SuggestProductForm from "../components/form/SuggestProductForm";
+import type { ProductSuggest } from "../types/SuggestProduct";
+import { useToast } from "../context/ToastContext";
+import SuggestedProductCard from "../components/system/SuggestedProductCard";
+import ConfirmDecision from "../components/ui/ConfirmDecision";
 
 const Home = () => {
   toastAppearOnce();
 
   const { user, setUser } = useAuth();
-  const { handleImageChange, imagePreview } = useImagePreview();
+  const { handleImageChange, imagePreview, resetImagePreview } = useImagePreview();
+  const { showToast} = useToast();
+  const catchError = useCatchError();
 
   const {products, setProducts} = useProducts();
   const [selectedProduct, setSelectedProduct] = useState<ProductAPI | null>(null);
+  const [selectedSuggestionId, setSelectedSuggestionId] = useState<number | null>(null);
   const [userReviews, setUserReviews] = useState<UserCommentaryRate[]>([]);
+  const [suggestedProducts, setSuggestedProducts] = useState<ProductSuggest[]>([]);
 
-  const catchError = useCatchError();
 
   const [editProduct, setEditProduct] = useState<Product>({
     id: 0,
@@ -54,15 +63,84 @@ const Home = () => {
     created_at: "",
     updated_at: "",
   })
+
+  const [productSuggest, setProductSuggest] = useState<ProductSuggest>({
+    name: "",
+    image: null,
+    imagePreview: "",
+    description: "",
+    category: "",
+    price: "",
+  })
   
   const [flags, setFlags] = useState<UIFlags>({
     showProductInfo: false,
     showProductAmount: false,
     showConfirmPurchase: false,
+    showConfirmSuggestion: {
+      accept: false,
+      deny: false
+    },
+
     processingState: false,
     closeEditModal: false,
     isLoading: true,
   })
+
+  const handleSuggestProductSubmit = async(e:React.FormEvent<HTMLFormElement>): Promise<void> => {
+    e.preventDefault();
+
+    if (flags.processingState) return;
+    setFlags(prev => ({...prev, processingState: true}));
+
+    if (!productSuggest.name || !productSuggest.category || !productSuggest.description || !productSuggest.price || !productSuggest.image) {
+      showToast('Preencha todos os campos antes de mandar sua sugestão', 'error');
+      setFlags(prev => ({...prev, processingState: false}));
+      return;
+    }
+
+    const payload = new FormData();
+
+    payload.append('name', productSuggest.name);
+    payload.append('category', productSuggest.category);
+    payload.append('description', productSuggest.description);
+    payload.append('price', productSuggest.price);
+    payload.append('image', productSuggest.image);
+
+    try {
+      await getCsrf();
+      const response = await api.post(`/product-suggest/${user?.id}`, payload);
+
+      showToast(response.data.message, response.data.type);
+      setProductSuggest(prev => ({...prev, name: '', category: '', description: '', price: '', image: null}))
+      resetImagePreview();
+    } catch (err:unknown) {
+      catchError(err);
+    } finally {
+      setFlags(prev => ({...prev, processingState: false}));
+    }
+  }
+
+  const handleAcceptDenyProductSuggestion = async (
+    id: number | null,
+    isAccept: boolean
+  ) => {
+    if (!id) return;
+
+    try {
+      const response = await api.patch(`/suggested-product-answer/${id}`, {
+        answer: isAccept ? 'accepted' : 'denied',
+      });
+
+      showToast(response.data.message, response.data.type);
+
+      setSuggestedProducts(prev =>
+        prev.filter(p => p.id !== id)
+      );
+    } catch (err) {
+      catchError(err);
+    }
+  };
 
   const { RemoveProduct } = useRemoveProduct({
     actions: {
@@ -104,13 +182,15 @@ const Home = () => {
   useEffect(() => {
     const loadData = async() => {
       try {
-        const [userReviewsRes, productsRes] = await Promise.all([
-          api.get<{comments: UserCommentaryRate[]}>('users-reviews'),
+        const [userReviews, products, suggestedProducts] = await Promise.all([
+          api.get<{comments: UserCommentaryRate[]}>('/users-reviews'),
           getProducts(),
+          api.get<{suggested_products: ProductSuggest[]}>('/suggested-products'),
         ]);
 
-        setUserReviews(userReviewsRes.data.comments);
-        setProducts(productsRes);
+        setUserReviews(userReviews.data.comments);
+        setProducts(products);
+        setSuggestedProducts(suggestedProducts.data.suggested_products);
       } catch (err:unknown) {
         catchError(err);
       } finally { 
@@ -137,7 +217,6 @@ const Home = () => {
   return (
     <AppLayout pageSelected="home">
       {({search}) => {
-        console.log(search);
 
         const hasProducts = products.length > 0;
 
@@ -151,7 +230,7 @@ const Home = () => {
               <>
                 <PageSectionTitle title="Principais produtos" icon={BsBoxSeamFill} />
 
-                <CardsGrid grid={{ sm: 2, md: 3, lg: 4, xl: 5 }} style="border-y-2 py-2 border-gray-200">
+                <CardsGrid gridType="productCards" style="border-y-2 py-2 px-2 border-gray-200">
                   {hasProducts ? (
                     products.slice(0, 5).map((product) => (
                       <GridProductCard
@@ -185,7 +264,7 @@ const Home = () => {
 
                 <PageSectionTitle position="left" title="Avaliações do público" icon={FaCommentDots} />
 
-                <CardsGrid grid={{sm: 1, md: 2, lg: 2, xl: 2}} style="border-y-2 py-2 border-gray-200 pr-2 custom-scroll max-h-[480px] overflow-y-auto">
+                <CardsGrid gridType="productReviews" style="border-y-2 py-2 border-gray-200 px-2 custom-scroll max-h-[480px] overflow-y-auto">
                   {reviewsByProduct ? (
                     Object.entries(reviewsByProduct).map(([productId, reviews]) => {
 
@@ -210,6 +289,80 @@ const Home = () => {
                     </div>
                   )}
                 </CardsGrid>
+
+                {!user?.admin ? (
+                  <>
+                    <PageSectionTitle position="left" title="Sugerir novos produtos" iconSize={35} icon={HiLightBulb} />
+                    <SuggestProductForm 
+                      actions={{
+                        handleSuggestProductSubmit,
+                        handleImageChange,
+                        setProductSuggest,
+                      }} 
+                      flags={{
+                        processingState: flags.processingState
+                      }}
+                      imagePreview={imagePreview}
+                      productSuggest={productSuggest}                  
+                    />
+                  </>
+                ) : (
+                  <>
+                    <PageSectionTitle position="left" title="Sugestões dos usuários" iconSize={35} icon={HiLightBulb} />
+                    <CardsGrid gridType={"productSuggests"} style="border-y-2 py-2 border-gray-200 px-2 custom-scroll max-h-[465px] overflow-y-auto">
+                      {suggestedProducts.filter(sp => !sp.accepted && !sp.denied).map((suggestProduct) => (
+                        <SuggestedProductCard
+                          key={suggestProduct.id}
+                          suggestProduct={suggestProduct}
+                          flags={flags}
+                          actions={{
+                            setFlags,
+                            setSelectedSuggestionId
+                          }}
+                        />
+                      ))}
+                    </CardsGrid>
+                  </>
+                )}
+              </>            
+            )}
+
+            {(flags.showConfirmSuggestion.accept || flags.showConfirmSuggestion.deny) && (
+              <>
+                <CardFocusOverlay
+                  onClick={() => {
+                    setSelectedSuggestionId(null);
+                    setFlags(prev => ({
+                      ...prev,
+                      showConfirmSuggestion: { accept: false, deny: false }
+                    }));
+                  }}
+                />
+
+                <ConfirmDecision
+                  overlayOff
+                  decisionTitle={
+                    flags.showConfirmSuggestion.accept
+                      ? 'Aceitar sugestão'
+                      : 'Recusar sugestão'
+                  }
+                  decisionDescription={`Tem certeza que deseja ${
+                    flags.showConfirmSuggestion.accept ? 'aceitar' : 'negar'
+                  } essa sugestão de produto?`}
+                  onCancel={() => {
+                    setSelectedSuggestionId(null);
+                    setFlags(prev => ({
+                      ...prev,
+                      showConfirmSuggestion: { accept: false, deny: false }
+                    }));
+                  }}
+                  onAcceptWithoutForm={() =>
+                    handleAcceptDenyProductSuggestion(
+                      selectedSuggestionId,
+                      flags.showConfirmSuggestion.accept
+                    )
+                  }
+                />
               </>
             )}
 
@@ -227,7 +380,7 @@ const Home = () => {
                   }}
                 />
               </>
-            )}
+            )}    
           </>
         );
       }}

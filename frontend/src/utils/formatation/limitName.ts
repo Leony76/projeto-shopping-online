@@ -1,4 +1,5 @@
-export function limitName(name: string, maxParts: number) {
+export function limitName(name: string | undefined, maxParts: number) {
+  if (!name)return;
   return name
     .trim()
     .split(/\s+/)  

@@ -8,6 +8,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use App\Models\Order;
 use App\Models\ProductRate;
+use App\Models\ProductSuggest;
 
 class User extends Authenticatable
 {
@@ -74,5 +75,9 @@ class User extends Authenticatable
 
     public function userReviews() {
         return $this->hasMany(UserReviews::class);
+    }
+
+    public function productSuggests() {
+        return $this->hasMany(ProductSuggest::class);
     }
 }

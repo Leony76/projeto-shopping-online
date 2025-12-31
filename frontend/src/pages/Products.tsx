@@ -133,7 +133,7 @@ const Products = () => {
             )}
 
             {!flags.isLoading && (            
-              <CardsGrid grid={{sm: 2, md: 3, lg: 4, xl: 5}} style="border-y-2 py-2 border-gray-200">
+              <CardsGrid gridType="productCards" style="border-y-2 py-2 border-gray-200">
                 {hasProducts && hasFilteredProducts ? (
                   filteredProducts.map((product) => (
                     <GridProductCard

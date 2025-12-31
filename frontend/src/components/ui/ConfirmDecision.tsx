@@ -13,8 +13,9 @@ type ConfirmDecision = {
   decisionTitle: string;
   decisionDescription: string;
   descisionConsequence?: boolean;
+  overlayOff?: boolean;
   processingState?: boolean;
-  processingLabel: 'Removendo' | 'Editando' | 'Comprando' | 'Adicionando' | 'Efetuando compra';
+  processingLabel?: 'Removendo' | 'Editando' | 'Comprando' | 'Adicionando' | 'Efetuando compra';
   userWalletIfProductBought?: React.ReactNode;
   onAccept?: React.Dispatch<React.FormEvent<HTMLFormElement>>;
   onAcceptWithoutForm?: () => void;
@@ -24,6 +25,10 @@ type ConfirmDecision = {
     amount: number | undefined;
     totalPrice: string | number;
     pricePerUnit: number | undefined;
+  }
+
+  style?: {
+    procced: string;
   }
 }
 
@@ -36,13 +41,16 @@ const ConfirmDecision = ({
   processingState,
   processingLabel,
   addToCart,
+  overlayOff,
+  style,
   onAccept,
   onAcceptWithoutForm,
   onCancel,
 }: ConfirmDecision) => {
+
   return (
     <>
-      <CardFocusOverlay onClick={onCancel}/>
+      {!overlayOff && <CardFocusOverlay onClick={onCancel}/>}
       {formRequired ? (
         <form onSubmit={onAccept} className="fixed w-[550px] border-x-5 border-cyan-500 translate-[-50%] p-3 border-double z-50 bg-gray-100 top-1/2 left-1/2">
           <h3 className="text-xl font-semibold text-orange-800 mb-2">{decisionTitle}</h3>
@@ -56,7 +64,7 @@ const ConfirmDecision = ({
               iconButton={BiCheckCircle}
               iconButtonSize={20}
               buttonLabel="Sim"
-              styles="!bg-green-500 cursor-pointer !border-green-800 !text-green-800 hover:brightness-[1.1]"
+              styles={style && style?.procced}
               processingState={processingState}
               disable={processingState}
               buttonLabelWhileProcessing={processingLabel}

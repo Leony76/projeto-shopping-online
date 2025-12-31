@@ -1,7 +1,6 @@
 import ProceedActionButton from "../ui/ProceedActionButton";
-import { IoClose } from "react-icons/io5";
 import { BiDollarCircle } from "react-icons/bi";
-import { FaArrowLeft, FaCommentDots, FaMoneyBill } from "react-icons/fa6";
+import { FaCommentDots, FaMoneyBill } from "react-icons/fa6";
 import { LuBoxes } from "react-icons/lu";
 import type { ProductAPI } from "../../types/ProductAPI";
 import { dateTime } from "../../utils/formatation/dateTime";

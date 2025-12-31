@@ -7,6 +7,7 @@ use App\Models\Product;
 use Illuminate\Http\JsonResponse;
 use App\Models\Order;
 use App\Models\ProductRate;
+use App\Models\ProductSuggest;
 use App\Models\User;
 use App\Models\UserReview;
 use Illuminate\Support\Facades\DB;
@@ -264,5 +265,57 @@ class ProductController extends Controller
             'message' => 'Produto avaliado',
             'type' => 'info'
         ], 200);
+    }
+
+    public function productSuggest(Request $request, int $userId) {
+        $data = $request->validate([
+            'name' => 'required|string|max:255',
+            'category' => 'required|string',
+            'description' => 'required|string',
+            'price' => 'required|numeric|min:0',
+            'image' => 'required|image|mimes:jpeg,png,jpg,webp',
+        ]);
+
+        $imagePath = $request->file('image')->store(
+            'product_suggests',
+            'public',
+        );
+
+        $data['price'] = (float) $data['price'];
+        $data['image'] = $imagePath;
+        $data['user_id'] = $userId;
+
+        ProductSuggest::create($data);
+
+        return response()->json([
+            'message' => 'Sugestão de produto enviada com sucesso',
+            'type' => 'success',
+            'suggestion' => $data,
+        ], 201);
+    }
+
+    public function suggestedProducts(): JsonResponse {
+        $suggestedProducts = ProductSuggest::with('user:id,name')->get();
+
+        return response()->json([
+            'suggested_products' => $suggestedProducts
+        ]);
+    }
+
+    public function suggestedProductAnswer(int $id, Request $request): JsonResponse {
+        $request->validate(['answer' => 'required|string']);
+
+        $productSuggest = ProductSuggest::findOrFail($id);
+
+        if ($request->answer === 'accepted') {
+            $productSuggest->update(['accepted' => true]);
+        } else {
+            $productSuggest->update(['denied' => true]);
+        }
+
+        return response()->json([
+            'message' => 'Sugestão de produto foi aceita',
+            'type' => 'info'
+        ]);
     }
 }
