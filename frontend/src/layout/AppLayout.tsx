@@ -9,6 +9,7 @@ import Menu from '../components/system/Menu';
 import CardFocusOverlay from '../components/ui/CardFocusOverlay';
 import { useProducts } from '../context/ProductContext';
 import MainSearchTopBar from '../components/form/MainSearchTopBar';
+import { FaSearch } from 'react-icons/fa';
 
 type AppLayout = {
   pageSelected: 'home' | 'products' | 'myProducts' | 'addProduct' | 'settings' | 'suggestions';
@@ -63,36 +64,43 @@ const AppLayout = ({children, pageSelected}:AppLayout) => {
       )}
 
       <header className='fixed z-30 w-full'>
-        <nav className='flex justify-between items-center border-y-4 border-orange-500 border-double h-[60px] bg-cyan-900 px-5'>
+        <nav className='flex px-5 justify-between items-center border-y-4 border-orange-500 border-double h-[60px] bg-cyan-900'>
           <ul>
-            <li className='flex items-center gap-2 text-orange-300 font-semibold italic'><img className='h-10' src={LRC} alt={'LRC'}/> Lehinshoppin'</li>
+            <li className='flex items-center text-base gap-2 text-orange-300 font-semibold italic'><img className='h-10' src={LRC} alt={'LRC'}/> Lehinshoppin'</li>
           </ul>
-          {(pageSelected === 'products' || pageSelected === 'myProducts') && (
-            <ul className={`flex fixed h-8 top-[14px] left-1/2 ${user?.admin ? 'translate-x-[-80%]' : 'translate-x-[-50%]'}`}> 
-              <MainSearchTopBar value={{filter, search}} actions={{setSearch, setFilter}}/> 
-            </ul>
-          )}
-          <ul className='flex gap-5 items-center'>
-            <li><Link className={`font-semibold hover:text-yellow-400 ${pageSelected === 'home' ? 'text-yellow-400' : 'text-yellow-600'}`} to={'/home'}>Home</Link></li>
-            <li><Link className={`font-semibold hover:text-yellow-400 ${pageSelected === 'products' ? 'text-yellow-400' : 'text-yellow-600'}`} to={'/products'}>Produtos</Link></li>
+          <ul>
+            {(pageSelected === 'products' || pageSelected === 'myProducts') && (            
+              <li className={`h-8 hidden
+                ${!user?.admin ? 'md:ml-[-60px] md:flex' : 'md:ml-[-60px] md:flex'}
+                ${!user?.admin ? 'lg:mr-[-150px] lg:flex' : 'lg:mr-[-100px] lg:flex'}
+                ${!user?.admin ? 'xl:mr-[-200px] xl:flex' : 'xl:mr-[-150px] xl:flex'}             
+              `}>
+                <MainSearchTopBar value={{filter, search}} actions={{setSearch, setFilter}}/> 
+              </li>          
+            )}
+          </ul>
+          <ul className='flex gap-4 items-center'>
+            <li><FaSearch className='md:hidden text-yellow-600 hover:text-yellow-400 cursor-pointer mt-[2px] text-[20px]'/></li>
+            <li className='lg:block hidden'><Link className={`font-semibold xl:text-base lg:text-sm hover:text-yellow-400 ${pageSelected === 'home' ? 'text-yellow-400' : 'text-yellow-600'}`} to={'/home'}>Home</Link></li>
+            <li className='lg:block hidden'><Link className={`font-semibold xl:text-base lg:text-sm hover:text-yellow-400 ${pageSelected === 'products' ? 'text-yellow-400' : 'text-yellow-600'}`} to={'/products'}>Produtos</Link></li>
             {user?.admin ? (
               <>
-                <li><Link className={`font-semibold hover:text-yellow-400 ${pageSelected === 'addProduct' ? 'text-yellow-400' : 'text-yellow-600'}`} to={'/add-products'}>Adicionar produtos</Link></li>
-                <li><Link className={`font-semibold hover:text-yellow-400 ${pageSelected === 'suggestions' ? 'text-yellow-400' : 'text-yellow-600'}`} to={'/suggestions'}>Sugestões</Link></li>
+                <li className='lg:block hidden'><Link className={`font-semibold xl:text-base lg:text-sm hover:text-yellow-400 ${pageSelected === 'addProduct' ? 'text-yellow-400' : 'text-yellow-600'}`} to={'/add-products'}>Adicionar produtos</Link></li>
+                <li className='lg:block hidden'><Link className={`font-semibold xl:text-base lg:text-sm hover:text-yellow-400 ${pageSelected === 'suggestions' ? 'text-yellow-400' : 'text-yellow-600'}`} to={'/suggestions'}>Sugestões</Link></li>
               </>
             ) : (
               <>
-                <li><Link className={`font-semibold hover:text-yellow-400 ${pageSelected === 'myProducts' ? 'text-yellow-400' : 'text-yellow-600'}`} to={'/my-products'}>Meus Produtos</Link></li>
+                <li className='lg:block hidden'><Link className={`font-semibold xl:text-base lg:text-sm hover:text-yellow-400 ${pageSelected === 'myProducts' ? 'text-yellow-400' : 'text-yellow-600'}`} to={'/my-products'}>Meus Produtos</Link></li>
                 <li><button onClick={() => {
                   setShowCart(!showCart);
                   setShowMenu(false);
-                }} className={`font-semibold mt-2 cursor-pointer hover:text-yellow-400 ${showCart ? 'text-yellow-400' : 'text-yellow-600'}`}><TiShoppingCart size={30}/></button></li>
+                }} className={`font-semibold mt-2 cursor-pointer text-[30px] hover:text-yellow-400 ${showCart ? 'text-yellow-400' : 'text-yellow-600'}`}><TiShoppingCart/></button></li>
               </>
             )}
             <li className='flex'><button onClick={() => {
               setShowMenu(!showMenu);
               setShowCart(false);
-            }}><TiThMenuOutline size={30} className={`hover:text-yellow-400 cursor-pointer transition-colors ${showMenu ? 'text-yellow-400' : 'text-yellow-600'}`}/></button></li>          
+            }}><TiThMenuOutline className={`hover:text-yellow-400 text-[30px] cursor-pointer transition-colors ${showMenu ? 'text-yellow-400' : 'text-yellow-600'}`}/></button></li>          
           </ul>
         </nav>
       </header>

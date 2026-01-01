@@ -62,8 +62,8 @@ const GridProductCard = ({
   
   return (
     <div className="border-x-4 p-1 bg-gray-100 border-double border-cyan-800">
-      <div className="py-1 h-[120px] border-y-2 border-gray-300">
-        <img className="rounded h-full object-cover" src={product.image_url} alt={'placeholder'} />
+      <div className="py-1 xl:h-[120px] border-y-2 border-gray-300">
+        <img className="rounded w-full h-full object-cover" src={product.image_url} alt={'placeholder'} />
       </div>
       <div className="flex flex-col">
         <CardTitle textLength={20} name={product.name}/>

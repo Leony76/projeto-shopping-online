@@ -72,7 +72,7 @@ const InputForm = ({
       {fieldType === "select" ? (
         <div className="flex flex-col gap-[2px] font-semibold">
           <label className="flex items-center gap-[2px] text-orange-800" htmlFor="category">{Icon && <Icon/>}{fieldName}</label>
-          <select value={value} className={`cursor-pointer border-1 py-[5px] pl-1 font-normal text-sm ${mainInputStyle} ${inputStyle}`} onChange={onSelect} name="category" id="category">
+          <select value={value} className={`cursor-pointer font-medium border-1 py-[5px] pl-1 font-normal text-xs ${mainInputStyle} ${inputStyle}`} onChange={onSelect} name="category" id="category">
             <option disabled value="">{forSearchInput ? '-- Categoria --' : '-- Selecione --'}</option>
             <option value="Artesanal">Artesanal</option>
             <option value="Limpeza">Limpeza</option>

@@ -22,7 +22,7 @@ const MainSearchTopBar = ({value, actions}:MainSearchTopBar) => {
         placeholderValue={'Buscar'}
         inputStyle='h-full !bg-orange-100 border-orange-700 border-r border-l-15 rounded-tr-[0] rounded-br-[0]'
         value={value.search}
-        style='w-[300px]'
+        style='xl:w-[300px] lg:w-[250px] md:w-[200px] sm:w-[160px]'
         onChange={(e) => actions.setSearch(e.target.value)}
       />
       <InputForm
