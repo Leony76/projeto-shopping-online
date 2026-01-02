@@ -10,6 +10,7 @@ import ProceedActionButton from "../ui/ProceedActionButton"
 import Input from "./InputForm"
 import ImagePreview from "../ui/ImagePreviewContainer"
 import { FaMoneyBill } from "react-icons/fa6"
+import '../../css/scrollbar.css';
 
 type EditProductForm = {
   actions: {
@@ -31,8 +32,8 @@ const EditProductForm = ({actions, flags, extra, product}:EditProductForm) => {
   return (
     <>
       <CardFocusOverlay onClick={() => flags.setShowEditProduct(false)} style={'z-10'}/>
-      <form onSubmit={actions.handleEditProduct} className={`flex m-auto gap-3 bg-gray-100 border-y-6 border-cyan-500 border-double p-2 w-[900px] fixed z-50 top-1/2 left-1/2 translate-[-50%]`}>
-        <button onClick={() => {flags.setShowEditProduct(false)}} className="absolute top-2 cursor-pointer left-1/2 translate-x-[-100%] text-orange-800 hover:text-orange-500 rounded hover:bg-cyan-100"><IoClose size={20}/></button>
+      <form onSubmit={actions.handleEditProduct} className={`flex xl:w-[1000px] lg:w-[900px] md:w-[730px] w-[450px] md:h-fit h-[80vh] custom-scroll overflow-y-auto gap-3 [@media(min-width:483px)]:my-0 my-[7vh] bg-gray-100 border-y-6 border-cyan-500 border-double p-2 fixed z-50 top-1/2 left-1/2 translate-[-50%]`}>
+        <button onClick={() => {flags.setShowEditProduct(false)}} className="absolute top-2 cursor-pointer lg:right-1/2 md:right-[47%] right-2 text-orange-800 hover:text-orange-500 rounded hover:bg-cyan-100"><IoClose size={20}/></button>
         <div className="flex flex-col flex-1">
           <PageTitle style="!text-2xl gap-[2px]" title={`Editar produto`} icon={MdEditSquare}/>
           <Input 
@@ -87,6 +88,9 @@ const EditProductForm = ({actions, flags, extra, product}:EditProductForm) => {
             fieldName={"Imagem"} 
             onChange={actions.handleImageChange}
           /> 
+          {product.image_url && (
+            <ImagePreview style="md:hidden block mt-4 mb-2" imagePreview={extra.imagePreview ? extra.imagePreview : product.image_url}/>
+          )}
           <ProceedActionButton
             iconButton={MdEditSquare} 
             styles="mt-2 bg-yellow-200 border-yellow-600 text-yellow-600"
@@ -98,7 +102,7 @@ const EditProductForm = ({actions, flags, extra, product}:EditProductForm) => {
           />
         </div>
         {product.image_url && (
-          <ImagePreview imagePreview={extra.imagePreview ? extra.imagePreview : product.image_url}/>
+          <ImagePreview style="md:block hidden" imagePreview={extra.imagePreview ? extra.imagePreview : product.image_url}/>
         )}
       </form>
     </>

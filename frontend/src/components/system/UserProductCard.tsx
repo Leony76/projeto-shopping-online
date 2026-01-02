@@ -137,11 +137,11 @@ const UserProductCard = ({
   }
 
   return (
-    <div className="flex gap-3 fixed top-1/2 w-[1000px] z-50 py-1 left-1/2 translate-[-50%] border-y-4 border-double border-cyan-500 bg-gray-100">
-      <figure className="flex-[1] ml-1 flex items-center justify-center">
-        <img className="max-h-[400px] object-contain w-full border-2 border-gray-200 p-1 my-1 ml-1.5" src={product.selected?.image_url} alt={product.selected?.name} />
+    <div className="flex lg:flex-row flex-col lg:gap-3 fixed top-1/2 lg:w-[1000px] w-[450px] z-50 lg:py-1 left-1/2 translate-[-50%] border-y-4 border-double border-cyan-500 bg-gray-100">
+      <figure className="flex-[1] max-h-[400px] lg:ml-3 m-2 flex items-center justify-center">
+        <img className="h-full w-full border-2 border-gray-200 lg:p-1 p-1 lg:my-1 lg:ml-1.5" src={product.selected?.image_url} alt={product.selected?.name} />
       </figure>
-      <div className={`flex flex-col flex-[1.5] mr-[16px] ${flags.showProductTransactions ? '' : 'justify-between'}`}>
+      <div className={`flex flex-col lg:mt-0 mt-[-5px] lg:px-0 px-2 lg:mt-2 lg:ml-[-5px] justify-between flex-[1.5] lg:mr-[16px] ${flags.showProductTransactions ? '' : 'justify-between'}`}>
         <div>
           <div>
             <XCloseTopRight 
@@ -153,16 +153,18 @@ const UserProductCard = ({
           {flags.showProductTransactions && <GoBackArrow onClick={() => actions.setFlags(prev => ({...prev, showProductTransactions:false}))}/>}
           </div>
           <h4 className="text-xl font-semibold text-orange-800">{product.selected?.name}</h4>
-          <div className="flex items-center font-normal text-[#104E64] mt-[-5px] gap-1 py-1">
-            <CategoryIcon category={product.selected?.category ?? 'Artesanal'}/>
-            <span className="text-[10px]">●</span>
-            <p className="flex text-xs items-center gap-[3px]"><FaCalendarAlt/> Foi à venda - {(dateTime(product.selected?.created_at))}</p>
-            {product.selected?.created_at !== product.selected?.updated_at && (<p className="flex text-xs items-center gap-[1px] border-l-2 border-gray-300 pl-1"><AiFillEdit/> Sofreu alteração - {(dateTime(product.selected?.updated_at))}</p>)} 
+          <div className="flex lg:flex-row text-sm flex-col lg:items-center font-normal text-[#104E64] mt-[-5px] gap-1 pt-2">
+            <CategoryIcon style="lg:!text-sm !text-base lg:mt-0 mt-[-5px]" category={product.selected?.category ?? 'Artesanal'}/>
+            <span className="text-[10px] lg:block hidden">●</span>
+            <div className="flex lg:mt-0 mt-[-5px] gap-1">
+              <p className="flex text-xs items-center gap-[3px]"><FaCalendarAlt/> Foi à venda - {(dateTime(product.selected?.created_at))}</p>
+              {product.selected?.created_at !== product.selected?.updated_at && (<p className="flex text-xs items-center gap-[1px] border-l-2 border-gray-300 pl-1"><AiFillEdit/> Sofreu alteração - {(dateTime(product.selected?.updated_at))}</p>)}
+            </div>
           </div>
           {!flags.showProductTransactions && (
             <>
               <label className="flex items-center gap-1"><CiTextAlignLeft className="mt-[2px]"/>Decrição:</label>
-              <p className="custom-scroll text-gray-700 text-[13px] border-gray-400 max-h-30 overflow-y-auto">{product.selected?.description}</p>
+              <p className="custom-scroll lg:mb-0 mb-1.5 text-gray-700 text-[13px] border-gray-400 col max-h-30  overflow-y-auto">{product.selected?.description}</p>
             </>
           )}
         </div>
@@ -170,7 +172,7 @@ const UserProductCard = ({
         {!flags.showProductTransactions ? (
           <div className="mb-3">
             <div className="flex justify-between border-t-1 border-gray-500">
-              <div className="flex my-[5px] border-gray-400 mx-1 py-1 font-semibold">
+              <div className="flex lg:text-base text-sm gap-1 my-[5px] border-gray-400 mx-1 py-1 font-semibold">
                 <p className="text-red-500 flex items-center gap-1"><GiCash/>-R$ {BRLmoney(totalSpent)}</p>
                 <p className="flex items-center gap-1 border-l-2 border-gray-300 ml-2 pl-2 text-orange-500"><LuBoxes/>{totalUnits}</p>
               </div>
@@ -216,21 +218,21 @@ const UserProductCard = ({
             </div>
           </div>
         ) : (
-          <div className="mb-1">
+          <div className="mb-2 lg:border-none lg:py-0 border-y-2 border-gray-300 py-2 mt-2 h-full">
             <div className="border-b-2 border-orange-800"></div>
             <div className="max-h-[165px] overflow-y-auto custom-scroll">
               <table className="w-full">
-                <thead className="sticky top-0 z-10 bg-orange-100 text-[13px] text-orange-800">
+                <thead className="sticky top-0 z-10 bg-orange-100 lg:text-[13px] text-[11px] text-orange-800">
                   <tr>
-                    <th className="py-1"><div className="flex items-center justify-center gap-1"><TbTransactionDollar/>Data da transação</div></th>
-                    <th className="py-1"><div className="flex items-center justify-center gap-1"><BiDollarCircle/>Preço da compra</div></th>
-                    <th className="py-1"><div className="flex items-center justify-center gap-1"><LuBoxes/>Unidades</div></th>
-                    <th className="py-1"><div className="flex items-center justify-center gap-1"><FaMoneyBill/>Preço por unidade</div></th>
+                    <th className="py-1"><div className="flex items-center justify-center gap-1"><TbTransactionDollar className="lg:block hidden"/>Data da transação</div></th>
+                    <th className="py-1"><div className="flex items-center justify-center gap-1"><BiDollarCircle className="lg:block hidden"/>Preço da compra</div></th>
+                    <th className="py-1"><div className="flex items-center justify-center gap-1"><LuBoxes className="lg:block hidden"/>Unidades</div></th>
+                    <th className="py-1"><div className="flex items-center justify-center gap-1"><FaMoneyBill className="lg:block hidden"/>Preço por unidade</div></th>
                   </tr>
                 </thead>
                 <tbody>
                   {product.transactions.map((transaction) => (
-                    <tr className="text-sm">
+                    <tr className="lg:text-sm text-[13px]">
                       <td className="text-yellow-700 py-[3px] text-center">{dateTime(transaction.created_at)}</td>
                       <td className="text-red-500 text-center">-R$ {BRLmoney(transaction.total_price)}</td>
                       <td className="text-orange-500 text-center">{transaction.quantity}</td>
@@ -245,7 +247,7 @@ const UserProductCard = ({
 
         {flag.showCommentModal && (
           <>
-            <CardFocusOverlay onClick={() => setFlag(prev => ({...prev, showCommentModal:false}))}/>
+            <CardFocusOverlay onClick={() => {setFlag(prev => ({...prev, showCommentModal:false}))}}/>
             <form onSubmit={handleCommentarySubmit} className="fixed border-x-6 border-yellow-600 border-double px-4 py-2 top-1/2 left-1/2 translate-[-50%] bg-white z-50">
               <XCloseTopRight closeSetter={() => setFlag(prev => ({...prev, showCommentModal:false}))}/>
               <h3 className="text-yellow-600 text-xl font-semibold">Comentar sobre produto</h3>

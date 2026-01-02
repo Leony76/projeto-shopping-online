@@ -59,9 +59,9 @@ const ConfirmDecision = ({
 
   return (
     <>
-      {!overlayOff && <CardFocusOverlay onClick={onCancel}/>}
+      {!overlayOff && <CardFocusOverlay style="z-50" onClick={onCancel}/>}
       {formRequired ? (
-        <form onSubmit={onAccept} className="fixed w-[550px] border-x-5 border-cyan-500 translate-[-50%] p-3 border-double z-50 bg-gray-100 top-1/2 left-1/2">
+        <form onSubmit={onAccept} className="fixed max-w-[550px] md:w-full w-[450px] border-x-5 border-cyan-500 translate-[-50%] p-3 border-double z-50 bg-gray-100 top-1/2 left-1/2">
           <h3 className="text-xl font-semibold text-orange-800 mb-2">{decisionTitle}</h3>
           <p className="text-sm text-cyan-800 mb-4 flex gap-2">{decisionDescription}</p>
           {descisionConsequence && (
@@ -88,7 +88,7 @@ const ConfirmDecision = ({
           </div>
         </form>
       ) : (
-        <div className="fixed w-[550px] border-x-5 border-cyan-500 translate-[-50%] p-3 border-double z-50 bg-gray-100 top-1/2 left-1/2">
+        <div className="fixed max-w-[550px] md:w-full w-[450px] border-x-5 border-cyan-500 translate-[-50%] p-3 border-double z-50 bg-gray-100 top-1/2 left-1/2">
           <h3 className="text-xl font-semibold text-orange-800 mb-2">{decisionTitle}</h3>
           <p className="text-sm mb-4 text-cyan-800 flex gap-2">{decisionDescription}</p>
           {descisionConsequence && (

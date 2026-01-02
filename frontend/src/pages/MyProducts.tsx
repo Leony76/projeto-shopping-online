@@ -121,7 +121,7 @@ const MyProducts = () => {
             
             {flags.showProductInfo && (
               <>
-                <CardFocusOverlay onClick={() => setFlags(prev => ({...prev, showProductInfo:false}))}/>
+                <CardFocusOverlay onClick={() => setFlags(prev => ({...prev, showProductInfo: false, showProductTransactions: false}))}/>
                 <UserProductCard
                   product={{
                     selected:selectedProduct,

@@ -157,9 +157,9 @@ const InputForm = ({
         </div>
       ) : fieldType === 'advancedFilter' ? (
         userProducts ? (
-          <div className="flex border-y-4 border-double rounded-none !border-cyan-400 w-fit items-center px-2 font-semibold">
+          <div className="flex border-y-4 border-double rounded-none !border-cyan-400 md:w-fit w-full items-center justify-center px-2 font-semibold">
             <label className="flex items-center gap-1 text-orange-800" htmlFor="category"><FaFilter/></label>
-            <select value={value} onChange={onSelect} className={`cursor-pointer py-[5px] pl-1 text-orange-700 focus:outline-none font-normal text-sm ${inputStyle}`} name="category" id="category">
+            <select value={value} onChange={onSelect} className={`cursor-pointer text-center w-full py-[5px] pl-1 text-orange-700 focus:outline-none font-normal text-sm ${inputStyle}`} name="category" id="category">
               <option value="">-- Filtro avançado --</option>
               <option className="text-gray-500" value="Nenhum">Nenhum</option>
               <option value="Mais comprados">Mais comprados</option>

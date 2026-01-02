@@ -21,8 +21,11 @@ import { useProducts } from "../../context/ProductContext";
 import ProceedActionButton from "../ui/ProceedActionButton";
 import { TbCurrencyDollarOff } from "react-icons/tb";
 import '../../css/scrollbar.css';
+import PageSectionTitle from "../ui/PageSectionTitle";
+import XCloseTopRight from "../ui/XCloseTopRight";
+import { createPortal } from "react-dom";
 
-const ProductCartModal = () => {
+const ProductCartModal = ({setShowCart}:{setShowCart: React.Dispatch<React.SetStateAction<boolean>>}) => {
   const { cart, total, removeFromCart, updateQuantity, clearCart } = useCart();
 
   const catchError = useCatchError(); 
@@ -34,6 +37,12 @@ const ProductCartModal = () => {
 
   const [processingState, setProcessingState] = useState<boolean>(false);
   const [confirmCartPurchase, setConfirmCartPurchase] = useState<boolean>(false);
+  const [flags, setFlags] = useState<{
+    confirmClearCart: boolean;
+  }>({
+    confirmClearCart: false,
+  })
+
   const [error, setError] = useState<string>('');
 
   const handleBuyProductFromCart = async(e:React.FormEvent<HTMLFormElement>):Promise<void> => {
@@ -88,7 +97,8 @@ const ProductCartModal = () => {
   }
 
   return (
-    <div className="fixed z-50 top-18 right-3 p-4 w-[420px] bg-white shadow-lg border-x-6 border-double border-green-600 rounded">
+    <div className="fixed z-50 top-18 sm:right-3 right-1/2 sm:translate-x-[0] translate-x-[50%] p-4 w-[450px] bg-white shadow-lg border-x-6 border-double border-green-600 rounded">
+      <XCloseTopRight closeSetter={() => setShowCart(false)}/>
       {cart.length === 0 ? (
         <EmptyCardGrid 
           text="Nenhum produto no carrinho!"
@@ -97,17 +107,12 @@ const ProductCartModal = () => {
         />
       ) : (
         <>
-          <PageTitle 
-            style="!text-2xl mb-3 !gap-[3px]" 
-            title={"Carrinho"} 
-            IconSize={35} 
-            icon={TiShoppingCart}
-          />
-          <div className="max-h-[250px] overflow-y-auto custom-scroll pr-4">
+          <PageSectionTitle textSize="text-2xl" iconSize={30} title="Carrinho" icon={TiShoppingCart}/>
+          <div className="max-h-[250px] overflow-y-auto mt-2 custom-scroll pr-4">
             {cart.map(item => (
               <div key={item.productId} className="flex items-center items-center justify-between mb-2 border-b border-cyan-300 pb-2">
-                <figure className="border-1 border-gray-400 rounded p-1 h-[70px] w-[130px]">
-                  <img className="w-full h-full" src={item.image} alt={item.name} />
+                <figure className="h-[70px] w-[130px]">
+                  <img className="rounded w-full h-full" src={item.image} alt={item.name} />
                 </figure>
                 <div className="flex h-[35px] mb-4 flex-col justify-between">
                   <p className="font-semibold text-md flex items-center gap-1 text-yellow-600"><BsBoxSeamFill/>{item.name.length > 10 ? item.name.slice(0,10) : item.name}</p>
@@ -155,7 +160,7 @@ const ProductCartModal = () => {
                   buttonLabel={'Limpar Carrinho'}
                   iconButton={FaTrashAlt }
                   actionType={'button'}
-                  onClick={clearCart}
+                  onClick={() => setFlags(prev => ({...prev, confirmClearCart: true}))}
                 />
               </>
             ) : (
@@ -169,24 +174,39 @@ const ProductCartModal = () => {
             )}
           </div>
 
-          {confirmCartPurchase && (
-            <ConfirmDecision
-              decisionTitle={'Efetuar compra do carrinho?'}
-              formRequired={true}
-              style={{procced: '!bg-green-400 !border-green-700 !text-green-700'}}
-              decisionDescription={`Tem certeza que deseja efetuar a compra dos items no carrinho?`}
-              descisionConsequence={true}
-              userWalletIfProductBought={BRLmoney(Number(user?.wallet) - total)}
-              processingState={processingState}
-              processingLabel={'Efetuando compra'}
-              onAccept={handleBuyProductFromCart}
-              onCancel={() => setConfirmCartPurchase(false)}
-            />
-          )}
+          {confirmCartPurchase &&  
+            createPortal(
+              <ConfirmDecision
+                decisionTitle={'Efetuar compra do carrinho?'}
+                formRequired={true}
+                style={{procced: '!bg-green-400 !border-green-700 !text-green-700'}}
+                decisionDescription={`Tem certeza que deseja efetuar a compra dos items no carrinho?`}
+                descisionConsequence={true}
+                userWalletIfProductBought={BRLmoney(Number(user?.wallet) - total)}
+                processingState={processingState}
+                processingLabel={'Efetuando compra'}
+                onAccept={handleBuyProductFromCart}
+                onCancel={() => setConfirmCartPurchase(false)}
+              />
+              , window.document.body
+            )
+          }
+
+          {flags.confirmClearCart && 
+            createPortal(
+              <ConfirmDecision 
+                decisionTitle={"Confirmar excluir produtos do carrinho"} 
+                decisionDescription={"Tem certeza que deseja excluir todos os produtos do carrinho?"} 
+                onCancel={() => setFlags(prev => ({...prev, confirmClearCart: false}))}
+                onAcceptWithoutForm={clearCart}
+              />
+              , window.document.body
+            )
+          }
         </>
       )}
     </div>
   );
-};
+}
 
 export default ProductCartModal;

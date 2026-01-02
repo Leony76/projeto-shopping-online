@@ -1,8 +1,8 @@
 import { Link } from "react-router-dom";
 import Input from "../components/form/InputForm";
 import Submit from "../components/form/SubmitButton";
-import { useState } from "react";
-import { getCsrf } from "../services/api";
+import { useEffect, useState } from "react";
+import { api, getCsrf } from "../services/api";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useAuth } from "../context/AuthContext";
@@ -39,6 +39,12 @@ const Login = () => {
     }
   }
 
+  useEffect(() => {
+    api.get('/test')
+      .then(res => console.log('API OK:', res.data))
+      .catch(err => console.error('API ERRO:', err));
+  }, []);
+
   return (
     <div className="flex flex-col bg-[black] text-white justify-center items-center min-h-screen">
       <div className="flex flex-col p-2 w-[300px] border-1 rounded-lg">
@@ -55,3 +61,5 @@ const Login = () => {
 }
 
 export default Login
+
+

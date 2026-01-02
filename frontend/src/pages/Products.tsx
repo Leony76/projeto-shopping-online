@@ -123,6 +123,8 @@ const Products = () => {
 
             <PageTitle title="Produtos" icon={BsBoxSeamFill}/> 
 
+            {/* <div className={`${flags.isLoading && 'flex-1'}`}></div> */}
+
             {!flags.isLoading && hasProducts && (
               <>
                 <PageSectionTitle title="" icon={BsBoxSeamFill}/>

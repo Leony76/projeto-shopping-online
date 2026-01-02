@@ -1,4 +1,3 @@
-import { BiHomeAlt } from "react-icons/bi";
 import React, { useState, useEffect, useMemo } from "react";
 import { BsBoxSeamFill } from "react-icons/bs";
 import { useAuth } from "../context/AuthContext";
@@ -37,6 +36,7 @@ import { useToast } from "../context/ToastContext";
 import SuggestedProductCard from "../components/system/SuggestedProductCard";
 import ConfirmDecision from "../components/ui/ConfirmDecision";
 import { TbBulbOff } from "react-icons/tb";
+import { IoHome } from "react-icons/io5";
 
 const Home = () => {
   toastAppearOnce();
@@ -227,7 +227,9 @@ const Home = () => {
           <>
             {flags.isLoading && <Loading size={50} style="text-cyan-500 translate-[-50%] fixed top-1/2 left-1/2"/>}
 
-            <PageTitle style='!mb-1' title="Home" icon={BiHomeAlt} />  
+            <PageTitle style={`!mb-1`} title="Home" icon={IoHome} />  
+
+            {/* <div className={`${flags.isLoading && 'flex-1'}`}></div> */}
 
             {!flags.isLoading && (
               <>
@@ -369,7 +371,7 @@ const Home = () => {
 
             {flags.showProductInfo && (
               <>
-                <CardFocusOverlay onClick={() => setFlags(prev => ({...prev, showProductInfo:false}))}/>
+                <CardFocusOverlay onClick={() => setFlags(prev => ({...prev, showProductInfo:false, showConfirmPurchase: false}))}/>
                 <ProductCard
                   flags={flags}
                   product={selectedProduct}

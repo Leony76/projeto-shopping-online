@@ -9,7 +9,7 @@ import Menu from '../components/system/Menu';
 import CardFocusOverlay from '../components/ui/CardFocusOverlay';
 import { useProducts } from '../context/ProductContext';
 import MainSearchTopBar from '../components/form/MainSearchTopBar';
-import { FaSearch } from 'react-icons/fa';
+import { FaArrowLeft, FaSearch } from 'react-icons/fa';
 
 type AppLayout = {
   pageSelected: 'home' | 'products' | 'myProducts' | 'addProduct' | 'settings' | 'suggestions';
@@ -29,10 +29,27 @@ const AppLayout = ({children, pageSelected}:AppLayout) => {
   const [showMenu, setShowMenu] = useState<boolean>(false);
   const [search, setSearch] = useState<string>('');
   const [filter, setFilter] = useState<"Artesanal" | "Cozinha" | "Limpeza" | "Eletrônico" | "Móveis" | "">('');
+  const [showSearch, setShowSearch] = useState<boolean>(false);
 
   useEffect(() => {
     setShowCart(false);
-  },[products])
+  },[products]);
+
+  useEffect(() => {
+    const mediaQuery = window.matchMedia("(min-width: 768px)");
+
+    const handleResize = (e: MediaQueryListEvent) => {
+      if (e.matches) {
+        setShowSearch(false);
+      }
+    };
+
+    mediaQuery.addEventListener("change", handleResize);
+
+    return () => {
+      mediaQuery.removeEventListener("change", handleResize);
+    };
+  }, []);
 
   return (
     <div className='flex flex-col min-h-screen bg-orange-900'>
@@ -59,29 +76,33 @@ const AppLayout = ({children, pageSelected}:AppLayout) => {
             style='bg-white/0 !z-20'
             onClick={() => setShowCart(false)}
           />
-          <ProductCartModal/>
+          <ProductCartModal setShowCart={setShowCart}/>
         </>
       )}
 
       <header className='fixed z-30 w-full'>
         <nav className='flex px-5 justify-between items-center border-y-4 border-orange-500 border-double h-[60px] bg-cyan-900'>
           <ul>
-            <li className='flex items-center text-base gap-2 text-orange-300 font-semibold italic'><img className='h-10' src={LRC} alt={'LRC'}/> Lehinshoppin'</li>
+            <li className={`flex items-center text-base gap-2 text-orange-300 font-semibold italic`}><img className={`h-10 sm:hidden block ${showSearch && 'hidden'}`} src={LRC} alt={'LRC'}/><img className={`h-10 sm:block hidden`} src={LRC} alt={'LRC'}/> {!showSearch ? 'Lehinshoppin\'' : ''}</li>
           </ul>
-          <ul>
+          <ul className='flex gap-2 ml-[-10px] sm:mr-[-50px] '>
+            <li onClick={() => setShowSearch(false)} className={`flex items-center text-base gap-2 text-yellow-600 hover:text-yellow-400 cursor-pointer font-semibold italic ${showSearch ? 'block' : 'hidden'}`}><FaArrowLeft size={25}/></li>
             {(pageSelected === 'products' || pageSelected === 'myProducts') && (            
               <li className={`h-8 hidden
-                ${!user?.admin ? 'md:ml-[-60px] md:flex' : 'md:ml-[-60px] md:flex'}
-                ${!user?.admin ? 'lg:mr-[-150px] lg:flex' : 'lg:mr-[-100px] lg:flex'}
-                ${!user?.admin ? 'xl:mr-[-270px] xl:flex' : 'xl:mr-[-220px] xl:flex'}             
+                ${!user?.admin ? 'md:flex' : 'md:flex'}
+                ${!user?.admin ? 'lg:flex' : 'lg:flex'}
+                ${!user?.admin ? 'xl:flex' : 'xl:flex'}             
               `}>
                 <MainSearchTopBar value={{filter, search}} actions={{setSearch, setFilter}}/> 
               </li>          
             )}
+            {showSearch && (
+              <MainSearchTopBar value={{filter, search}} actions={{setSearch, setFilter}}/> 
+            )}
           </ul>
           <ul className='flex gap-4 items-center'>
             {(pageSelected === 'products' || pageSelected === 'myProducts') && ( 
-              <li><FaSearch className='md:hidden text-yellow-600 hover:text-yellow-400 cursor-pointer mt-[2px] text-[20px]'/></li>
+              <li><FaSearch onClick={() => setShowSearch(true)} className={`md:hidden text-yellow-600 hover:text-yellow-400 cursor-pointer mt-[2px] text-[20px] ${showSearch && 'hidden'}`}/></li>
             )}
             <li className='lg:block hidden'><Link className={`font-semibold xl:text-base lg:text-sm hover:text-yellow-400 ${pageSelected === 'home' ? 'text-yellow-400' : 'text-yellow-600'}`} to={'/home'}>Home</Link></li>
             <li className='lg:block hidden'><Link className={`font-semibold xl:text-base lg:text-sm hover:text-yellow-400 ${pageSelected === 'products' ? 'text-yellow-400' : 'text-yellow-600'}`} to={'/products'}>Produtos</Link></li>
@@ -106,7 +127,7 @@ const AppLayout = ({children, pageSelected}:AppLayout) => {
           </ul>
         </nav>
       </header>
-      <main className={`flex-1 mt-15 box-border p-3 xl:w-[1080px] lg:w-[900px] md:w-[750px] sm:w-[550px] w-[482px] mx-auto bg-white  border-x-3 border-cyan-200 ${pageSelected === 'addProduct' && 'flex items-center justify-center'}`}>
+      <main className={`flex flex-col justify-between flex-1 mt-15 box-border p-3 xl:w-[1080px] lg:w-[900px] md:w-[750px] sm:w-[550px] w-[482px] mx-auto bg-white border-x-3 border-cyan-200 ${pageSelected === 'addProduct' && 'flex items-center justify-center'}`}>
         {children({search, filter})}
       </main>
       <footer className={`flex [@media(min-width:483px)]:w-full w-[482px] justify-center border-y-6 border-orange-500 border-double bg-gray-400 py-3`}>

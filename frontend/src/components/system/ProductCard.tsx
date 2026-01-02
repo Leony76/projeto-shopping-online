@@ -34,6 +34,7 @@ import SoldAmount from "../ui/SoldAmount";
 import Money from "../ui/Money";
 import Stock from "../ui/Stock";
 import GoBackArrow from "../ui/ProductCardGoBackArrow";
+import CardFocusOverlay from "../ui/CardFocusOverlay";
 
 type Actions = {
   setFlags: React.Dispatch<React.SetStateAction<UIFlags>>;
@@ -65,7 +66,6 @@ const ProductCard = ({
 
   const exceedsStock = cartAmount + selectedAmount > stock;
 
-
   const { showToast } = useToast();
 
   const formattedTotalPrice = product ? BRLmoney(product.price * (product.selectedAmount ?? 1)): 0;
@@ -75,11 +75,11 @@ const ProductCard = ({
   const [addToCartConfirm, setAddToCartConfirm] = useState<boolean>(false); 
 
   return (
-    <div className="flex gap-3 fixed top-1/2 w-[1000px] z-50 py-1 left-1/2 translate-[-50%] border-y-4 border-double border-cyan-500 bg-gray-100">
-      <figure className="flex-[1] max-h-[400px] ml-1 flex items-center justify-center">
-        <img className="h-full w-full border-2 border-gray-200 p-1 my-1 ml-1.5" src={product?.image_url} alt={product?.name} />
+    <div className="flex lg:flex-row flex-col lg:gap-3 fixed top-1/2 lg:w-[1000px] w-[450px] z-50 lg:py-1 left-1/2 translate-[-50%] border-y-4 border-double border-cyan-500 bg-gray-100">
+      <figure className="flex-[1] max-h-[400px] lg:ml-3 m-2 flex items-center justify-center">
+        <img className="h-full w-full border-2 border-gray-200 lg:p-1 p-1 lg:my-1 lg:ml-1.5" src={product?.image_url} alt={product?.name} />
       </figure>
-      <div className="flex flex-col justify-between flex-[1.5] mr-[16px]">
+      <div className="flex flex-col lg:mt-0 mt-[-5px] lg:px-0 px-2 lg:mt-2 lg:ml-[-5px] justify-between flex-[1.5] lg:mr-[16px]">
         <div>
           <div>
             {flags.showProductAmount && <GoBackArrow onClick={() => actions.setFlags(prev => ({...prev, showProductAmount: false}))}/>}
@@ -89,28 +89,30 @@ const ProductCard = ({
             }}/>
           </div>
           <h4 className="text-xl font-semibold text-orange-800">{product?.name}</h4>
-          <div className="flex items-center font-normal text-[#104E64] mt-[-5px] gap-1 py-1">
-            <CategoryIcon category={product?.category ?? 'Artesanal'}/>
-            <span className="text-[10px]">●</span>
-            <p className="flex text-xs items-center gap-[3px]"><FaCalendarAlt/> Foi à venda - {(dateTime(product?.created_at))}</p>
-            {product?.created_at !== product?.updated_at && (<p className="flex text-xs items-center gap-[1px] border-l-2 border-gray-300 pl-1"><AiFillEdit/> Sofreu alteração - {(dateTime(product?.updated_at))}</p>)} 
+          <div className="flex lg:flex-row text-sm flex-col lg:items-center font-normal text-[#104E64] mt-[-5px] gap-1 pt-2">
+            <CategoryIcon style="lg:!text-sm !text-base lg:mt-0 mt-[-5px]" category={product?.category ?? 'Artesanal'}/>
+            <span className="text-[10px] lg:block hidden">●</span>
+            <div className="flex lg:mt-0 mt-[-5px] gap-1">
+              <p className="flex text-xs items-center gap-[3px]"><FaCalendarAlt/> Foi à venda - {(dateTime(product?.created_at))}</p>
+              {product?.created_at !== product?.updated_at && (<p className="flex text-xs items-center gap-[1px] border-l-2 border-gray-300 pl-1"><AiFillEdit/> Sofreu alteração - {(dateTime(product?.updated_at))}</p>)}
+            </div>
           </div>
           <label className="flex items-center gap-1"><CiTextAlignLeft className="mt-[2px]"/>Decrição:</label>
-          <p className="custom-scroll text-gray-700 text-[13px] border-gray-400 col max-h-30  overflow-y-auto">{product?.description}</p>
+          <p className="custom-scroll lg:mb-0 mb-1.5 text-gray-700 text-[13px] border-gray-400 col max-h-30  overflow-y-auto">{product?.description}</p>
         </div>
         
         {!flags.showProductAmount ? (
           <div className="mb-3">
             <div className="flex items-center border-t-1 border-gray-500 justify-between">
-              <div className="flex gap-1 my-[5px] border-gray-400 mx-1 py-1 font-semibold">
+              <div className="flex lg:text-base text-sm gap-1 my-[5px] border-gray-400 mx-1 py-1 font-semibold">
                 <Money value={product?.price}/>
                 <Stock border="left" stock={product?.amount}/>
                 <SoldAmount border="left" soldAmount={product?.orders_sum_quantity}/>
               </div>
-              <div className="flex items-center">
+              <div className="flex lg:text-base text-sm items-center">
                 <RatingStars
                   elements={{
-                    name: `${!product?.product_rate_avg_rating ? 'Nenhuma avaliação' : '' + product.product_rate_avg_rating.toFixed(1).replace('.',',')}`,
+                    name: `${!product?.product_rate_avg_rating ? 'N/A' : '' + product.product_rate_avg_rating.toFixed(1).replace('.',',')}`,
                     rating: product?.product_rate_avg_rating ?? 0,
                   }}
                   flags={{hovering: false}}
@@ -154,10 +156,10 @@ const ProductCard = ({
               {product && (
                 <>
                   <div className="flex gap-3">
-                    <p className="text-green-800 flex items-center border-r-1 pr-3 gap-1"><FaMoneyBill/>R$ {totalPrice !== 0 ? formattedTotalPrice : BRLmoney( product.price)} <IoClose color="gray"/> <span className="text-orange-500">{product.selectedAmount !== 0 ? product.selectedAmount : 1}</span></p>
-                    <p className={`flex items-center gap-1 text-orange-500 ${(product.selectedAmount && product.amount - product.selectedAmount === 0 ) ? 'text-red-500 bg-gradient-to-r pr-1 from-transparent via-red-200 to-red-200' : ''}`}><LuBoxes/>{(product.selectedAmount ? (product.amount - product.selectedAmount) : product.amount - 1)}</p>
+                    <p title="$ Preço total pelas unidades" className="text-green-800 flex items-center border-r-1 pr-3 gap-1"><FaMoneyBill/>R$ {totalPrice !== 0 ? formattedTotalPrice : BRLmoney(product.price)} <IoClose color="gray"/> <span className="text-orange-500">{product.selectedAmount ?? 1}</span></p>
+                    <p title="⁂ Unidades" className={`flex items-center gap-1 text-orange-500 ${(product.selectedAmount && product.amount - product.selectedAmount === 0 ) ? 'text-red-500 bg-gradient-to-r pr-1 from-transparent via-red-200 to-red-200' : ''}`}><LuBoxes/>{(product.selectedAmount ? (product.amount - product.selectedAmount) : product.amount - 1)}</p>
                   </div>
-                  <p className={`flex items-center text-sm gap-1 ${totalPrice > Number(user?.wallet) ? 'text-red-500' : 'text-green-800'}`}><FaWallet size={15}/> R$ {BRLmoney(Number(user?.wallet) - totalPrice)}</p>
+                  <p title="-$ Saldo após compra" className={`flex items-center text-sm gap-1 ${totalPrice > Number(user?.wallet) ? 'text-red-500' : 'text-green-800'}`}><FaWallet size={15}/>R$ {BRLmoney(Number(user?.wallet) - totalPrice)}</p>
                 </>
               )}
             </div>
@@ -203,12 +205,12 @@ const ProductCard = ({
           </div>
         )}
 
-        {flags.showConfirmPurchase && (
+        {flags.showConfirmPurchase && 
           <>
-            <div className="inset-0 bg-black/50 fixed z-40"></div>
-            <form onSubmit={actions.handleBuySubmit} className="fixed w-[700px] border-x-5 border-cyan-500 translate-[-50%] p-3 border-double z-50 bg-gray-100 top-1/2 left-1/2">
+            <CardFocusOverlay onClick={() => actions.setFlags(prev => ({...prev, showConfirmPurchase: false}))}/>
+            <form onSubmit={actions.handleBuySubmit} className="fixed max-w-[550px] md:w-full w-[450px] border-x-5 border-cyan-500 translate-[-50%] p-3 border-double z-50 bg-gray-100 top-1/2 left-1/2">
               <h3 className="text-xl font-semibold text-orange-800 mb-2 flex items-center gap-1">Confirmar compra</h3>
-              <p className="text-sm mb-2 flex gap-2">Confirma a compra de <span className="flex items-center gap-1 text-orange-500 font-bold"><LuBoxes className="mt-1"/>{product?.selectedAmount ?? 1} unidade(s)</span> do {product?.name} por <span className="flex items-center gap-1 text-green-800 font-bold"><FaMoneyBill className="mt-1" size={15}/>R$ {formattedTotalPrice}</span>?</p>
+              <p className="text-sm mb-2 flex gap-2">Confirma a compra de {product?.selectedAmount ?? 1} unidade(s) do {product?.name} por R$ {formattedTotalPrice}?</p>
               <small className="flex gap-2">Seu saldo após compra será de <span className="flex items-center gap-1 text-green-800 font-bold"><FaWallet className="mt-[2px]" size={15}/>R$ {userWalletIfProductBought}</span></small>
               <div className="flex gap-3 mt-2">
                 <ProceedActionButton
@@ -231,7 +233,7 @@ const ProductCard = ({
               </div>
             </form>
           </>
-        )}
+        }
 
         {product && addToCartConfirm && (
           <ConfirmDecision

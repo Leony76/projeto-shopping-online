@@ -37,17 +37,17 @@ const GridProductCard = ({
 
   return (
     <div className="border-x-4 p-1 bg-gray-100 border-double border-cyan-800">
-      <div className="py-1 h-[120px] border-y-2 border-gray-300">
-        <img className="rounded h-full object-cover" src={product.selected.image_url} alt={'placeholder'} />
+      <div className="py-1 lg:h-[120px] sm:h-[130px] h-[120px] border-y-2 border-gray-300">
+        <img className="rounded w-full h-full object-cover" src={product.selected.image_url} alt={'placeholder'} />
       </div>
-      <div>
+      <div className="flex flex-col">
         <CardTitle textLength={20} name={product.selected.name}/>
-        <div className="flex items-center font-normal text-[#104E64] mt-[-5px] gap-1 py-1">
+        <div className="flex xl:text-xs lg:text-sm sm:text-[13px] text-[13px] items-center font-normal text-[#104E64] mt-[-5px] gap-1 py-1">
           <CategoryIcon category={product.selected.category ?? 'Artesanal'}/>
           <span className="text-[10px]">●</span>
           <small className="flex items-center text-xs gap-[3px]"><FaCalendarAlt/>{date(product.selected.created_at)}</small>
         </div>
-        <div className="flex text-xs justify-between mx-1 py-1 font-semibold border-y-2 border-gray-300">
+        <div className="flex xl:text-xs lg:text-sm md:text-sm sm:text-base text-[13px] justify-between mx-1 py-1 font-semibold border-y-2 border-gray-300">
           <p className="text-red-500 flex items-center gap-1"><GiCash/>-R$ {BRLmoney(totalSpent)}</p>
           <p className="flex items-center gap-1 text-orange-500"><LuBoxes/>{totalUnits}</p>
         </div>
