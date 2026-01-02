@@ -16,7 +16,7 @@ const AddProduct = () => {
     <AppLayout pageSelected={"addProduct"}>
       {({search}) => {
         console.log(search)
-        return (          
+        return (   
           <AddProductForm 
             actions={{
               handleAddProductSubmit,
@@ -26,7 +26,7 @@ const AddProduct = () => {
             flags={{ processing: processingState }}
             product={addProduct} 
             imagePreview={imagePreview}        
-          />
+          />   
         )
       }}
     </AppLayout>

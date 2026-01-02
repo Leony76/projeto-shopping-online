@@ -91,7 +91,7 @@ const Suggestions = () => {
           <>
             {flags.isLoading && <Loading size={50} style="text-cyan-500 translate-[-50%] fixed top-1/2 left-1/2"/>}
 
-            <PageTitle title={'Sugestões'} IconSize={40} icon={HiLightBulb}/>
+            <PageTitle style='!mb-1' title={'Sugestões'} IconSize={40} icon={HiLightBulb}/>
                        
             {!flags.isLoading && hasAcceptedProductSuggestions && (
               <>

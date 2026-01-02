@@ -39,7 +39,7 @@ const ProductForm = ({actions, product, flags, imagePreview, imageBeforeEdit}:Pr
   return (
     <>
     {flags.isAModal && <CardFocusOverlay style={'z-10'}/>}
-    <form onSubmit={actions.handleAddProductSubmit} className={`flex m-auto gap-3 bg-gray-100 border-y-6 border-cyan-500 border-double p-2 w-[900px] ${flags.isAModal ? 'fixed top-1/2 left-1/2 translate-[-50%]' : ''}`}>
+    <form onSubmit={actions.handleAddProductSubmit} className={`flex w-full gap-3 [@media(min-width:483px)]:my-0 my-[7vh] bg-gray-100 border-y-6 border-cyan-500 border-double p-2 ${flags.isAModal ? 'fixed top-1/2 left-1/2 translate-[-50%]' : ''}`}>
       <div className="flex flex-col flex-1">
         <PageTitle style="!text-2xl gap-[2px]" title={`${flags.forEdit ? 'Editar' : 'Adicionar'} produto`} icon={FaPlus}/>
         <Input 
@@ -103,6 +103,11 @@ const ProductForm = ({actions, product, flags, imagePreview, imageBeforeEdit}:Pr
           fieldName={"Imagem"} 
           onChange={actions.handleImageChange}
         /> 
+        {imageBeforeEdit ? (
+          <ImagePreview style="md:hidden block mt-4 mb-2" imagePreview={imagePreview ? imagePreview : imageBeforeEdit}/>
+        ) : (
+          <ImagePreview style="md:hidden block mt-4 mb-2" imagePreview={imagePreview}/>
+        )}
         <ProceedActionButton
           iconButton={FaPlusCircle} 
           styles="mt-2 bg-green-500 border-green-800 text-green-800"
@@ -114,9 +119,9 @@ const ProductForm = ({actions, product, flags, imagePreview, imageBeforeEdit}:Pr
         />
       </div>
       {imageBeforeEdit ? (
-        <ImagePreview imagePreview={imagePreview ? imagePreview : imageBeforeEdit}/>
+        <ImagePreview style="md:block hidden" imagePreview={imagePreview ? imagePreview : imageBeforeEdit}/>
       ) : (
-        <ImagePreview imagePreview={imagePreview}/>
+        <ImagePreview style="md:block hidden" imagePreview={imagePreview}/>
       )}
     </form>
     </>

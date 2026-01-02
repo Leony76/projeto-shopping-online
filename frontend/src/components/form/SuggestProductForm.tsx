@@ -68,6 +68,7 @@ const SuggestProductForm = ({actions, flags, imagePreview, productSuggest}:Sugge
           fieldName={"Imagem"} 
           onChange={(e) => actions.handleImageChange(e, (file) => actions.setProductSuggest(prev => ({...prev, image: file})))}
         /> 
+        <ImagePreview style="md:hidden block mt-4 mb-2" imagePreview={imagePreview}/>
         <ProceedActionButton
           iconButton={FaPaperPlane} 
           styles="mt-2 bg-yellow-200 border-yellow-600 text-yellow-600"
@@ -78,7 +79,7 @@ const SuggestProductForm = ({actions, flags, imagePreview, productSuggest}:Sugge
           processingState={flags.processingState}
         />
       </div>
-      <ImagePreview imagePreview={imagePreview}/>
+      <ImagePreview style="md:block hidden" imagePreview={imagePreview}/>
     </form>
   )
 }

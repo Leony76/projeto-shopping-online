@@ -13,7 +13,7 @@ const PageTitle = ({
 }) => {
   return (
     <div className="flex items-center">
-      <h1 className={`flex items-center mb-1 text-orange-800 justify-center gap-2 font-bold text-4xl ${style}`}><Icon size={IconSize}/>{title}</h1>
+      <h1 className={`flex items-center md:m-0 m-auto mb-1 text-orange-800 justify-center gap-2 font-bold text-4xl ${style}`}><Icon size={IconSize}/>{title}</h1>
     </div>
   )
 }

@@ -73,14 +73,16 @@ const AppLayout = ({children, pageSelected}:AppLayout) => {
               <li className={`h-8 hidden
                 ${!user?.admin ? 'md:ml-[-60px] md:flex' : 'md:ml-[-60px] md:flex'}
                 ${!user?.admin ? 'lg:mr-[-150px] lg:flex' : 'lg:mr-[-100px] lg:flex'}
-                ${!user?.admin ? 'xl:mr-[-200px] xl:flex' : 'xl:mr-[-150px] xl:flex'}             
+                ${!user?.admin ? 'xl:mr-[-270px] xl:flex' : 'xl:mr-[-220px] xl:flex'}             
               `}>
                 <MainSearchTopBar value={{filter, search}} actions={{setSearch, setFilter}}/> 
               </li>          
             )}
           </ul>
           <ul className='flex gap-4 items-center'>
-            <li><FaSearch className='md:hidden text-yellow-600 hover:text-yellow-400 cursor-pointer mt-[2px] text-[20px]'/></li>
+            {(pageSelected === 'products' || pageSelected === 'myProducts') && ( 
+              <li><FaSearch className='md:hidden text-yellow-600 hover:text-yellow-400 cursor-pointer mt-[2px] text-[20px]'/></li>
+            )}
             <li className='lg:block hidden'><Link className={`font-semibold xl:text-base lg:text-sm hover:text-yellow-400 ${pageSelected === 'home' ? 'text-yellow-400' : 'text-yellow-600'}`} to={'/home'}>Home</Link></li>
             <li className='lg:block hidden'><Link className={`font-semibold xl:text-base lg:text-sm hover:text-yellow-400 ${pageSelected === 'products' ? 'text-yellow-400' : 'text-yellow-600'}`} to={'/products'}>Produtos</Link></li>
             {user?.admin ? (
@@ -104,11 +106,11 @@ const AppLayout = ({children, pageSelected}:AppLayout) => {
           </ul>
         </nav>
       </header>
-      <main className='flex-1 mt-15 p-3 mx-auto w-full bg-white max-w-[1080px] border-x-3 border-cyan-200'>
+      <main className={`flex-1 mt-15 box-border p-3 xl:w-[1080px] lg:w-[900px] md:w-[750px] sm:w-[550px] w-[482px] mx-auto bg-white  border-x-3 border-cyan-200 ${pageSelected === 'addProduct' && 'flex items-center justify-center'}`}>
         {children({search, filter})}
       </main>
-      <footer className='flex justify-center border-y-6 border-orange-500 border-double bg-gray-400 py-3'>
-        <p className='text-cyan-800 font-semibold text-shadow-sm'>&copy; Leony Leandro Barros, Todos os Direitos Reservados.</p>
+      <footer className={`flex [@media(min-width:483px)]:w-full w-[482px] justify-center border-y-6 border-orange-500 border-double bg-gray-400 py-3`}>
+        <p className='text-cyan-800 text-center font-semibold text-shadow-sm'>&copy; Leony Leandro Barros, <br className='sm:hidden block'/>Todos os Direitos Reservados.</p>
       </footer>
     </div>
   )

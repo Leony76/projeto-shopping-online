@@ -9,7 +9,7 @@ type CategoryIcon = {
 
 const CategoryIcon = ({category, style}:CategoryIcon) => {
   return (
-    <p className={`flex text-xs items-center gap-[2px] ${style && style}`}>
+    <p className={`flex items-center gap-[2px] ${style && style}`}>
       {category === 'Cozinha' ?
         <FaKitchenSet/>
       : category === 'Artesanal' ?

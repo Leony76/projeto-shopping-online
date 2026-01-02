@@ -20,20 +20,21 @@ const UsersRateCommentCard = ({
 }:UsersRateCommentCard) => {
   return (
     product && (
-      <div className="flex p-2 border-x-4 border-double border-cyan-700 bg-gray-100">
-        <div className="flex w-full border-y-2 border-gray-300 py-1 py-2">                    
-          <div className="w-[200px]">
-            <figure className="h-[120px]">
+      <div className="p-2 border-x-4 border-double border-cyan-700 bg-gray-100">
+        <div className="flex xl:flex-row flex-col xl:gap-0 gap-4 w-full border-y-2 border-gray-300 py-1 py-2">                    
+          <div className="xl:w-[200px] w-full">
+            <figure className="xl:h-[120px] w-full">
               <img className="rounded h-full" src={product.image_url} alt={product.name} />
             </figure>
             <div className="flex flex-col gap-1">
-              <CardTitle textLength={24} name={product.name}/>
+              <CardTitle style="xl:block hidden" textLength={24} name={product.name}/>
+              <CardTitle style="xl:hidden block !text-xl mt-1" textLength={50} name={product.name}/>
               <div className="flex gap-1 text-cyan-700 items-center">
                 <CategoryIcon category={product.category}/>    
                 <span className="text-[10px]">●</span>   
                 <Date timeStamp={product.created_at}/>
               </div>
-              <div className="flex text-xs font-semibold items-center justify-between">
+              <div className="flex xl:text-xs text-base font-semibold items-center xl:justify-between gap-4 xl:gap-0">
                 <Money value={product.price}/>
                 <Rating rate={product.product_rate_avg_rating}/>   
                 <RatingCount rateCount={product.product_rate_count}/>
@@ -41,7 +42,7 @@ const UsersRateCommentCard = ({
               </div>
             </div>
           </div>
-          <div className="custom-scroll max-h-[185px] overflow-y-auto flex flex-col flex-1 gap-2 px-2 ml-1">
+          <div className="custom-scroll xl:border-none mt-[-5px] xl:mt-0 border-t-2 border-gray-300 pt-2 max-h-[185px] overflow-y-auto flex flex-col flex-1 gap-2 xl:px-2 pr-1 ml-1">
             {usersReviews.map(review => (
               <UserComment
                 key={review.id}

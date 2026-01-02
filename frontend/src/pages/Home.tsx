@@ -227,7 +227,7 @@ const Home = () => {
           <>
             {flags.isLoading && <Loading size={50} style="text-cyan-500 translate-[-50%] fixed top-1/2 left-1/2"/>}
 
-            <PageTitle title="Home" icon={BiHomeAlt} />  
+            <PageTitle style='!mb-1' title="Home" icon={BiHomeAlt} />  
 
             {!flags.isLoading && (
               <>
@@ -265,9 +265,10 @@ const Home = () => {
                   )}
                 </CardsGrid>
 
-                <PageSectionTitle position="left" title="Avaliações do público" icon={FaCommentDots} />
+                <div className="md:hidden block"><PageSectionTitle position="centered" title="Avaliações do público" icon={FaCommentDots} /></div>
+                <div className="md:block hidden"><PageSectionTitle position="left" title="Avaliações do público" icon={FaCommentDots} /></div>
 
-                <CardsGrid gridType="productReviews" style="border-y-2 py-2 border-gray-200 px-2 custom-scroll max-h-[480px] overflow-y-auto">
+                <CardsGrid gridType="productReviews" style="border-y-2 border-gray-200 p-2 custom-scroll max-h-[480px] overflow-y-auto">
                   {reviewsByProduct ? (
                     Object.entries(reviewsByProduct).map(([productId, reviews]) => {
 
@@ -295,7 +296,9 @@ const Home = () => {
 
                 {!user?.admin ? (
                   <>
-                    <PageSectionTitle position="left" title="Sugerir novos produtos" iconSize={35} icon={HiLightBulb} />
+                    <div className="md:hidden block"><PageSectionTitle position="centered" title="Sugerir novos produtos" iconSize={35} icon={HiLightBulb}/></div>
+                    <div className="md:block hidden"><PageSectionTitle position="left" title="Sugerir novos produtos" iconSize={35} icon={HiLightBulb}/></div>
+
                     <SuggestProductForm 
                       actions={{
                         handleSuggestProductSubmit,
@@ -311,7 +314,9 @@ const Home = () => {
                   </>
                 ) : (
                   <>
-                    <PageSectionTitle position="left" title="Sugestões dos usuários" iconSize={35} icon={HiLightBulb} />
+                    <div className="md:hidden block"><PageSectionTitle position="centered" title="Sugerir novos produtos" iconSize={35} icon={HiLightBulb}/></div>
+                    <div className="md:block hidden"><PageSectionTitle position="left" title="Sugerir novos produtos" iconSize={35} icon={HiLightBulb}/></div>
+
                     <CardsGrid gridType={"productSuggests"} style="border-y-2 py-2 border-gray-200 px-2 custom-scroll max-h-[465px] overflow-y-auto">
                       {(pendingSuggestions.length > 0) ? (
                         pendingSuggestions.map((suggestProduct) => (

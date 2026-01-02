@@ -57,6 +57,7 @@ const Products = () => {
     processingState: false,
     closeEditModal: false,
     isLoading: true,
+    showConfirmSuggestion: {deny:false, accept:false},
   })
 
   const { RemoveProduct } = useRemoveProduct({
@@ -120,7 +121,7 @@ const Products = () => {
           <>
             {flags.isLoading && <Loading size={50} style="text-cyan-500 translate-[-50%] fixed top-1/2 left-1/2"/>}
 
-            <PageTitle title="Produtos" icon={BsBoxSeamFill}/>  
+            <PageTitle title="Produtos" icon={BsBoxSeamFill}/> 
 
             {!flags.isLoading && hasProducts && (
               <>
@@ -133,7 +134,7 @@ const Products = () => {
             )}
 
             {!flags.isLoading && (            
-              <CardsGrid gridType="productCards" style="border-y-2 py-2 border-gray-200">
+              <CardsGrid gridType="productCards" style="border-y-2 py-2 px-2 border-gray-200">
                 {hasProducts && hasFilteredProducts ? (
                   filteredProducts.map((product) => (
                     <GridProductCard
