@@ -1,5 +1,5 @@
 import { useToast } from "../../context/ToastContext";
-import { api, getCsrf } from "../../services/api";
+import { api } from "../../services/api";
 import type { Product } from "../../types/Product";
 import type { ProductAPI } from "../../types/ProductAPI";
 import type { UIFlags } from "../../types/UIFlags";
@@ -43,7 +43,6 @@ export const useEditProduct = ({actions}:useEditProduct) => {
     editProduct.image && payload.append('image', editProduct.image);
 
     try {
-      await getCsrf();
       const response = await api.patch(`/product/${editProduct.id}`, payload);
 
       const updatedProduct = response.data.product;

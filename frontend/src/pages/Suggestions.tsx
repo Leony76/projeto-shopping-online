@@ -5,13 +5,14 @@ import PageSectionTitle from '../components/ui/PageSectionTitle'
 import { GrCodeSandbox } from 'react-icons/gr'
 import CardsGrid from '../components/system/CardsGrid'
 import { useEffect, useState } from 'react'
-import { api, getCsrf } from '../services/api'
+import { api } from '../services/api'
 import type { ProductSuggest } from '../types/SuggestProduct'
 import SuggestedProductCard from '../components/system/SuggestedProductCard'
 import Loading from '../components/ui/Loading'
 import { useCatchError } from '../utils/ui/useCatchError'
 import ConfirmDecision from '../components/ui/ConfirmDecision'
 import { useToast } from '../context/ToastContext'
+import { useLockYScroll } from '../utils/customHooks/useLockYScroll'
 
 const Suggestions = () => {
 
@@ -40,7 +41,6 @@ const Suggestions = () => {
     setFlags(prev => ({...prev, processingState: true}));
 
     try {
-      await getCsrf();
       const response = await api.post(`/add-suggested-product/${selectedSuggestedProductToSell.id}`, {
         amount: selectedSuggestedProductToSell.amount,
       });
@@ -69,7 +69,6 @@ const Suggestions = () => {
   useEffect(() => {
     const getAcceptedProductSuggestions = async () => {
       try {
-        await getCsrf();
         const response = await api.get<{ accepted_suggestions: ProductSuggest[] }>('/accepted-suggested-products');
         setAcceptedProductSuggestions(response.data.accepted_suggestions);
       } catch (err:unknown) {
@@ -82,6 +81,8 @@ const Suggestions = () => {
     getAcceptedProductSuggestions();
   }, []);
 
+  useLockYScroll(flags.showPutToSellProductSuggestConfirm);
+
   return (
     <AppLayout pageSelected='suggestions'>
       {() => {
@@ -93,6 +94,8 @@ const Suggestions = () => {
 
             <PageTitle style='!mb-1' title={'Sugestões'} IconSize={40} icon={HiLightBulb}/>
                        
+            <div className={`${flags.isLoading && 'h-[100vh]'}`}></div>
+
             {!flags.isLoading && hasAcceptedProductSuggestions && (
               <>
                 <PageSectionTitle title='Sugestões de produtos aceitos' icon={GrCodeSandbox}/>

@@ -2,7 +2,6 @@ import { Link } from "react-router-dom";
 import Input from "../components/form/InputForm";
 import Submit from "../components/form/SubmitButton";
 import { useState } from "react";
-import { getCsrf } from "../services/api";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
@@ -26,7 +25,6 @@ const Register = () => {
     }
 
     try {
-      await getCsrf();
       await register(name, email, password);
 
       navigate('/home', {

@@ -62,7 +62,7 @@ const GridProductCard = ({
   
   return (
     <div className="border-x-4 p-1 bg-gray-100 border-double border-cyan-800">
-      <div className="py-1 lg:h-[120px] sm:h-[130px] h-[120px] border-y-2 border-gray-300">
+      <div className="py-1 lg:h-[180px] sm:h-[200px] h-[180px] border-y-2 border-gray-300">
         <img className="rounded w-full h-full object-cover" src={product.image_url} alt={'placeholder'} />
       </div>
       <div className="flex flex-col">

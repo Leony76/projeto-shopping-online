@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 import Input from "../components/form/InputForm";
 import Submit from "../components/form/SubmitButton";
 import { useEffect, useState } from "react";
-import { api, getCsrf } from "../services/api";
+import { api } from "../services/api";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useAuth } from "../context/AuthContext";
@@ -21,7 +21,6 @@ const Login = () => {
     e.preventDefault();
 
     try {
-      await getCsrf();
       await login(email, password);
 
       navigate('/home', {
@@ -40,7 +39,7 @@ const Login = () => {
   }
 
   useEffect(() => {
-    api.get('/test')
+    api.get('/products')
       .then(res => console.log('API OK:', res.data))
       .catch(err => console.error('API ERRO:', err));
   }, []);

@@ -26,7 +26,7 @@ import AppLayout from "../layout/AppLayout";
 import '../css/scrollbar.css';
 import { FaCommentDots } from "react-icons/fa6";
 import UsersRateCommentCard from "../components/system/UsersRateCommentCard";
-import { api, getCsrf } from "../services/api";
+import { api } from "../services/api";
 import type { UserCommentaryRate } from "../types/UserCommentaryRate";
 import { useCatchError } from "../utils/ui/useCatchError";
 import { HiLightBulb } from "react-icons/hi";
@@ -37,6 +37,7 @@ import SuggestedProductCard from "../components/system/SuggestedProductCard";
 import ConfirmDecision from "../components/ui/ConfirmDecision";
 import { TbBulbOff } from "react-icons/tb";
 import { IoHome } from "react-icons/io5";
+import { useLockYScroll } from "../utils/customHooks/useLockYScroll";
 
 const Home = () => {
   toastAppearOnce();
@@ -109,7 +110,6 @@ const Home = () => {
     payload.append('image', productSuggest.image);
 
     try {
-      await getCsrf();
       const response = await api.post(`/product-suggest/${user?.id}`, payload);
 
       showToast(response.data.message, response.data.type);
@@ -216,6 +216,10 @@ const Home = () => {
     );
   }, [userReviews]);
 
+  useLockYScroll(flags.showProductInfo);
+  useLockYScroll(flags.showConfirmSuggestion.accept);
+  useLockYScroll(flags.showConfirmSuggestion.deny);
+
   return (
     <AppLayout pageSelected="home">
       {({search}) => {
@@ -229,7 +233,7 @@ const Home = () => {
 
             <PageTitle style={`!mb-1`} title="Home" icon={IoHome} />  
 
-            {/* <div className={`${flags.isLoading && 'flex-1'}`}></div> */}
+            <div className={`${flags.isLoading && 'h-[100vh]'}`}></div>
 
             {!flags.isLoading && (
               <>

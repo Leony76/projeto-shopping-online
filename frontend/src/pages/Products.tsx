@@ -27,6 +27,7 @@ import '../css/scrollbar.css';
 import { searchFilter } from "../utils/ui/searchFilter";
 import InputForm from "../components/form/InputForm";
 import type { AdvancedFilter } from "../types/AdvancedFilter";
+import { useLockYScroll } from "../utils/customHooks/useLockYScroll";
 
 const Products = () => {
   toastAppearOnce();
@@ -103,6 +104,8 @@ const Products = () => {
       .finally(() => setFlags(prev => ({...prev, isLoading: false})));
   }, []);
 
+  useLockYScroll(flags.showProductInfo);
+
   return (
     <AppLayout pageSelected="products">
       {({search, filter}) => {
@@ -123,7 +126,7 @@ const Products = () => {
 
             <PageTitle title="Produtos" icon={BsBoxSeamFill}/> 
 
-            {/* <div className={`${flags.isLoading && 'flex-1'}`}></div> */}
+            <div className={`${flags.isLoading && 'h-[100vh]'}`}></div>
 
             {!flags.isLoading && hasProducts && (
               <>

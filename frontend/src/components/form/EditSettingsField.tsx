@@ -8,7 +8,7 @@ import { type Field, type FieldType, type FieldKey } from "../../types/SettingsU
 import { useEffect, useState } from "react";
 import { FaShieldAlt } from "react-icons/fa";
 import { IoShieldCheckmarkSharp } from "react-icons/io5";
-import { api, getCsrf } from "../../services/api";
+import { api } from "../../services/api";
 import type { ToastType } from "../../context/ToastContext";
 import { maskCEP } from "../../utils/mask/maskCEP";
 import { maskPhone } from "../../utils/mask/maskPhone";
@@ -90,7 +90,6 @@ const EditSettingsField = ({
     }
 
     try {
-      await getCsrf();
 
       const response = await api.post(`/passwordCheck`, {
         password: password,

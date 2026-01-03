@@ -37,49 +37,58 @@
   
   Route::post('/login', function (Request $request) {
     $credentials = $request->validate([
-      'email' => 'required|email',
-      'password' => 'required'
+        'email' => 'required|email',
+        'password' => 'required'
     ]);
-    
+
     if (!Auth::attempt($credentials)) {
-      return response()->json(['message' => 'Credenciais inválidas'], 401);
+        return response()->json(['message' => 'Credenciais inválidas'], 401);
     }
+
+    $user = $request->user();
+
+    $token = $user->createToken('access-token')->plainTextToken;
+
+    return response()->json([
+        'token' => $token,
+        'user' => $user
+    ]);
+  });
+
+  Route::middleware('auth:sanctum')->group(function () {
+    Route::get('/user', function (Request $request) {
+        return $request->user();
+    });
+
+    Route::post('/logout', function () {
+        Auth::logout();
+        return response()->json(['message' => 'Logout realizado']);
+    });
     
-    return response()->json(Auth::user());
-  });
+    /* Main Routes */
+    
+    Route::get('/products', [ProductController::class, 'index']);
+    Route::post('/admin/add-product', [ProductController::class, 'store']);
+    Route::post('/buy-product', [ProductController::class, 'create']);
+    Route::get('/user-products', [ProductController::class, 'list']);
+    Route::delete('/product/{id}', [ProductController::class, 'destroy']);
+    Route::patch('/product/{id}', [ProductController::class, 'update']);
+    Route::post('/cart-products', [ProductController::class, 'storeCartProducts']);
+    Route::post('/product-suggest/{id}', [ProductController::class, 'productSuggest']);
+    Route::get('/suggested-products',[ProductController::class, 'suggestedProducts']);
+    Route::patch('/suggested-product-answer/{id}', [ProductController::class, 'suggestedProductAnswer']);
+    Route::get('/accepted-suggested-products', [ProductController::class, 'acceptedSuggestedProducts']);
+    Route::post('/add-suggested-product/{id}', [ProductController::class, 'addSuggestedProduct']);
   
-  Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
-  });
+    Route::post('/product-rating/{id}', [ProductController::class, 'updateRating']);
+    Route::post('/user-review/{id}', [UserReviewController::class, 'store']);
+    Route::get('/users-reviews', [UserReviewController::class, 'index']);
+    Route::post('/like-dislike-comment/{id}', [UserReviewController::class, 'updateLikeDislike']);
+    Route::get('/users-current-reactions', [UserReviewController::class, 'usersCurrentReactions']);
   
-  Route::post('/logout', function () {
-    Auth::logout();
-    return response()->json(['message' => 'Logout realizado']);
+    Route::patch('/user/update-data', [UserController::class, 'update']);
+    Route::post('/passwordCheck', [UserController::class, 'checkPassword']);
   });
-  
-  /* Main Routes */
-
-  Route::get('/products', [ProductController::class, 'index']);
-  Route::post('/admin/add-product', [ProductController::class, 'store']);
-  Route::post('/buy-product', [ProductController::class, 'create']);
-  Route::get('/user-products', [ProductController::class, 'list']);
-  Route::delete('/product/{id}', [ProductController::class, 'destroy']);
-  Route::patch('/product/{id}', [ProductController::class, 'update']);
-  Route::post('/cart-products', [ProductController::class, 'storeCartProducts']);
-  Route::post('/product-suggest/{id}', [ProductController::class, 'productSuggest']);
-  Route::get('/suggested-products',[ProductController::class, 'suggestedProducts']);
-  Route::patch('/suggested-product-answer/{id}', [ProductController::class, 'suggestedProductAnswer']);
-  Route::get('/accepted-suggested-products', [ProductController::class, 'acceptedSuggestedProducts']);
-  Route::post('/add-suggested-product/{id}', [ProductController::class, 'addSuggestedProduct']);
-
-  Route::post('/product-rating/{id}', [ProductController::class, 'updateRating']);
-  Route::post('/user-review/{id}', [UserReviewController::class, 'store']);
-  Route::get('/users-reviews', [UserReviewController::class, 'index']);
-  Route::post('/like-dislike-comment/{id}', [UserReviewController::class, 'updateLikeDislike']);
-  Route::get('/users-current-reactions', [UserReviewController::class, 'usersCurrentReactions']);
-
-  Route::patch('/user/update-data', [UserController::class, 'update']);
-  Route::post('/passwordCheck', [UserController::class, 'checkPassword']);
 ?>
   
   

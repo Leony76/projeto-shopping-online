@@ -49,8 +49,8 @@ const Menu = ({admin, logout, pageSelected, wallet}:Menu) => {
           <button onClick={() => {
             logout(); 
             setLoggingOut(true);
-          }} className='flex items-center gap-1 justify-center hover:bg-yellow-100 text-cyan-800 mx-1 font-semibold cursor-pointer rounded px-4 py-0.5'>{loggingOut ? (<div className="flex items-center gap-1"><Loading size={15}/>Saindo</div>) : (<div className="flex items-center gap-1"><BiLogOut/>Sair</div>)}</button>
-          <Link to={'/settings'} className={`flex items-center gap-1 justify-center text-sm hover:bg-yellow-100 text-cyan-800 mx-1 font-semibold cursor-pointer rounded mb-1 px-4 py-1 ${pageSelected === 'settings' ? 'bg-yellow-100' : ''}`}><IoSettingsSharp/>Configurações</Link>
+          }} className='flex items-center gap-1 justify-center hover:bg-yellow-100 text-cyan-800 mx-1 font-semibold cursor-pointer mt-1 rounded px-4 py-0.5'>{loggingOut ? (<div className="flex items-center gap-1"><Loading size={15}/>Saindo</div>) : (<div className="flex items-center gap-1"><BiLogOut/>Sair</div>)}</button>
+          <Link to={'/settings'} className={`flex items-center gap-1 justify-center text-sm hover:bg-yellow-100 text-cyan-800 mx-1 font-semibold cursor-pointer rounded mb-0.5 px-4 py-1 ${pageSelected === 'settings' ? 'bg-yellow-100' : ''}`}><IoSettingsSharp/>Configurações</Link>
         </div>
       </div>
     </div>

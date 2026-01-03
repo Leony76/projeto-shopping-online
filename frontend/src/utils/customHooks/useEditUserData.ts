@@ -1,4 +1,4 @@
-import { getCsrf, api } from "../../services/api";
+import { api } from "../../services/api";
 import { date } from "../formatation/date";
 import { useCatchError } from "../ui/useCatchError";
 import { isDateFromFuture } from "../validations/isDataFromFuture";
@@ -81,7 +81,6 @@ const useEditUserData = ({actions}:useEditUserData) => {
     }
 
     try {
-      await getCsrf();
       const response = await api.patch(`/user/update-data`, {
         [fieldKey]: data[fieldKey],
       });

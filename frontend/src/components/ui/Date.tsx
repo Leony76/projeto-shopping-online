@@ -3,7 +3,7 @@ import { date } from "../../utils/formatation/date"
 
 const Date = ({timeStamp}:{timeStamp:string}) => {
   return (
-    <small className="flex items-center gap-[3px]"><FaCalendarAlt size={11}/>{date(timeStamp)}</small>
+    <small className="flex items-center text-xs gap-[3px]"><FaCalendarAlt size={11}/>{date(timeStamp)}</small>
   )
 }
 

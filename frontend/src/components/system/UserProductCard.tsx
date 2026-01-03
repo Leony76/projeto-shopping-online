@@ -13,9 +13,9 @@ import { FaCalendarAlt } from "react-icons/fa";
 import { AiFillEdit } from "react-icons/ai";
 import CategoryIcon from "../ui/CategoryIcon";
 import { CiTextAlignLeft } from "react-icons/ci";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useCatchError } from "../../utils/ui/useCatchError";
-import { api, getCsrf } from "../../services/api";
+import { api } from "../../services/api";
 import { useToast } from "../../context/ToastContext";
 import RatingStars from "../ui/RatingStars";
 import Loading from "../ui/Loading";
@@ -24,6 +24,8 @@ import InputForm from "../form/InputForm";
 import XCloseTopRight from "../ui/XCloseTopRight";
 import WarnError from "../ui/WarnError";
 import GoBackArrow from "../ui/ProductCardGoBackArrow";
+import { MdOutlineZoomOutMap, MdOutlineZoomInMap } from "react-icons/md";
+import { useLockYScroll } from "../../utils/customHooks/useLockYScroll";
 
 type UserProductCard = {
   product: {
@@ -62,6 +64,7 @@ const UserProductCard = ({
   const [hoverRating, setHoverRating] = useState(0);
   const [error, setError] = useState<string>('');
   const [commentary, setCommentary] = useState<string>('');
+  const [expandProductImage, setExpandProductImage] = useState<boolean>(false);
 
   const [flag, setFlag] = useState({
     processing: false,
@@ -75,7 +78,6 @@ const UserProductCard = ({
     setFlag(prev => ({...prev, processing:true}));
 
     try {
-      await getCsrf();
 
       const response = await api.post(
         `product-rating/${product.selected?.id}`,
@@ -121,7 +123,6 @@ const UserProductCard = ({
     }
 
     try {
-      await getCsrf();
       const response = await api.post(`/user-review/${product.selected?.id}`, {
         commentary: commentary,
         rate: product.selected?.user_rating ?? 0,
@@ -136,12 +137,21 @@ const UserProductCard = ({
     }
   }
 
+  useLockYScroll(flag.showCommentModal);
+
   return (
-    <div className="flex lg:flex-row flex-col lg:gap-3 fixed top-1/2 lg:w-[1000px] w-[450px] z-50 lg:py-1 left-1/2 translate-[-50%] border-y-4 border-double border-cyan-500 bg-gray-100">
-      <figure className="flex-[1] max-h-[400px] lg:ml-3 m-2 flex items-center justify-center">
-        <img className="h-full w-full border-2 border-gray-200 lg:p-1 p-1 lg:my-1 lg:ml-1.5" src={product.selected?.image_url} alt={product.selected?.name} />
+    <div className={`fixed flex lg:flex-row flex-col top-1/2 left-1/2 translate-[-50%] lg:w-[1000px] w-[450px] overflow-y-auto border-y-8 border-double border-cyan-300 bg-gray-100 z-50 lg:gap-3 custom-scroll max-h-none [@media(max-height:550px),(max-width:1080px)]:max-h-[90vh] [@media(max-height:550px),(max-width:1080px)]:overflow-y-auto ${expandProductImage && 'h-[90vh]'}`}>
+      <figure className="flex-[1] lg:h-[240px] h-[250px] lg:ml-3 m-2 flex items-center justify-center">
+        <button onClick={() => setExpandProductImage(true)} className="fixed top-5 lg:left-[36%] left-5"><MdOutlineZoomOutMap className="text-orange-500 lg:text-2xl text-4xl bg-cyan-100/20 p-0.5 rounded hover:bg-cyan-100 cursor-pointer"/></button>
+        {expandProductImage && (
+          <div onClick={() => setExpandProductImage(false)} className="fixed inset-0 z-[100] bg-orange-100 flex items-center justify-center">
+          <button onClick={() => setExpandProductImage(prev => !prev)} className="fixed top-2 right-1"><MdOutlineZoomInMap className="text-orange-500 lg:text-3xl text-4xl bg-cyan-100/20 p-0.5 rounded hover:bg-cyan-100 cursor-pointer"/></button>
+            <img src={product.selected?.image_url} alt={product.selected?.name} className="lg:w-[90vw] lg:h-[90vh] object-contain"/>
+          </div>
+        )}
+        <img onClick={() => setExpandProductImage(true)} className="lg:h-full h-[250px] w-full object-cover border-2 border-gray-200 p-1 lg:my-1" src={product.selected?.image_url} alt={product.selected?.name} />
       </figure>
-      <div className={`flex flex-col lg:mt-0 mt-[-5px] lg:px-0 px-2 lg:mt-2 lg:ml-[-5px] justify-between flex-[1.5] lg:mr-[16px] ${flags.showProductTransactions ? '' : 'justify-between'}`}>
+      <div className="flex flex-col lg:mt-0 mt-[-5px] lg:px-0 px-2 lg:mt-2 lg:ml-[-5px] justify-between flex-[1.5] lg:mr-[16px]">
         <div>
           <div>
             <XCloseTopRight 
@@ -150,7 +160,7 @@ const UserProductCard = ({
                 actions.setFlags(prev => ({...prev, showProductTransactions:false}));
               }}
             />
-          {flags.showProductTransactions && <GoBackArrow onClick={() => actions.setFlags(prev => ({...prev, showProductTransactions:false}))}/>}
+            {flags.showProductTransactions && <GoBackArrow onClick={() => actions.setFlags(prev => ({...prev, showProductTransactions:false}))}/>}
           </div>
           <h4 className="text-xl font-semibold text-orange-800">{product.selected?.name}</h4>
           <div className="flex lg:flex-row text-sm flex-col lg:items-center font-normal text-[#104E64] mt-[-5px] gap-1 pt-2">
@@ -248,8 +258,8 @@ const UserProductCard = ({
         {flag.showCommentModal && (
           <>
             <CardFocusOverlay onClick={() => {setFlag(prev => ({...prev, showCommentModal:false}))}}/>
-            <form onSubmit={handleCommentarySubmit} className="fixed border-x-6 border-yellow-600 border-double px-4 py-2 top-1/2 left-1/2 translate-[-50%] bg-white z-50">
-              <XCloseTopRight closeSetter={() => setFlag(prev => ({...prev, showCommentModal:false}))}/>
+            <form onSubmit={handleCommentarySubmit} className="fixed lg:w-[450px] w-full border-x-6 border-yellow-600 border-double px-4 py-2 top-1/2 left-1/2 translate-[-50%] bg-white z-50">
+              <XCloseTopRight style="bg-white text-2xl !top-1 !right-1" closeSetter={() => setFlag(prev => ({...prev, showCommentModal:false}))}/>
               <h3 className="text-yellow-600 text-xl font-semibold">Comentar sobre produto</h3>
               <h5 className="text-sm text-cyan-500">Deixe um comentário sobre o que achou do produto para que outros usuários vejam sua avaliação subjetiva!</h5>
               <InputForm 

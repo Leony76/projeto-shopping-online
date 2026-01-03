@@ -18,6 +18,7 @@ import AppLayout from "../layout/AppLayout"
 import '../css/scrollbar.css';
 import InputForm from "../components/form/InputForm";
 import type { AdvancedFilter } from "../types/AdvancedFilter";
+import { useLockYScroll } from "../utils/customHooks/useLockYScroll";
 
 const MyProducts = () => {
 
@@ -50,6 +51,8 @@ const MyProducts = () => {
     listUserProducts();
   },[])
 
+  useLockYScroll(flags.showProductInfo);
+
   return (
     <AppLayout pageSelected="myProducts">
       {({search, filter}) => {
@@ -71,6 +74,8 @@ const MyProducts = () => {
             {isLoading && <Loading size={50} style="text-cyan-500 translate-[-50%] fixed top-1/2 left-1/2"/>}
 
             <PageTitle title="Meus Produtos" icon={BsDropbox}/>
+
+            <div className={`${isLoading && 'h-[100vh]'}`}></div>
 
             {(!isLoading && hasProducts) && (
               <>

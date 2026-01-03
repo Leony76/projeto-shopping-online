@@ -7,10 +7,10 @@ import { BRLmoney } from "../../utils/formatation/BRLmoney";
 import { IoIosCloseCircleOutline } from "react-icons/io";
 import { useToast } from "../../context/ToastContext";
 import { TbCurrencyDollarOff } from "react-icons/tb";
-import { FaCashRegister, FaCircleArrowRight } from "react-icons/fa6";
+import { FaCircleArrowRight } from "react-icons/fa6";
 import { useCart } from "../../context/CartContext";
 import { CiTextAlignLeft } from "react-icons/ci";
-import { MdOutlineBlock, MdPeopleAlt } from "react-icons/md";
+import { MdOutlineBlock, MdOutlineZoomInMap, MdOutlineZoomOutMap } from "react-icons/md";
 import { TiShoppingCart } from "react-icons/ti";
 import { GiCardboardBox } from "react-icons/gi";
 import { BiCheckCircle } from "react-icons/bi";
@@ -73,11 +73,19 @@ const ProductCard = ({
   const userWalletIfProductBought = BRLmoney(Number(user?.wallet) - Number(product ? product.price * (product.selectedAmount ?? 1) : 0));
   
   const [addToCartConfirm, setAddToCartConfirm] = useState<boolean>(false); 
+  const [expandProductImage, setExpandProductImage] = useState<boolean>(false);
 
   return (
-    <div className="flex lg:flex-row flex-col lg:gap-3 fixed top-1/2 lg:w-[1000px] w-[450px] z-50 lg:py-1 left-1/2 translate-[-50%] border-y-4 border-double border-cyan-500 bg-gray-100">
-      <figure className="flex-[1] max-h-[400px] lg:ml-3 m-2 flex items-center justify-center">
-        <img className="h-full w-full border-2 border-gray-200 lg:p-1 p-1 lg:my-1 lg:ml-1.5" src={product?.image_url} alt={product?.name} />
+    <div className={`fixed flex lg:flex-row flex-col top-1/2 left-1/2 translate-[-50%] lg:w-[1000px] w-[450px] overflow-y-auto border-y-8 border-double border-cyan-300 bg-gray-100 z-50 lg:gap-3 custom-scroll max-h-none [@media(max-height:550px),(max-width:1080px)]:max-h-[90vh] [@media(max-height:550px),(max-width:1080px)]:overflow-y-auto ${expandProductImage && 'h-[90vh]'}`}>
+      <figure className="flex-[1] lg:h-[240px] h-[250px] lg:ml-3 m-2 flex items-center justify-center">
+        <button onClick={() => setExpandProductImage(true)} className="fixed top-5 lg:left-[36%] left-5"><MdOutlineZoomOutMap className="text-orange-500 lg:text-2xl text-4xl bg-cyan-100/20 p-0.5 rounded hover:bg-cyan-100 cursor-pointer"/></button>
+        {expandProductImage && (
+          <div onClick={() => setExpandProductImage(false)} className="fixed inset-0 z-[100] bg-orange-100 flex items-center justify-center">
+          <button onClick={() => setExpandProductImage(prev => !prev)} className="fixed top-2 right-1"><MdOutlineZoomInMap className="text-orange-500 lg:text-3xl text-4xl bg-cyan-100/20 p-0.5 rounded hover:bg-cyan-100 cursor-pointer"/></button>
+            <img src={product?.image_url} alt={product?.name} className="lg:w-[90vw] lg:h-[90vh] object-contain"/>
+          </div>
+        )}
+        <img onClick={() => setExpandProductImage(true)} className="lg:h-full h-[250px] w-full object-cover border-2 border-gray-200 p-1 lg:my-1" src={product?.image_url} alt={product?.name} />
       </figure>
       <div className="flex flex-col lg:mt-0 mt-[-5px] lg:px-0 px-2 lg:mt-2 lg:ml-[-5px] justify-between flex-[1.5] lg:mr-[16px]">
         <div>
@@ -180,7 +188,7 @@ const ProductCard = ({
                   actions.setProduct(prev => prev ? 
                   { ...prev, selectedAmount: value} : prev,
 
-                )}} min={1} value={product?.selectedAmount ?? 1} max={product?.amount} className="text-center bg-gray-200 pl-3 font-bold text-[#FF6900] border-x-2 border-cyan-600 h-full w-15 focus:outline-none" type="number" />
+                )}} min={1} value={product?.selectedAmount ?? 1} max={product?.amount} className="text-center lg:pr-0 pr-3 bg-gray-200 pl-3 font-bold text-[#FF6900] border-x-2 border-cyan-600 h-full w-15 focus:outline-none" type="number" />
               </div>
               {totalPrice < Number(user?.wallet) ? (
                 <>

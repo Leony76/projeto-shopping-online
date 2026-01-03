@@ -13,7 +13,7 @@ import BuyProductsFromCart from "../ui/ProceedActionButton";
 import { useState } from "react";
 import WarnError from "../ui/WarnError";
 import { useCatchError } from "../../utils/ui/useCatchError";
-import { api, getCsrf } from "../../services/api";
+import { api } from "../../services/api";
 import { useToast } from "../../context/ToastContext";
 import ConfirmDecision from "../ui/ConfirmDecision";
 import { useAuth } from "../../context/AuthContext";
@@ -65,8 +65,6 @@ const ProductCartModal = ({setShowCart}:{setShowCart: React.Dispatch<React.SetSt
     };
 
     try {
-      await getCsrf();
-
       const response = await api.post('/cart-products', payload);
 
       setUser(prev => {

@@ -4,7 +4,7 @@ import RatingStars from "../ui/RatingStars"
 import type { UserCommentaryRate } from "../../types/UserCommentaryRate";
 import { timeAgo } from "../../utils/formatation/timeAgo";
 import { useCatchError } from "../../utils/ui/useCatchError";
-import { api, getCsrf } from "../../services/api";
+import { api } from "../../services/api";
 import { useEffect, useState } from "react";
 import type { UserReactions } from "../../types/UserReactions";
 import { useAuth } from "../../context/AuthContext";
@@ -33,7 +33,6 @@ const UserComment = ({
 
   const handleLike = async () => {
     try {
-      await getCsrf();
       const response = await api.post(`/like-dislike-comment/${id}`, { type: 'like' });
 
       setLikesCount(response.data.likes);
@@ -51,7 +50,6 @@ const UserComment = ({
 
   const handleDislike = async () => {
     try {
-      await getCsrf();
       const response = await api.post(`/like-dislike-comment/${id}`, { type: 'dislike' });
 
       setLikesCount(response.data.likes);

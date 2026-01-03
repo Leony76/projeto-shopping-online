@@ -53,7 +53,7 @@ const SuggestedProductCard = ({
     <>
       <div className="flex border-y-8 bg-gray-100 border-double border-orange-600">
         <figure className="flex flex-2 flex-col p-1">
-          <img className="border-y-2 border-gray-200 py-1 h-full" src={suggestProduct.image_url} alt={suggestProduct.name} />
+          <img className="p-1 rounded border border-gray-300 h-[200px] object-cover" src={suggestProduct.image_url} alt={suggestProduct.name} />
           <p className="text-sm text-center">Sugerido por <i className="text-yellow-600 font-semibold">{limitName(suggestProduct.user?.name, 2)}</i></p>
           {!accepted ? (
             <div className="flex h-8 gap-2 mt-1">
@@ -95,8 +95,8 @@ const SuggestedProductCard = ({
             <DateTime style="text-cyan-800" timeStamp={suggestProduct.created_at}/>
           </div>
           <div className="flex flex-col gap-0.5">
-            <h4 className="text-sm flex items-center gap-1"><CiTextAlignLeft className="mt-[2px]"/>Descrição:</h4>
-            <p className="max-h-[100px] overflow-y-auto custom-scroll border-y-1 py-0.5 text-xs leading-4.5 text-cyan-700 border-gray-200">{suggestProduct.description}</p>
+            <label className="text-sm flex items-center gap-1"><CiTextAlignLeft className="mt-[2px]"/>Descrição:</label>
+            <p className="max-h-[180px] overflow-y-auto custom-scroll border-y-1 py-0.5 text-xs leading-4.5 text-cyan-700 border-gray-200">{suggestProduct.description}</p>
           </div>
           <Money value={Number(suggestProduct.price)}/>
         </div>

@@ -1,5 +1,5 @@
 import { useToast } from "../../context/ToastContext";
-import { getCsrf, api } from "../../services/api";
+import { api } from "../../services/api";
 import type { ProductAPI } from "../../types/ProductAPI";
 import type { UIFlags } from "../../types/UIFlags";
 import { useCatchError } from "../ui/useCatchError";
@@ -20,7 +20,6 @@ export const useRemoveProduct = ({actions}:useRemoveProduct) => {
     actions.setFlags(prev => ({...prev, processingState: true}))
 
     try {
-      await getCsrf();
       const response = await api.delete(`/product/${id}`);
 
       actions.setProducts(prev => prev.filter((p) => p.id !== id));

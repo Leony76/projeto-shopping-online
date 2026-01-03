@@ -1,6 +1,6 @@
 import { addProductsValidation } from "../utils/product/addProductValidation";
 import { useToast } from "../context/ToastContext";
-import { api, getCsrf } from "./api";
+import { api } from "./api";
 import axios from "axios";
 import { useAddProducts } from "../utils/product/useAddProduct";
 import { useImagePreview } from "../utils/product/useImagePreview";
@@ -36,7 +36,6 @@ export const useAddProduct = () => {
     addProduct.image && payload.append('image', addProduct.image);
 
     try {
-      await getCsrf();
       const response = await api.post('/admin/add-product', payload);
 
       showToast(response.data.message, response.data.type);

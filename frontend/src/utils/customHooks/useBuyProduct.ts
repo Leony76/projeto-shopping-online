@@ -1,5 +1,5 @@
 import { useToast } from "../../context/ToastContext";
-import { getCsrf, api } from "../../services/api";
+import { api } from "../../services/api";
 import type { ProductAPI } from "../../types/ProductAPI";
 import type { UIFlags } from "../../types/UIFlags";
 import type { User } from "../../types/User";
@@ -29,7 +29,6 @@ export const useBuyProduct = ({actions}:useBuyProduct) => {
     if (!selectedProduct)return;
 
     try {
-      await getCsrf();
 
       const response = await api.post('/buy-product', {
         id: selectedProduct.id,
