@@ -97,17 +97,17 @@ const UserComment = ({
   },[]);
 
   return (
-    <div className="border-y-3 bg-white px-2 border-double border-yellow-500">
+    <div className="border-y-3 bg-white px-1 border-double border-yellow-500">
       <div className="flex text-orange-800 py-1 items-center gap-1">
-        <h4 className="mb-[2px] text-sm flex items-center gap-1"><FaUserCircle className="mt-[2px]" size={15}/>{limitName(username.length > 20 ? username.slice(0,20) + '...' : username, 2)}</h4>
+        <h4 className="text-sm flex items-center gap-1"><FaUserCircle className="sm:text-base text-lg"/>{limitName(username.length > 20 ? username.slice(0,20) + '...' : username, 2)}</h4>
         <span className="text-[10px]">●</span>
         <small>{timeAgo(created_at)}</small>
         {created_at !== updated_at && <small>(Editado)</small>}
       </div> 
-      <p className="break-words border-t pt-1 text-cyan-700 border-gray-200 text-xs leading-[1.4]">   
+      <p className="break-words border-t pt-1 text-cyan-700 border-gray-200 sm:text-xs text-sm leading-[1.4]">   
         {sliceCommentary ? commentary.slice(0, 200) + '...' : commentary}
       </p>
-      {sliceCommentary && <button className=" flex items-center gap-1 text-gray-400 text-sm cursor-pointer hover:brightness-[1.2]" onClick={() => setSliceCommentary(false)}><RiBookOpenFill className="mt-1"/>Ler mais</button>}
+      {sliceCommentary && <button className=" flex items-center gap-1 text-gray-400 text-sm cursor-pointer hover:brightness-[1.2]" onClick={() => setSliceCommentary(false)}><RiBookOpenFill/>Ler mais</button>}
       {(!sliceCommentary && commentary.length > 255) && <button className=" flex items-center gap-1 text-gray-400 text-sm cursor-pointer hover:brightness-[1.2]" onClick={() => setSliceCommentary(true)}><RiBookFill className="mt-1"/>Ler menos</button>}
       <div className="flex items-center gap-4 text-sm border-t border-gray-200 pt-1 my-1">
         <RatingStars
@@ -115,8 +115,8 @@ const UserComment = ({
             rating: rate
           }}
         />
-        <span onClick={handleLike} className="flex items-center gap-1 text-green-700 hover:brightness-[1.3] cursor-pointer">{alreadyReacted?.type === 'like' ? <FaThumbsUp/> : <FaRegThumbsUp/>}{likesCount === 0 ? '' : likesCount}</span>
-        <span onClick={handleDislike} className="flex items-center gap-1 text-red-700 hover:brightness-[0.7] cursor-pointer">{alreadyReacted?.type === 'dislike' ? <FaThumbsDown/> : <FaRegThumbsDown/>}{dislikesCount === 0 ? '' : dislikesCount}</span>
+        <span onClick={handleLike} className="flex items-center gap-1 text-green-700 hover:brightness-[1.3] cursor-pointer">{alreadyReacted?.type === 'like' ? <FaThumbsUp className="text-base"/> : <FaRegThumbsUp className="text-base"/>}{likesCount === 0 ? '' : likesCount}</span>
+        <span onClick={handleDislike} className="flex items-center gap-1 text-red-700 hover:brightness-[0.7] cursor-pointer">{alreadyReacted?.type === 'dislike' ? <FaThumbsDown className="text-base"/> : <FaRegThumbsDown className="text-base"/>}{dislikesCount === 0 ? '' : dislikesCount}</span>
       </div>
     </div>
   )

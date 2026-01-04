@@ -20,25 +20,29 @@ const UsersRateCommentCard = ({
 }:UsersRateCommentCard) => {
   return (
     product && (
-      <div className="p-2 border-x-4 border-double border-cyan-700 bg-gray-100">
+      <div className="p-2 border-x-6 border-double border-cyan-700 bg-gray-100">
         <div className="flex xl:flex-row flex-col xl:gap-0 gap-4 w-full border-y-2 border-gray-300 py-1 py-2">                    
           <div className="xl:w-[200px] w-full">
             <figure className="xl:h-[185px] w-full">
               <img className="rounded object-cover h-full" src={product.image_url} alt={product.name} />
             </figure>
-            <div className="flex flex-col gap-1">
+            <div className="flex flex-col gap-">
               <CardTitle style="xl:block hidden" textLength={24} name={product.name}/>
               <CardTitle style="xl:hidden block !text-xl mt-1" textLength={50} name={product.name}/>
-              <div className="flex gap-1 text-cyan-700 items-center">
+              <div className="flex sm:text-sm text-sm gap-1 mt-[-6px] text-cyan-700 items-center">
                 <CategoryIcon category={product.category}/>    
                 <span className="text-[10px]">●</span>   
                 <Date timeStamp={product.created_at}/>
               </div>
-              <div className="flex xl:text-xs text-base font-semibold items-center xl:justify-between gap-4 xl:gap-0">
-                <Money value={product.price}/>
-                <Rating rate={product.product_rate_avg_rating}/>   
-                <RatingCount rateCount={product.product_rate_count}/>
-                <SoldAmount soldAmount={product.orders_sum_quantity}/>
+              <div className="flex sm:flex-row flex-col xl:text-xs sm:text-base text-xl font-semibold items-center xl:justify-between gap-4 xl:gap-0">
+                <div className="flex gap-4">
+                  <Money value={product.price}/>
+                  <SoldAmount soldAmount={product.orders_sum_quantity}/>
+                </div>
+                <div className="flex gap-4">
+                  <Rating rate={product.product_rate_avg_rating}/>
+                  <RatingCount rateCount={product.product_rate_count}/>
+                </div>
               </div>
             </div>
           </div>

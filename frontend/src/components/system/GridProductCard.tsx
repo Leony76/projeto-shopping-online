@@ -58,21 +58,21 @@ const GridProductCard = ({
     setShowEditProduct(false);
     actions.setFlags(prev => ({...prev, closeEditModal: false}));
     actions.setFlags(prev => ({...prev, processingState: false}));
-  },[flags.closeEditModal])
+  },[flags.closeEditModal]);
   
   return (
-    <div className="border-x-4 p-1 bg-gray-100 border-double border-cyan-800">
-      <div className="py-1 lg:h-[180px] sm:h-[200px] h-[180px] border-y-2 border-gray-300">
-        <img className="rounded w-full h-full object-cover" src={product.image_url} alt={'placeholder'} />
-      </div>
+    <div className="border-x-6 lg:p-1.5 p-2 bg-gray-100 border-double border-cyan-800">
+      <figure className="py-1 aspect-square border-y-2 border-gray-300">
+        <img className="rounded w-full h-full object-cover" src={product.image_url} alt={product.name} />
+      </figure>
       <div className="flex flex-col">
-        <CardTitle textLength={18} name={product.name}/>
-        <div className="flex xl:text-xs lg:text-sm sm:text-[13px] text-[13px] items-center font-normal text-[#104E64] mt-[-5px] gap-1 py-1">
+        <CardTitle style="md:text-base text-xl mb-[-8px] mt-1" textLength={17} name={product.name}/>
+        <div className="flex xl:text-xs lg:text-sm sm:text-[13px] text-base items-center font-normal text-[#104E64] gap-1 py-1">
           <CategoryIcon category={product.category ?? 'Artesanal'}/>
           <span className="text-[10px]">●</span>
           <Date timeStamp={product.created_at}/>
         </div>
-        <div className="flex xl:text-xs lg:text-sm md:text-sm sm:text-base text-[13px] justify-between mx-1 py-1 font-semibold border-y-2 border-gray-300">
+        <div className="flex xl:text-xs lg:text-sm md:text-sm sm:text-base text-lg justify-between mx-1 py-1 font-semibold border-y-2 border-gray-300">
           <Price value={product.price}/>
           <Rating rate={product.product_rate_avg_rating}/>
           <Stock stock={product.amount}/>
@@ -89,12 +89,12 @@ const GridProductCard = ({
           />
         </div>
         {user?.admin ? (
-          <div className="flex justify-between">
+          <div className="flex gap-3 sm:h-10 sm:text-xs text-xl h-15 justify-between">
             <button onClick={() => {
               setShowEditProduct(true),
               actions.setEditProduct(product)
-            }} className="flex items-center gap-1 border-x-4 border-double mt-2 mb-1 rounded text-yellow-600 bg-yellow-100 p-1 transition cursor-pointer hover:brightness-[1.05] active:brightness-[.9]"><MdEditSquare className="mt-1"/>Editar</button>
-            <button onClick={() => setShowConfirmRemoveProduct(true)} className="flex items-center gap-1 border-x-4 border-double mt-2 mb-1 rounded text-red-600 bg-red-100 p-1 transition cursor-pointer hover:brightness-[1.05] active:brightness-[.9]"><FaTrashCan className="mt-1"/>Remover</button>
+            }} className="flex flex-1 items-center gap-1 border-x-8 border-double mt-2 mb-1 justify-center rounded text-yellow-600 bg-yellow-100 p-1 transition cursor-pointer hover:brightness-[1.05] active:brightness-[.9]"><MdEditSquare className="mt-1"/>Editar</button>
+            <button onClick={() => setShowConfirmRemoveProduct(true)} className="flex flex-1 justify-center items-center gap-1 border-x-8 border-double mt-2 mb-1 rounded text-red-600 bg-red-100 p-1 transition cursor-pointer hover:brightness-[1.05] active:brightness-[.9]"><FaTrashCan className="mt-1"/>Remover</button>
           </div>
         ): (
           <></>

@@ -76,18 +76,18 @@ const ProductCard = ({
   const [expandProductImage, setExpandProductImage] = useState<boolean>(false);
 
   return (
-    <div className={`fixed flex lg:flex-row flex-col top-1/2 left-1/2 translate-[-50%] lg:w-[1000px] w-[450px] overflow-y-auto border-y-8 border-double border-cyan-300 bg-gray-100 z-50 lg:gap-3 custom-scroll max-h-none [@media(max-height:550px),(max-width:1080px)]:max-h-[90vh] [@media(max-height:550px),(max-width:1080px)]:overflow-y-auto ${expandProductImage && 'h-[90vh]'}`}>
-      <figure className="flex-[1] lg:h-[240px] h-[250px] lg:ml-3 m-2 flex items-center justify-center">
+    <div className={`fixed flex md:flex-row flex-col top-1/2 left-1/2 translate-[-50%] w-full lg:max-w-[1000px] md:max-w-[90vw] sm:max-w-[350px] max-w-[95vw] border-y-8 border-double border-cyan-800 bg-gray-100 z-50 lg:gap-3 custom-scroll ${expandProductImage ? 'lg:h-[95vh] md:h-[80vh]' : 'md:max-h-[70vh] md:max-h-[80vh]'}`}>
+      <figure className="flex-[1] self-center h-[220px] w-full lg:ml-3 m-2 flex items-center justify-center">
         <button onClick={() => setExpandProductImage(true)} className="fixed top-5 lg:left-[36%] left-5"><MdOutlineZoomOutMap className="text-orange-500 lg:text-2xl text-4xl bg-cyan-100/20 p-0.5 rounded hover:bg-cyan-100 cursor-pointer"/></button>
         {expandProductImage && (
           <div onClick={() => setExpandProductImage(false)} className="fixed inset-0 z-[100] bg-orange-100 flex items-center justify-center">
-          <button onClick={() => setExpandProductImage(prev => !prev)} className="fixed top-2 right-1"><MdOutlineZoomInMap className="text-orange-500 lg:text-3xl text-4xl bg-cyan-100/20 p-0.5 rounded hover:bg-cyan-100 cursor-pointer"/></button>
-            <img src={product?.image_url} alt={product?.name} className="lg:w-[90vw] lg:h-[90vh] object-contain"/>
+            <button onClick={() => setExpandProductImage(prev => !prev)} className="fixed top-2 right-1"><MdOutlineZoomInMap className="text-orange-500 lg:text-3xl text-4xl bg-cyan-100/20 p-0.5 rounded hover:bg-cyan-100 cursor-pointer"/></button>
+            <img src={product?.image_url} alt={product?.name} className="h-full object-contain"/>
           </div>
         )}
-        <img onClick={() => setExpandProductImage(true)} className="lg:h-full h-[250px] w-full object-cover border-2 border-gray-200 p-1 lg:my-1" src={product?.image_url} alt={product?.name} />
+        <img onClick={() => setExpandProductImage(true)} className="lg:max-h-[220px] md:max-h-[100%] md:ml-2 lg:ml-0 max-h-[300px] md:w-full w-[95%] object-cover border-2 border-gray-200 p-1" src={product?.image_url} alt={product?.name} />
       </figure>
-      <div className="flex flex-col lg:mt-0 mt-[-5px] lg:px-0 px-2 lg:mt-2 lg:ml-[-5px] justify-between flex-[1.5] lg:mr-[16px]">
+      <div className="flex overflow-y-auto flex-col lg:mt-0 mt-[-5px] lg:px-0 px-4 md:mr-2 lg:mr-0 md:pt-2 lg:py-0 lg:mt-2 lg:ml-[-5px] justify-between flex-[1.5] lg:mr-[16px]">
         <div>
           <div>
             {flags.showProductAmount && <GoBackArrow onClick={() => actions.setFlags(prev => ({...prev, showProductAmount: false}))}/>}
@@ -96,13 +96,13 @@ const ProductCard = ({
               actions.setFlags(prev => ({...prev, showProductAmount: false}));
             }}/>
           </div>
-          <h4 className="text-xl font-semibold text-orange-800">{product?.name}</h4>
+          <h4 className="text-2xl md:text-lg lg:text-xl font-semibold text-orange-800">{product?.name}</h4>
           <div className="flex lg:flex-row text-sm flex-col lg:items-center font-normal text-[#104E64] mt-[-5px] gap-1 pt-2">
-            <CategoryIcon style="lg:!text-sm !text-base lg:mt-0 mt-[-5px]" category={product?.category ?? 'Artesanal'}/>
+            <CategoryIcon style="!text-base lg:mt-0 mt-[-5px]" category={product?.category ?? 'Artesanal'}/>
             <span className="text-[10px] lg:block hidden">●</span>
-            <div className="flex lg:mt-0 mt-[-5px] gap-1">
-              <p className="flex text-xs items-center gap-[3px]"><FaCalendarAlt/> Foi à venda - {(dateTime(product?.created_at))}</p>
-              {product?.created_at !== product?.updated_at && (<p className="flex text-xs items-center gap-[1px] border-l-2 border-gray-300 pl-1"><AiFillEdit/> Sofreu alteração - {(dateTime(product?.updated_at))}</p>)}
+            <div className="flex md:flex-row flex-col lg:mt-0 mt-[-5px] gap-1">
+              <p className="flex md:text-xs  items-center gap-[3px]"><FaCalendarAlt/> Foi à venda - {(dateTime(product?.created_at))}</p>
+              {product?.created_at !== product?.updated_at && (<p className="flex md:text-xs items-center gap-[1px] md:border-l-2 border-gray-300 md:pl-1"><AiFillEdit/> Sofreu alteração - {(dateTime(product?.updated_at))}</p>)}
             </div>
           </div>
           <label className="flex items-center gap-1"><CiTextAlignLeft className="mt-[2px]"/>Decrição:</label>
@@ -111,13 +111,13 @@ const ProductCard = ({
         
         {!flags.showProductAmount ? (
           <div className="mb-3">
-            <div className="flex items-center border-t-1 border-gray-500 justify-between">
-              <div className="flex lg:text-base text-sm gap-1 my-[5px] border-gray-400 mx-1 py-1 font-semibold">
+            <div className="flex md:flex-row flex-col items-center border-t-1 border-gray-500 justify-between">
+              <div className="flex md:justify-left md:text-sm text-xl gap-1 my-[5px] border-gray-400 mx-1 py-1 font-semibold">
                 <Money value={product?.price}/>
                 <Stock border="left" stock={product?.amount}/>
                 <SoldAmount border="left" soldAmount={product?.orders_sum_quantity}/>
               </div>
-              <div className="flex lg:text-base text-sm items-center">
+              <div className="flex lg:text-base md:text-sm text-xl md:mb-0 mb-3 items-center">
                 <RatingStars
                   elements={{
                     name: `${!product?.product_rate_avg_rating ? 'N/A' : '' + product.product_rate_avg_rating.toFixed(1).replace('.',',')}`,
@@ -160,20 +160,18 @@ const ProductCard = ({
           </div>
         ) : (
           <div className="mb-3">
-            <div className="flex justify-between border-t-1 gap-2 my-[5px] border-gray-400 mx-1 py-1 font-semibold">
-              {product && (
-                <>
-                  <div className="flex gap-3">
-                    <p title="$ Preço total pelas unidades" className="text-green-800 flex items-center border-r-1 pr-3 gap-1"><FaMoneyBill/>R$ {totalPrice !== 0 ? formattedTotalPrice : BRLmoney(product.price)} <IoClose color="gray"/> <span className="text-orange-500">{product.selectedAmount ?? 1}</span></p>
-                    <p title="⁂ Unidades" className={`flex items-center gap-1 text-orange-500 ${(product.selectedAmount && product.amount - product.selectedAmount === 0 ) ? 'text-red-500 bg-gradient-to-r pr-1 from-transparent via-red-200 to-red-200' : ''}`}><LuBoxes/>{(product.selectedAmount ? (product.amount - product.selectedAmount) : product.amount - 1)}</p>
-                  </div>
-                  <p title="-$ Saldo após compra" className={`flex items-center text-sm gap-1 ${totalPrice > Number(user?.wallet) ? 'text-red-500' : 'text-green-800'}`}><FaWallet size={15}/>R$ {BRLmoney(Number(user?.wallet) - totalPrice)}</p>
-                </>
-              )}
-            </div>
+            {product && (
+              <div className="flex sm:flex-row flex-col sm:justify-between items-center border-t-1 gap-2 my-[5px] border-gray-400 mx-1 py-1 font-semibold">
+                <div className="flex sm:text-base text-xl md:gap-3 gap-2">
+                  <p title="$ Preço total pelas unidades" className="text-green-800 flex items-center border-r-1 md:pr-3 pr-2 gap-1"><FaMoneyBill/>R$ {totalPrice !== 0 ? formattedTotalPrice : BRLmoney(product.price)} <IoClose color="gray"/> <span className="text-orange-500">{product.selectedAmount ?? 1}</span></p>
+                  <p title="⁂ Unidades" className={`flex items-center gap-1 text-orange-500 ${(product.selectedAmount && product.amount - product.selectedAmount === 0 ) ? 'text-red-500 bg-gradient-to-r pr-1 from-transparent via-red-200 to-red-200' : ''}`}><LuBoxes/>{(product.selectedAmount ? (product.amount - product.selectedAmount) : product.amount - 1)}</p>
+                </div>
+                <p title="-$ Saldo após compra" className={`flex items-center sm:text-sm text-base gap-1 ${totalPrice > Number(user?.wallet) ? 'text-red-500' : 'text-green-800'}`}><FaWallet size={15}/>R$ {BRLmoney(Number(user?.wallet) - totalPrice)}</p>      
+              </div>
+            )}
             <div className="flex gap-2">
               <div className="flex items-center gap-1">
-                <label className="flex items-center gap-1 text-gray-600" htmlFor="units"><LuBoxes color="#FF6900"/>Unidades</label>
+                <label className="flex items-center gap-1 text-gray-600" htmlFor="units"><LuBoxes className="lg:text-xl text-2xl lg:mr-0 mr-1" color="#FF6900"/><span className="lg:block hidden">Unidades</span></label>
                 <input onChange={(e) => {
                   let value = Number(e.target.value);
   
@@ -188,7 +186,7 @@ const ProductCard = ({
                   actions.setProduct(prev => prev ? 
                   { ...prev, selectedAmount: value} : prev,
 
-                )}} min={1} value={product?.selectedAmount ?? 1} max={product?.amount} className="text-center lg:pr-0 pr-3 bg-gray-200 pl-3 font-bold text-[#FF6900] border-x-2 border-cyan-600 h-full w-15 focus:outline-none" type="number" />
+                )}} min={1} value={product?.selectedAmount ?? 1} max={product?.amount} className="text-center lg:pr-0 pr-3 bg-gray-200 pl-3 font-bold text-[#FF6900] border-x-2 border-cyan-600 h-full sm:w-15 w-[12vw] focus:outline-none" type="number" />
               </div>
               {totalPrice < Number(user?.wallet) ? (
                 <>
@@ -198,7 +196,7 @@ const ProductCard = ({
                     iconButtonSize={20}
                     buttonLabel={"Comprar"}
                   />       
-                  <button disabled={exceedsStock} title={exceedsStock ? '∅ A quantidade selecionada excede o estoque disponível considerando o carrinho' : ''} onClick={() => setAddToCartConfirm(true)} className={`transition flex justify-center items-center flex-[.25] rounded border-y-4  border-double font-semibold ${exceedsStock ? 'bg-red-200 border-red-500 text-red-600 cursor-not-allowed' : 'bg-cyan-200 border-cyan-500 text-cyan-600 cursor-pointer hover:brightness-[1.1]'}`}>{exceedsStock ? <><MdOutlineBlock size={20}/><TiShoppingCart size={20}/></> : <TiShoppingCart size={20}/>}</button>               
+                  <button disabled={exceedsStock} title={exceedsStock ? '∅ A quantidade selecionada excede o estoque disponível considerando o carrinho' : ''} onClick={() => setAddToCartConfirm(true)} className={`transition flex justify-center items-center flex-[.25] rounded border-y-8  border-double font-semibold ${exceedsStock ? 'bg-red-200 border-red-500 text-red-600 cursor-not-allowed' : 'bg-cyan-200 border-cyan-500 text-cyan-600 cursor-pointer hover:brightness-[1.1]'}`}>{exceedsStock ? <><MdOutlineBlock size={20}/><TiShoppingCart className="md:text-2xl text-3xl"/></> : <TiShoppingCart className="md:text-2xl text-3xl"/>}</button>               
                 </>
               ) : (
                 <ProceedActionButton
@@ -216,10 +214,10 @@ const ProductCard = ({
         {flags.showConfirmPurchase && 
           <>
             <CardFocusOverlay onClick={() => actions.setFlags(prev => ({...prev, showConfirmPurchase: false}))}/>
-            <form onSubmit={actions.handleBuySubmit} className="fixed max-w-[550px] md:w-full w-[450px] border-x-5 border-cyan-500 translate-[-50%] p-3 border-double z-50 bg-gray-100 top-1/2 left-1/2">
-              <h3 className="text-xl font-semibold text-orange-800 mb-2 flex items-center gap-1">Confirmar compra</h3>
-              <p className="text-sm mb-2 flex gap-2">Confirma a compra de {product?.selectedAmount ?? 1} unidade(s) do {product?.name} por R$ {formattedTotalPrice}?</p>
-              <small className="flex gap-2">Seu saldo após compra será de <span className="flex items-center gap-1 text-green-800 font-bold"><FaWallet className="mt-[2px]" size={15}/>R$ {userWalletIfProductBought}</span></small>
+            <form onSubmit={actions.handleBuySubmit} className="fixed max-w-[600px] w-full border-x-8 border-cyan-800 translate-[-50%] p-3 border-double z-50 bg-gray-100 top-1/2 left-1/2">
+              <h3 className="md:text-xl text-2xl font-semibold text-orange-800 mb-2 flex items-center gap-1">Confirmar compra</h3>
+              <p className="md:text-sm text-cyan-800 text-base mb-2 flex gap-2">Confirma a compra de {product?.selectedAmount ?? 1} unidade(s) do {product?.name} por R$ {formattedTotalPrice}?</p>
+              <small className="flex gap-2 text-gray-500">Seu saldo após a compra será de <span className="flex items-center gap-1 text-green-800 font-bold"><FaWallet className="mt-[2px]" size={15}/>R$ {userWalletIfProductBought}</span></small>
               <div className="flex gap-3 mt-2">
                 <ProceedActionButton
                   actionType="submit"

@@ -24,6 +24,7 @@ type ConfirmDecision = {
   | 'Aceitando'
   | 'Negando'
   | 'Pondo'
+  | ''
   ;
   userWalletIfProductBought?: React.ReactNode;
   onAccept?: React.Dispatch<React.FormEvent<HTMLFormElement>>;
@@ -61,11 +62,11 @@ const ConfirmDecision = ({
     <>
       {!overlayOff && <CardFocusOverlay style="z-50" onClick={onCancel}/>}
       {formRequired ? (
-        <form onSubmit={onAccept} className="fixed max-w-[550px] md:w-full w-[450px] border-x-5 border-cyan-500 translate-[-50%] p-3 border-double z-50 bg-gray-100 top-1/2 left-1/2">
+        <form onSubmit={onAccept} className="fixed sm:max-w-[500px] max-w-[90vw] w-full border-x-5 border-cyan-500 translate-[-50%] p-3 border-double z-50 bg-gray-100 top-1/2 left-1/2">
           <h3 className="text-xl font-semibold text-orange-800 mb-2">{decisionTitle}</h3>
-          <p className="text-sm text-cyan-800 mb-4 flex gap-2">{decisionDescription}</p>
+          <p className="text-sm text-cyan-800 mb-2 flex gap-2">{decisionDescription}</p>
           {descisionConsequence && (
-            <small className="flex gap-2">Seu saldo após compra será de <span className="flex items-center gap-1 text-green-800 font-bold"><FaWallet className="mt-[2px]" size={15}/>R$ {userWalletIfProductBought}</span></small>
+            <small className="flex gap-2 text-gray-500">Saldo após a compra:<span className="flex items-center gap-1 text-green-800 font-bold"><FaWallet className="mt-[2px]" size={15}/>R$ {userWalletIfProductBought}</span></small>
           )}
           <div className="flex gap-3 mt-2">
             <ProceedActionButton
@@ -88,7 +89,7 @@ const ConfirmDecision = ({
           </div>
         </form>
       ) : (
-        <div className="fixed max-w-[550px] md:w-full w-[450px] border-x-5 border-cyan-500 translate-[-50%] p-3 border-double z-50 bg-gray-100 top-1/2 left-1/2">
+        <div className="fixed md:max-w-[550px] sm:max-w-[350px] max-w-[95vw] w-full border-x-5 border-cyan-500 translate-[-50%] p-3 border-double z-50 bg-gray-100 top-1/2 left-1/2">
           <h3 className="text-xl font-semibold text-orange-800 mb-2">{decisionTitle}</h3>
           <p className="text-sm mb-4 text-cyan-800 flex gap-2">{decisionDescription}</p>
           {descisionConsequence && (

@@ -53,7 +53,7 @@ const SuggestedProductCard = ({
     <>
       <div className="flex border-y-8 bg-gray-100 border-double border-orange-600">
         <figure className="flex flex-2 flex-col p-1">
-          <img className="p-1 rounded border border-gray-300 h-[200px] object-cover" src={suggestProduct.image_url} alt={suggestProduct.name} />
+          <img className="p-1 rounded border border-gray-300 aspect-square object-cover" src={suggestProduct.image_url} alt={suggestProduct.name} />
           <p className="text-sm text-center">Sugerido por <i className="text-yellow-600 font-semibold">{limitName(suggestProduct.user?.name, 2)}</i></p>
           {!accepted ? (
             <div className="flex h-8 gap-2 mt-1">
@@ -67,20 +67,20 @@ const SuggestedProductCard = ({
               }} styles="!bg-red-200 !text-red-600 !border-red-600" iconButton={AiOutlineCloseCircle} iconButtonSize={18} buttonLabel={"Recusar"}/>
             </div>
           ) : (
-            <div className="flex items-center h-8 my-1 gap-1">
+            <div className="flex sm:flex-row flex-col items-center p-1 gap-1">
               {!isOpen ? (
                 <>
                   <div className={`flex flex-3 items-center justify-center gap-1 ${!suggestProduct.for_sale ? 'text-green-800 bg-gradient-to-r from-transparent via-green-200 to-transparent' : 'text-yellow-800 bg-gradient-to-r from-transparent via-yellow-200 to-transparent'}`}>{!suggestProduct.for_sale ? <FaCircleCheck/> : <AiFillDollarCircle size={18}/>}{!suggestProduct.for_sale ? 'Aceita' : 'À venda'}</div>
-                  {!suggestProduct.for_sale && <ProceedActionButton onClick={onToggle} title="Pôr à venda" styles="bg-green-300 text-green-700" iconButton={MdSell} iconButtonSize={0} buttonLabel={""}/>}
+                  {!suggestProduct.for_sale && <ProceedActionButton onClick={onToggle} title="Pôr à venda" styles="bg-green-300 w-full text-green-700" iconButton={MdSell} iconButtonSize={0} buttonLabel={""}/>}
                 </>
               ) : (
                 <>
-                  <LuBoxes className="h-8 mx-2" size={20} color="#FF6900"/>        
+                  <LuBoxes className="h-8 mx-2 sm:block hidden" size={20} color="#FF6900"/>        
                   <input onChange={(e) => {
                     const value = Math.max(1, Number(e.target.value) || 1);
                     actions?.setSelectedSuggestedProductToSell?.(prev => ({...prev, amount: value, id: suggestProduct.id ?? null}))
-                  }} value={attributes?.amount} type="number" className="text-center bg-gray-200 pl-3 font-bold text-[#FF6900] border-x-2 border-cyan-600 h-full w-15 focus:outline-none"/>
-                  <ProceedActionButton onClick={() => actions.setFlags?.(prev => ({...prev, showPutToSellProductSuggestConfirm: true}))} title="Pôr à venda" styles="bg-green-300 ml-1 text-green-700" iconButton={MdSell} iconButtonSize={0} buttonLabel={""}/>
+                  }} value={attributes?.amount} type="number" className="text-center bg-gray-200 py-1 font-bold text-[#FF6900] border-x-2 border-cyan-600 h-full w-15 focus:outline-none"/>
+                  <ProceedActionButton onClick={() => actions.setFlags?.(prev => ({...prev, showPutToSellProductSuggestConfirm: true}))} title="Pôr à venda" styles="bg-green-300 w-full ml-1 text-green-700" iconButton={MdSell} iconButtonSize={0} buttonLabel={""}/>
                   <IoClose onClick={onClose} title="Cancelar" className="text-[25px] text-red-700 hover:bg-red-100 h-full cursor-pointer rounded"/>
                 </>
               )}

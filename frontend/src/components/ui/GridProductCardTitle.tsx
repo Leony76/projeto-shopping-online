@@ -6,7 +6,7 @@ type GridProductCardTitle = {
 
 const GridProductCardTitle = ({name, textLength, style}:GridProductCardTitle) => {
   return (
-    <h3 className={`sm:text-base font-semibold text-[#7E2A0C] ${style}`}>{name.length > textLength ?  `${name.slice(0,textLength)}...` : name}</h3>
+    <h3 className={`font-semibold text-[#7E2A0C] ${style}`}>{name.length > textLength ?  `${name.slice(0,textLength)}...` : name}</h3>
   )
 }
 

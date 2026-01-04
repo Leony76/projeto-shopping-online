@@ -95,8 +95,8 @@ const ProductCartModal = ({setShowCart}:{setShowCart: React.Dispatch<React.SetSt
   }
 
   return (
-    <div className="fixed z-50 top-18 sm:right-3 right-1/2 sm:translate-x-[0] translate-x-[50%] p-4 w-[450px] bg-white shadow-lg border-x-6 border-double border-green-600 rounded">
-      <XCloseTopRight closeSetter={() => setShowCart(false)}/>
+    <div className="fixed z-50 top-18 sm:right-3 right-1/2 sm:translate-x-[0] translate-x-[50%] p-4 w-full sm:max-w-[450px] max-w-[90vw] bg-white shadow-lg border-x-6 border-double border-green-600 rounded">
+      <XCloseTopRight style="bg-transparent text-xl !top-1 !right-1" closeSetter={() => setShowCart(false)}/>
       {cart.length === 0 ? (
         <EmptyCardGrid 
           text="Nenhum produto no carrinho!"
@@ -108,13 +108,15 @@ const ProductCartModal = ({setShowCart}:{setShowCart: React.Dispatch<React.SetSt
           <PageSectionTitle textSize="text-2xl" iconSize={30} title="Carrinho" icon={TiShoppingCart}/>
           <div className="max-h-[250px] overflow-y-auto mt-2 custom-scroll pr-4">
             {cart.map(item => (
-              <div key={item.productId} className="flex items-center items-center justify-between mb-2 border-b border-cyan-300 pb-2">
-                <figure className="h-[70px] w-[130px]">
-                  <img className="rounded w-full h-full" src={item.image} alt={item.name} />
-                </figure>
-                <div className="flex h-[35px] mb-4 flex-col justify-between">
-                  <p className="font-semibold text-md flex items-center gap-1 text-yellow-600"><BsBoxSeamFill/>{item.name.length > 10 ? item.name.slice(0,10) : item.name}</p>
-                  <p className="text-md text-gray-500 font-semibold"><span className="text-green-700">R$ {BRLmoney(item.price)}</span> x <span className="text-orange-600">{item.amount}</span></p>
+              <div key={item.productId} className="flex gap-4 items-center justify-between mb-2 border-b border-cyan-300 pb-2">
+                <div className="flex sm:flex-row flex-col gap-1 items-center w-full justify-between">
+                  <figure className="w-full max-w-[130px]">
+                    <img className="w-full h-full border-y-2 py-1 border-gray-300" src={item.image} alt={item.name} />
+                  </figure>
+                  <div className="flex mr-2 flex-col justify-between">
+                    <p className="font-semibold text-md flex items-center gap-1 text-yellow-600">{item.name.length > 11 ? item.name.slice(0,11) + '...' : item.name}</p>
+                    <p className="text-md text-gray-500 font-semibold"><span className="text-green-700">R$ {BRLmoney(item.price)}</span> x <span className="text-orange-600">{item.amount}</span></p>
+                  </div>
                 </div>
                 <div className="flex items-center gap-2">
                   <input
@@ -122,11 +124,11 @@ const ProductCartModal = ({setShowCart}:{setShowCart: React.Dispatch<React.SetSt
                     min={1}
                     value={item.amount}
                     onChange={(e) => updateQuantity(item.productId, Number(e.target.value))}
-                    className="text-center bg-gray-100 pl-3 font-bold text-[#FF6900] border-x-2 border-cyan-600 w-15 h-10 focus:outline-none"
+                    className="text-center bg-gray-100 font-bold text-[#FF6900] border-x-2 border-cyan-600 sm:w-15 w-[12vw] h-10 focus:outline-none"
                   />
                   <RemoveProduct
                     iconButtonSize={20}
-                    style="!pl-2"
+                    style="!px-4"
                     buttonLabel={''}
                     iconButton={FaTrashCan}
                     onClick={() => removeFromCart(item.productId)}
@@ -135,11 +137,11 @@ const ProductCartModal = ({setShowCart}:{setShowCart: React.Dispatch<React.SetSt
               </div>
             ))}
           </div>
-          <div className="mt-3 flex items-center text-green-700 gap-1 font-bold"><span className="flex items-center gap-1 text-yellow-600">
-            <GiCash size={20}/>Total:
+          <div className="mt-1 sm:text-2xl text-xl flex items-center text-green-700 gap-1 font-bold"><span className="flex items-center gap-1 text-yellow-600">
+            <GiCash/>Total:
           </span> R$ {BRLmoney(total)}</div>
           {error && (<WarnError error={error}/>)}
-          <div className="flex gap-4 mt-3">
+          <div className="flex sm:flex-row flex-col gap-3 mt-3">
             {Number(user?.wallet) > total ? (
               <>
                 <BuyProductsFromCart
@@ -182,7 +184,7 @@ const ProductCartModal = ({setShowCart}:{setShowCart: React.Dispatch<React.SetSt
                 descisionConsequence={true}
                 userWalletIfProductBought={BRLmoney(Number(user?.wallet) - total)}
                 processingState={processingState}
-                processingLabel={'Efetuando compra'}
+                processingLabel={''}
                 onAccept={handleBuyProductFromCart}
                 onCancel={() => setConfirmCartPurchase(false)}
               />

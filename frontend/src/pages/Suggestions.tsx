@@ -94,11 +94,9 @@ const Suggestions = () => {
 
             <PageTitle style='!mb-1' title={'Sugestões'} IconSize={40} icon={HiLightBulb}/>
                        
-            <div className={`${flags.isLoading && 'h-[100vh]'}`}></div>
-
             {!flags.isLoading && hasAcceptedProductSuggestions && (
               <>
-                <PageSectionTitle title='Sugestões de produtos aceitos' icon={GrCodeSandbox}/>
+                <PageSectionTitle textSize='text-lg mt-2' title='Sugestões de produtos aceitos' icon={GrCodeSandbox}/>
                 <CardsGrid gridType='productSuggests'>
                   {acceptedProductSuggestions.map((acceptedProductSuggestions) => (
                     <SuggestedProductCard 

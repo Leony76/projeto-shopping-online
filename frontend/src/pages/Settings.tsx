@@ -102,8 +102,9 @@ const Settings = () => {
         console.log(search);
         return (
           <>
-            <PageTitle title="Configurações" icon={IoSettingsSharp}/>
+            <PageTitle style="mb-4 mt-4" title="Configurações" icon={IoSettingsSharp}/>
             <PageSectionTitle title="Dados do usuário" icon={HiIdentification }/>
+              <div className="md:hidden block mb-2"></div>
               <div className="flex flex-col gap-1 ml-1">
                 <EditableSettingsField
                   element={{
@@ -142,7 +143,9 @@ const Settings = () => {
                   action={{setEdit:setEdit}}
                 />
               </div>
+              <div className="md:hidden block mt-2"></div>           
             <PageSectionTitle title="Segurança" icon={MdSecurity}/>
+              <div className="md:hidden block mb-2"></div>            
               <div className="flex flex-col gap-1 ml-1">
                 <EditableSettingsField
                   element={{
@@ -172,7 +175,9 @@ const Settings = () => {
                   action={{setEdit:setEdit}}
                 />
               </div>
+              <div className="md:hidden block mt-2"></div>               
             <PageSectionTitle title="Endereços" icon={IoLocationSharp }/>
+              <div className="md:hidden block mb-2"></div>               
               <div className="flex flex-col gap-1 ml-1">
                 <EditableSettingsField
                   element={{
@@ -246,6 +251,7 @@ const Settings = () => {
                   staticData={staticDataRef.current}
                   action={{setEdit:setEdit}}
                 />
+                <div className="md:hidden block h-[35vh]"></div>
               </div>
                 
               {edit && (

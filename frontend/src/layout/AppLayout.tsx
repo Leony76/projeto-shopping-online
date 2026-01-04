@@ -52,7 +52,7 @@ const AppLayout = ({children, pageSelected}:AppLayout) => {
   }, []);
 
   return (
-    <div className='flex flex-col min-h-screen bg-orange-900'>
+    <div className='flex flex-col min-h-[100dvh] bg-orange-900'>
       {showMenu && (
         <>
           <CardFocusOverlay
@@ -127,10 +127,30 @@ const AppLayout = ({children, pageSelected}:AppLayout) => {
           </ul>
         </nav>
       </header>
-      <main className={`flex-1 mt-15 box-border p-3 xl:w-[1080px] lg:w-[900px] md:w-[750px] sm:w-[550px] w-[482px] mx-auto bg-white border-x-3 border-cyan-200 ${pageSelected === 'addProduct' && 'flex items-center justify-center'}`}>
+      <main className="
+        flex-1
+        mt-15
+        box-border
+        p-3
+        w-full
+        max-w-[1080px]
+        mx-auto
+        bg-white
+        border-x-3
+        border-cyan-200
+      ">
         {children({search, filter})}
       </main>
-      <footer className={`flex [@media(min-width:483px)]:w-full w-[482px] justify-center border-y-6 border-orange-500 border-double bg-gray-400 py-3`}>
+      <footer className="
+        w-full
+        flex
+        justify-center
+        border-y-6
+        border-orange-500
+        border-double
+        bg-gray-400
+        py-3
+      ">
         <p className='text-cyan-800 text-center font-semibold text-shadow-sm'>&copy; Leony Leandro Barros, <br className='sm:hidden block'/>Todos os Direitos Reservados.</p>
       </footer>
     </div>

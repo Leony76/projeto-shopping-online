@@ -126,8 +126,6 @@ const Products = () => {
 
             <PageTitle title="Produtos" icon={BsBoxSeamFill}/> 
 
-            <div className={`${flags.isLoading && 'h-[100vh]'}`}></div>
-
             {!flags.isLoading && hasProducts && (
               <>
                 <PageSectionTitle title="" icon={BsBoxSeamFill}/>

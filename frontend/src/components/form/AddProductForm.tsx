@@ -39,8 +39,8 @@ const ProductForm = ({actions, product, flags, imagePreview, imageBeforeEdit}:Pr
   return (
     <>
     {flags.isAModal && <CardFocusOverlay style={'z-10'}/>}
-    <form onSubmit={actions.handleAddProductSubmit} className={`flex w-full gap-3 [@media(min-width:483px)]:my-0 my-[3vh] bg-gray-100 border-y-6 border-cyan-500 border-double p-2 ${flags.isAModal ? 'fixed top-1/2 left-1/2 translate-[-50%]' : ''}`}>
-      <div className="flex flex-col flex-1">
+    <form onSubmit={actions.handleAddProductSubmit} className={`flex gap-3 bg-gray-100 border-y-6 border-cyan-500 border-double p-2 w-full lg:max-w-[1000px] max-w-[95vw] ${flags.isAModal ? 'fixed top-1/2 left-1/2 translate-[-50%]' : ''}`}>
+      <div className="flex gap-1 flex-col flex-1 w-full">
         <PageTitle style="!text-2xl gap-[2px]" title={`${flags.forEdit ? 'Editar' : 'Adicionar'} produto`} icon={FaPlus}/>
         <Input 
           fieldType={"text"} 
@@ -67,7 +67,7 @@ const ProductForm = ({actions, product, flags, imagePreview, imageBeforeEdit}:Pr
           onTextArea={(e) => {actions.updateProduct("description", e.target.value)}}
           maxLength={255}
         />
-        <div className="flex gap-2 justify-between">
+        <div className="flex sm:gap-4 gap-1 sm:flex-row flex-col">
           <Input 
             fieldType={"number"}
             fieldIcon={LuBoxes}
@@ -110,7 +110,7 @@ const ProductForm = ({actions, product, flags, imagePreview, imageBeforeEdit}:Pr
         )}
         <ProceedActionButton
           iconButton={FaPlusCircle} 
-          styles="mt-2 bg-green-500 border-green-800 text-green-800"
+          styles="my-2 bg-green-500 border-green-800 text-green-800"
           iconButtonSize={20} 
           buttonLabel={"Adicionar"}
           actionType="submit"

@@ -32,9 +32,9 @@ const EditProductForm = ({actions, flags, extra, product}:EditProductForm) => {
   return (
     <>
       <CardFocusOverlay onClick={() => flags.setShowEditProduct(false)} style={'z-10'}/>
-      <form onSubmit={actions.handleEditProduct} className={`flex xl:w-[1000px] lg:w-[900px] md:w-[730px] w-[450px] md:h-fit h-[80vh] custom-scroll overflow-y-auto gap-3 [@media(min-width:483px)]:my-0 my-[7vh] bg-gray-100 border-y-6 border-cyan-500 border-double p-2 fixed z-50 top-1/2 left-1/2 translate-[-50%]`}>
-        <button onClick={() => {flags.setShowEditProduct(false)}} className="absolute top-2 cursor-pointer lg:right-1/2 md:right-[47%] right-2 text-orange-800 hover:text-orange-500 rounded hover:bg-cyan-100"><IoClose size={20}/></button>
-        <div className="flex flex-col flex-1">
+      <form onSubmit={actions.handleEditProduct} className={`flex gap-3 bg-gray-100 border-y-6 border-cyan-500 border-double p-2 w-full overflow-y-auto lg:max-w-[1000px] max-w-[95vw] max-h-[90vh] mt-4 fixed z-50 top-1/2 left-1/2 translate-[-50%]`}>
+        <button onClick={() => {flags.setShowEditProduct(false)}} className="absolute top-2 cursor-pointer lg:right-1/2 md:right-[50%] right-2 text-orange-800 hover:text-orange-500 rounded hover:bg-cyan-100"><IoClose size={20}/></button>
+        <div className="flex gap-1 flex-col flex-1 w-full">
           <PageTitle style="!text-2xl gap-[2px]" title={`Editar produto`} icon={MdEditSquare}/>
           <Input 
             fieldType={"text"} 
@@ -60,27 +60,27 @@ const EditProductForm = ({actions, flags, extra, product}:EditProductForm) => {
             fieldName={"Descrição"} 
             onTextArea={(e) => actions.EditProduct(prev => ({...prev, description: e.target.value}))}
           />
-          <div className="flex gap-2 justify-between">
-            <Input 
+          <div className="flex sm:gap-4 gap-1 sm:flex-row flex-col">
+            <Input
               fieldType={"number"}
               fieldIcon={LuBoxes}
               value={product.amount}
               placeholderValue="5"
-              style="flex-1" 
-              fieldName={"Quantidade"} 
+              style="flex-1"
+              fieldName={"Quantidade"}
               onChange={(e) => actions.EditProduct(prev => ({...prev, amount: e.target.value}))}
               min={1}
-            /> 
-            <Input 
-              fieldType={"number"} 
+            />
+            <Input
+              fieldType={"number"}
               fieldIcon={FaMoneyBill}
-              style="flex-1" 
               placeholderValue="70"
+              style="flex-1"
               value={product.price}
-              fieldName={"Preço (R$)"} 
+              fieldName={"Preço (R$)"}
               onChange={(e) => actions.EditProduct(prev => ({...prev, price: e.target.value}))}
               min={0}
-            /> 
+            />
           </div>
           <Input 
             fieldType={"imageSelect"} 
@@ -100,6 +100,7 @@ const EditProductForm = ({actions, flags, extra, product}:EditProductForm) => {
             buttonLabelWhileProcessing="Editando"
             processingState={flags.processingState}
           />
+          <div className="text-xs text-transparent md:hidden block">.</div>
         </div>
         {product.image_url && (
           <ImagePreview style="md:block hidden" imagePreview={extra.imagePreview ? extra.imagePreview : product.image_url}/>

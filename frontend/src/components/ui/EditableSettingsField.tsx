@@ -36,7 +36,7 @@ const EditableSettingsField = ({
   const fieldKey = fieldMap[element.fieldLabel];
 
   return (
-    <div className="flex items-center gap-2 text-md">
+    <div className="flex items-center gap-2 md:text-base text-[17px]">
       <p className="flex font-semibold items-center gap-1 text-orange-800"><FieldIcon/>{element.fieldLabel}: <span className="text-gray-400 font-normal">{
         element.fieldType === 'password' ?
          '**********' 

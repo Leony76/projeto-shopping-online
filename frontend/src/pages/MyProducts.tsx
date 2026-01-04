@@ -75,8 +75,6 @@ const MyProducts = () => {
 
             <PageTitle title="Meus Produtos" icon={BsDropbox}/>
 
-            <div className={`${isLoading && 'h-[100vh]'}`}></div>
-
             {(!isLoading && hasProducts) && (
               <>
                 <PageSectionTitle icon={BsDropbox}/>

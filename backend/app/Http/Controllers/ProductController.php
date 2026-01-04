@@ -30,7 +30,7 @@ class ProductController extends Controller
             'name' => 'required|string|min:2|max:50',
             'category' => 'required|string',
             'description' => 'required|string|min:2|max:255',
-            'image' => 'required|image|mimes:jpg,jpeg,png,webp',
+            'image' => 'required|image|mimes:jpg,jpeg,png,webp,gif',
             'amount' => 'required|integer|min:1',
             'price' => 'required|numeric|min:1',
         ]);
@@ -273,7 +273,7 @@ class ProductController extends Controller
             'category' => 'required|string',
             'description' => 'required|string',
             'price' => 'required|numeric|min:0',
-            'image' => 'required|image|mimes:jpeg,png,jpg,webp',
+            'image' => 'required|image|mimes:png,jpeg,jpg,webp',
         ]);
 
         $imagePath = $request->file('image')->store(
@@ -312,9 +312,11 @@ class ProductController extends Controller
         } else {
             $productSuggest->update(['denied' => true]);
         }
+        
+        $responseAnswer = $request->answer === 'accept' ? 'aceita' : 'negada';
 
         return response()->json([
-            'message' => 'Sugestão de produto foi aceita',
+            'message' => "Sugestão de produto foi $responseAnswer",
             'type' => 'info'
         ]);
     }

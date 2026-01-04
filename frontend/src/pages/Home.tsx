@@ -231,13 +231,11 @@ const Home = () => {
           <>
             {flags.isLoading && <Loading size={50} style="text-cyan-500 translate-[-50%] fixed top-1/2 left-1/2"/>}
 
-            <PageTitle style={`!mb-1`} title="Home" icon={IoHome} />  
-
-            <div className={`${flags.isLoading && 'h-[100vh]'}`}></div>
+            <PageTitle style={`!mt-1 !mb-2`} title="Home" icon={IoHome} />  
 
             {!flags.isLoading && (
               <>
-                <PageSectionTitle title="Principais produtos" icon={BsBoxSeamFill} />
+                <PageSectionTitle textSize="sm:text-2xl text-xl" title="Principais produtos" icon={BsBoxSeamFill} />
 
                 <CardsGrid gridType="productCards" style="border-y-2 py-2 px-2 border-gray-200">
                   {hasProducts ? (
@@ -271,8 +269,8 @@ const Home = () => {
                   )}
                 </CardsGrid>
 
-                <div className="md:hidden block"><PageSectionTitle position="centered" title="Avaliações do público" icon={FaCommentDots} /></div>
-                <div className="md:block hidden"><PageSectionTitle position="left" title="Avaliações do público" icon={FaCommentDots} /></div>
+                <div className="md:hidden block"><PageSectionTitle textSize="sm:text-2xl text-xl" position="centered" title="Avaliações do público" icon={FaCommentDots} /></div>
+                <div className="md:block hidden"><PageSectionTitle textSize="sm:text-2xl text-xl" position="left" title="Avaliações do público" icon={FaCommentDots} /></div>
 
                 <CardsGrid gridType="productReviews" style="border-y-2 border-gray-200 p-2 custom-scroll max-h-[480px] overflow-y-auto">
                   {reviewsByProduct ? (
@@ -302,8 +300,8 @@ const Home = () => {
 
                 {!user?.admin ? (
                   <>
-                    <div className="md:hidden block"><PageSectionTitle position="centered" title="Sugerir novos produtos" iconSize={35} icon={HiLightBulb}/></div>
-                    <div className="md:block hidden"><PageSectionTitle position="left" title="Sugerir novos produtos" iconSize={35} icon={HiLightBulb}/></div>
+                    <div className="md:hidden block"><PageSectionTitle textSize="sm:text-2xl text-lg" position="centered" title="Sugerir novos produtos" iconSize={35} icon={HiLightBulb}/></div>
+                    <div className="md:block hidden"><PageSectionTitle textSize="sm:text-2xl text-lg" position="left" title="Sugerir novos produtos" iconSize={35} icon={HiLightBulb}/></div>
 
                     <SuggestProductForm 
                       actions={{

@@ -26,7 +26,7 @@ type SuggestProductForm = {
 const SuggestProductForm = ({actions, flags, imagePreview, productSuggest}:SuggestProductForm) => {
   return (
     <form onSubmit={actions.handleSuggestProductSubmit} className={`flex gap-3 bg-gray-100 border-y-6 border-cyan-500 border-double p-2 w-full mt-4`}>
-      <div className="flex flex-col flex-1">
+      <div className="flex gap-1 flex-col flex-1">
         <Input 
           fieldType={"text"} 
           fieldIcon={MdOutlineDriveFileRenameOutline }
@@ -71,7 +71,7 @@ const SuggestProductForm = ({actions, flags, imagePreview, productSuggest}:Sugge
         <ImagePreview style="md:hidden block mt-4 mb-2" imagePreview={imagePreview}/>
         <ProceedActionButton
           iconButton={FaPaperPlane} 
-          styles="mt-2 bg-yellow-200 border-yellow-600 text-yellow-600"
+          styles="my-2 bg-yellow-200 border-yellow-600 text-yellow-600"
           iconButtonSize={20} 
           buttonLabel={"Mandar sugestão"}
           actionType="submit"

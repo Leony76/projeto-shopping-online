@@ -140,18 +140,18 @@ const UserProductCard = ({
   useLockYScroll(flag.showCommentModal);
 
   return (
-    <div className={`fixed flex lg:flex-row flex-col top-1/2 left-1/2 translate-[-50%] lg:w-[1000px] w-[450px] overflow-y-auto border-y-8 border-double border-cyan-300 bg-gray-100 z-50 lg:gap-3 custom-scroll max-h-none [@media(max-height:550px),(max-width:1080px)]:max-h-[90vh] [@media(max-height:550px),(max-width:1080px)]:overflow-y-auto ${expandProductImage && 'h-[90vh]'}`}>
-      <figure className="flex-[1] lg:h-[240px] h-[250px] lg:ml-3 m-2 flex items-center justify-center">
+    <div className={`fixed flex md:flex-row flex-col top-1/2 left-1/2 translate-[-50%] w-full lg:max-w-[1000px] md:max-w-[90vw] sm:max-w-[350px] max-w-[95vw] border-y-8 border-double border-cyan-800 bg-gray-100 z-50 lg:gap-3 custom-scroll ${expandProductImage ? 'lg:h-[95vh] md:h-[80vh]' : 'md:max-h-[70vh] md:max-h-[80vh]'}`}>
+      <figure className="flex-[1] self-center h-[220px] w-full lg:ml-3 m-2 flex items-center justify-center">
         <button onClick={() => setExpandProductImage(true)} className="fixed top-5 lg:left-[36%] left-5"><MdOutlineZoomOutMap className="text-orange-500 lg:text-2xl text-4xl bg-cyan-100/20 p-0.5 rounded hover:bg-cyan-100 cursor-pointer"/></button>
         {expandProductImage && (
           <div onClick={() => setExpandProductImage(false)} className="fixed inset-0 z-[100] bg-orange-100 flex items-center justify-center">
-          <button onClick={() => setExpandProductImage(prev => !prev)} className="fixed top-2 right-1"><MdOutlineZoomInMap className="text-orange-500 lg:text-3xl text-4xl bg-cyan-100/20 p-0.5 rounded hover:bg-cyan-100 cursor-pointer"/></button>
-            <img src={product.selected?.image_url} alt={product.selected?.name} className="lg:w-[90vw] lg:h-[90vh] object-contain"/>
+            <button onClick={() => setExpandProductImage(prev => !prev)} className="fixed top-2 right-1"><MdOutlineZoomInMap className="text-orange-500 lg:text-3xl text-4xl bg-cyan-100/20 p-0.5 rounded hover:bg-cyan-100 cursor-pointer"/></button>
+            <img src={product.selected?.image_url} alt={product.selected?.name} className="h-full object-contain"/>
           </div>
         )}
-        <img onClick={() => setExpandProductImage(true)} className="lg:h-full h-[250px] w-full object-cover border-2 border-gray-200 p-1 lg:my-1" src={product.selected?.image_url} alt={product.selected?.name} />
+        <img onClick={() => setExpandProductImage(true)} className="lg:max-h-[220px] md:max-h-[100%] md:ml-2 lg:ml-0 max-h-[300px] md:w-full w-[95%] object-cover border-2 border-gray-200 p-1" src={product.selected?.image_url} alt={product.selected?.name} />
       </figure>
-      <div className="flex flex-col lg:mt-0 mt-[-5px] lg:px-0 px-2 lg:mt-2 lg:ml-[-5px] justify-between flex-[1.5] lg:mr-[16px]">
+      <div className="flex overflow-y-auto flex-col lg:mt-0 mt-[-5px] lg:px-0 px-4 md:mr-2 lg:mr-0 md:pt-2 lg:py-0 lg:mt-2 lg:ml-[-5px] justify-between flex-[1.5] lg:mr-[16px]">
         <div>
           <div>
             <XCloseTopRight 
@@ -162,13 +162,13 @@ const UserProductCard = ({
             />
             {flags.showProductTransactions && <GoBackArrow onClick={() => actions.setFlags(prev => ({...prev, showProductTransactions:false}))}/>}
           </div>
-          <h4 className="text-xl font-semibold text-orange-800">{product.selected?.name}</h4>
+          <h4 className="text-2xl md:text-lg lg:text-xl font-semibold text-orange-800">{product.selected?.name}</h4>
           <div className="flex lg:flex-row text-sm flex-col lg:items-center font-normal text-[#104E64] mt-[-5px] gap-1 pt-2">
-            <CategoryIcon style="lg:!text-sm !text-base lg:mt-0 mt-[-5px]" category={product.selected?.category ?? 'Artesanal'}/>
+            <CategoryIcon style="!text-base lg:mt-0 mt-[-5px]" category={product.selected?.category ?? 'Artesanal'}/>
             <span className="text-[10px] lg:block hidden">●</span>
-            <div className="flex lg:mt-0 mt-[-5px] gap-1">
-              <p className="flex text-xs items-center gap-[3px]"><FaCalendarAlt/> Foi à venda - {(dateTime(product.selected?.created_at))}</p>
-              {product.selected?.created_at !== product.selected?.updated_at && (<p className="flex text-xs items-center gap-[1px] border-l-2 border-gray-300 pl-1"><AiFillEdit/> Sofreu alteração - {(dateTime(product.selected?.updated_at))}</p>)}
+            <div className="flex md:flex-row flex-col lg:mt-0 mt-[-5px] gap-1">
+              <p className="flex md:text-xs  items-center gap-[3px]"><FaCalendarAlt/> Foi à venda - {(dateTime(product.selected?.created_at))}</p>
+              {product.selected?.created_at !== product.selected?.updated_at && (<p className="flex md:text-xs items-center gap-[1px] md:border-l-2 border-gray-300 md:pl-1"><AiFillEdit/> Sofreu alteração - {(dateTime(product.selected?.updated_at))}</p>)}
             </div>
           </div>
           {!flags.showProductTransactions && (
@@ -181,12 +181,12 @@ const UserProductCard = ({
 
         {!flags.showProductTransactions ? (
           <div className="mb-3">
-            <div className="flex justify-between border-t-1 border-gray-500">
-              <div className="flex lg:text-base text-sm gap-1 my-[5px] border-gray-400 mx-1 py-1 font-semibold">
+            <div className="flex md:flex-row flex-col items-center border-t-1 border-gray-500 justify-between">
+              <div className="flex md:justify-left md:text-sm text-xl gap-1 my-[5px] border-gray-400 mx-1 py-1 font-semibold">
                 <p className="text-red-500 flex items-center gap-1"><GiCash/>-R$ {BRLmoney(totalSpent)}</p>
                 <p className="flex items-center gap-1 border-l-2 border-gray-300 ml-2 pl-2 text-orange-500"><LuBoxes/>{totalUnits}</p>
               </div>
-              <div className="flex gap-2 items-center">
+              <div className="flex lg:text-base md:text-sm text-xl md:mb-0 mb-3 items-center">
                 <RatingStars
                   elements={{
                     name: flag.processing ? 
@@ -206,7 +206,7 @@ const UserProductCard = ({
                 />
                 {product.selected?.user_rating && (
                   <>
-                    <span className="text-yellow-600 text-[15px]">●</span>
+                    <span className="text-gray-400 mx-2 text-[15px]">●</span>
                     <ProceedActionButton
                       title="◍ Comentar sobre o produto"
                       iconButton={FaCommentDots}
@@ -258,7 +258,7 @@ const UserProductCard = ({
         {flag.showCommentModal && (
           <>
             <CardFocusOverlay onClick={() => {setFlag(prev => ({...prev, showCommentModal:false}))}}/>
-            <form onSubmit={handleCommentarySubmit} className="fixed lg:w-[450px] w-full border-x-6 border-yellow-600 border-double px-4 py-2 top-1/2 left-1/2 translate-[-50%] bg-white z-50">
+            <form onSubmit={handleCommentarySubmit} className="fixed md:max-w-[450px] w-full border-x-6 border-yellow-600 border-double px-4 py-2 top-1/2 left-1/2 translate-[-50%] bg-white z-50">
               <XCloseTopRight style="bg-white text-2xl !top-1 !right-1" closeSetter={() => setFlag(prev => ({...prev, showCommentModal:false}))}/>
               <h3 className="text-yellow-600 text-xl font-semibold">Comentar sobre produto</h3>
               <h5 className="text-sm text-cyan-500">Deixe um comentário sobre o que achou do produto para que outros usuários vejam sua avaliação subjetiva!</h5>
@@ -275,7 +275,7 @@ const UserProductCard = ({
               <ProceedActionButton
                 iconButton={FaCommentDots}
                 iconButtonSize={0}
-                styles="px-4 bg-yellow-100 text-yellow-600 border-yellow-600 mt-3 mb-1"
+                styles="px-4 sm:w-fit w-full bg-yellow-100 text-yellow-600 border-yellow-600 mt-3 mb-1"
                 buttonLabel={"Comentar"} 
                 processingState={flag.processing}
                 buttonLabelWhileProcessing="Comentando"

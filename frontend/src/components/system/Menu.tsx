@@ -22,7 +22,7 @@ const Menu = ({admin, logout, pageSelected, wallet}:Menu) => {
   const [loggingOut, setLoggingOut] = useState<boolean>(false);
   
   return (
-    <div className='flex flex-col lg:w-fit sm:w-[40vw] w-[450px] shadow-md justify-center items-center fixed sm:right-3 right-1/2 sm:translate-x-[0] translate-x-[50%] z-50 top-18 border-y-4 border-double border-orange-500 bg-white'>
+    <div className='flex flex-col w-full lg:max-w-[150px] sm:max-w-[450px] max-w-[90vw] shadow-md justify-center items-center fixed sm:right-3 right-1/2 sm:translate-x-[0] translate-x-[50%] z-50 top-18 border-y-4 border-double border-orange-500 bg-white'>
       <div className="lg:hidden block flex flex-col w-full justify-center items-center">
         <div className="w-full px-4 my-1">
           <PageSectionTitle position="centered" title="Navegação" icon={FaSailboat}/>

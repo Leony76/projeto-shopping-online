@@ -48,11 +48,11 @@ const RatingStars = ({elements, actions, flags, style}:RatingStars) => {
             />
 
             {isFull ? (
-              <IoIosStar className={`text-yellow-600 lg:text-xl text-base ${style?.stars}`} />
+              <IoIosStar className={`text-yellow-600 lg:text-xl md:text-lg text-2xl ${style?.stars}`} />
             ) : isHalf ? (
-              <IoIosStarHalf className={`text-yellow-600 lg:text-xl text-base ${style?.stars}`}/>
+              <IoIosStarHalf className={`text-yellow-600 lg:text-xl md:text-lg text-2xl ${style?.stars}`}/>
             ) : (
-              <IoIosStarOutline className={`text-yellow-600 lg:text-xl text-base ${style?.stars}`} />
+              <IoIosStarOutline className={`text-yellow-600 lg:text-xl md:text-lg text-2xl ${style?.stars}`} />
             )}
           </label>
         )
