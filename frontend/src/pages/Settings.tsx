@@ -35,7 +35,6 @@ const Settings = () => {
   const [edit, setEdit] = useState<{ field: Field,fieldType: FieldType } | null>(null);
   const [data, setData] = useState<User | null>(null);
   const staticDataRef = useRef<User | null>(null);
-  // const [staticData, setStaticData] = useState<User | null>(null);
   
   const [error, setError] = useState<string>('');
   const [flag, setFlag] = useState<{processingState: boolean}>({processingState: false,})

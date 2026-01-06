@@ -11,11 +11,11 @@ type Toast = {
 
 const ToastContainer = ({ toasts }: {toasts: Toast[]}) => {
   return (
-    <div className="fixed top-18 right-4 z-50 space-y-2">
+    <div className="flex flex-col sm:items-left fixed top-18 sm:w-fit max-w-[90vw] w-full sm:right-4 right-5 z-50 space-y-2">
       {toasts.map(toast => (
         <div
           key={toast.id}
-          className={`px-4 py-2 text-white shadow-lg border-y-5 border-double
+          className={`flex justify-center px-4 sm:py-2 py-3 shadow-md text-white w-full shadow-lg border-y-8 border-double
             ${toast.type === "success" && "bg-green-800"}
             ${toast.type === "error" && "bg-red-800"}
             ${toast.type === "info" && "bg-blue-800"}

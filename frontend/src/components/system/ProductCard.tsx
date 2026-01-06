@@ -77,15 +77,15 @@ const ProductCard = ({
 
   return (
     <div className={`fixed flex md:flex-row flex-col top-1/2 left-1/2 translate-[-50%] w-full lg:max-w-[1000px] md:max-w-[90vw] sm:max-w-[350px] max-w-[95vw] border-y-8 border-double border-cyan-800 bg-gray-100 z-50 lg:gap-3 custom-scroll ${expandProductImage ? 'lg:h-[95vh] md:h-[80vh]' : 'md:max-h-[70vh] md:max-h-[80vh]'}`}>
-      <figure className="flex-[1] self-center h-[220px] w-full lg:ml-3 m-2 flex items-center justify-center">
+      <figure className="flex-1 self-center lg:ml-3 m-2 max-w-[350px] lg:max-w-[450px] flex items-center justify-center">
         <button onClick={() => setExpandProductImage(true)} className="fixed top-5 lg:left-[36%] left-5"><MdOutlineZoomOutMap className="text-orange-500 lg:text-2xl text-4xl bg-cyan-100/20 p-0.5 rounded hover:bg-cyan-100 cursor-pointer"/></button>
+        <img onClick={() => setExpandProductImage(true)} className="md:ml-2 lg:ml-0 h-[250px] w-full object-cover border-2 border-gray-200 p-1" src={product?.image_url} alt={product?.name} />
         {expandProductImage && (
           <div onClick={() => setExpandProductImage(false)} className="fixed inset-0 z-[100] bg-orange-100 flex items-center justify-center">
             <button onClick={() => setExpandProductImage(prev => !prev)} className="fixed top-2 right-1"><MdOutlineZoomInMap className="text-orange-500 lg:text-3xl text-4xl bg-cyan-100/20 p-0.5 rounded hover:bg-cyan-100 cursor-pointer"/></button>
             <img src={product?.image_url} alt={product?.name} className="h-full object-contain"/>
           </div>
         )}
-        <img onClick={() => setExpandProductImage(true)} className="lg:max-h-[220px] md:max-h-[100%] md:ml-2 lg:ml-0 max-h-[300px] md:w-full w-[95%] object-cover border-2 border-gray-200 p-1" src={product?.image_url} alt={product?.name} />
       </figure>
       <div className="flex overflow-y-auto flex-col lg:mt-0 mt-[-5px] lg:px-0 px-4 md:mr-2 lg:mr-0 md:pt-2 lg:py-0 lg:mt-2 lg:ml-[-5px] justify-between flex-[1.5] lg:mr-[16px]">
         <div>

@@ -141,15 +141,15 @@ const UserProductCard = ({
 
   return (
     <div className={`fixed flex md:flex-row flex-col top-1/2 left-1/2 translate-[-50%] w-full lg:max-w-[1000px] md:max-w-[90vw] sm:max-w-[350px] max-w-[95vw] border-y-8 border-double border-cyan-800 bg-gray-100 z-50 lg:gap-3 custom-scroll ${expandProductImage ? 'lg:h-[95vh] md:h-[80vh]' : 'md:max-h-[70vh] md:max-h-[80vh]'}`}>
-      <figure className="flex-[1] self-center h-[220px] w-full lg:ml-3 m-2 flex items-center justify-center">
+      <figure className="flex-1 self-center lg:ml-3 m-2 max-w-[350px] lg:max-w-[450px] flex items-center justify-center">
         <button onClick={() => setExpandProductImage(true)} className="fixed top-5 lg:left-[36%] left-5"><MdOutlineZoomOutMap className="text-orange-500 lg:text-2xl text-4xl bg-cyan-100/20 p-0.5 rounded hover:bg-cyan-100 cursor-pointer"/></button>
+        <img onClick={() => setExpandProductImage(true)} className="md:ml-2 lg:ml-0 h-[250px] w-full object-cover border-2 border-gray-200 p-1" src={product.selected?.image_url} alt={product.selected?.name} />
         {expandProductImage && (
           <div onClick={() => setExpandProductImage(false)} className="fixed inset-0 z-[100] bg-orange-100 flex items-center justify-center">
             <button onClick={() => setExpandProductImage(prev => !prev)} className="fixed top-2 right-1"><MdOutlineZoomInMap className="text-orange-500 lg:text-3xl text-4xl bg-cyan-100/20 p-0.5 rounded hover:bg-cyan-100 cursor-pointer"/></button>
             <img src={product.selected?.image_url} alt={product.selected?.name} className="h-full object-contain"/>
           </div>
         )}
-        <img onClick={() => setExpandProductImage(true)} className="lg:max-h-[220px] md:max-h-[100%] md:ml-2 lg:ml-0 max-h-[300px] md:w-full w-[95%] object-cover border-2 border-gray-200 p-1" src={product.selected?.image_url} alt={product.selected?.name} />
       </figure>
       <div className="flex overflow-y-auto flex-col lg:mt-0 mt-[-5px] lg:px-0 px-4 md:mr-2 lg:mr-0 md:pt-2 lg:py-0 lg:mt-2 lg:ml-[-5px] justify-between flex-[1.5] lg:mr-[16px]">
         <div>
@@ -186,15 +186,20 @@ const UserProductCard = ({
                 <p className="text-red-500 flex items-center gap-1"><GiCash/>-R$ {BRLmoney(totalSpent)}</p>
                 <p className="flex items-center gap-1 border-l-2 border-gray-300 ml-2 pl-2 text-orange-500"><LuBoxes/>{totalUnits}</p>
               </div>
-              <div className="flex lg:text-base md:text-sm text-xl md:mb-0 mb-3 items-center">
+              <div className="flex sm:flex-row sm:gap-0 gap-2 flex-col lg:text-base md:text-sm text-xl md:mb-0 mb-3 items-center">
                 <RatingStars
                   elements={{
-                    name: flag.processing ? 
-                    <>
-                      <Loading size={20} />
-                      <span className="ml-1">Avaliando:</span>
-                    </>
-                    : 'Avalie:',
+                    name: 
+                    !flag.showCommentModal ?
+                      flag.processing ? 
+                        <>
+                          <Loading size={20} />
+                          <span className="ml-1">Avaliando:</span>
+                        </>
+                      : 
+                        'Avalie:'
+                    :
+                     'Avalie:',
                     hoverRating: hoverRating,
                     rating: product.selected?.user_rating ?? 0,
                   }}
@@ -206,14 +211,14 @@ const UserProductCard = ({
                 />
                 {product.selected?.user_rating && (
                   <>
-                    <span className="text-gray-400 mx-2 text-[15px]">●</span>
+                    <span className="text-gray-400 mx-2 sm:block hidden text-[15px]">●</span>
                     <ProceedActionButton
                       title="◍ Comentar sobre o produto"
                       iconButton={FaCommentDots}
                       iconButtonSize={0}
                       buttonLabel={""}
                       onClick={() => setFlag(prev => ({ ...prev, showCommentModal: true }))}
-                      styles="px-4 !py-1 bg-yellow-100 text-yellow-600 border-t-1 border-b-1 border-yellow-600 !border-x-10" />
+                      styles="px-4 sm:!py-1 sm:w-fit !py-2 w-[120px] bg-yellow-100 text-yellow-600 border-t-1 border-b-1 border-yellow-600 !border-x-10" />
                   </>
                 )}
               </div>

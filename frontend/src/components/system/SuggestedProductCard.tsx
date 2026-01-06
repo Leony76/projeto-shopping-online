@@ -67,7 +67,7 @@ const SuggestedProductCard = ({
               }} styles="!bg-red-200 !text-red-600 !border-red-600" iconButton={AiOutlineCloseCircle} iconButtonSize={18} buttonLabel={"Recusar"}/>
             </div>
           ) : (
-            <div className="flex sm:flex-row flex-col items-center p-1 gap-1">
+            <div className="flex lg:flex-row flex-col items-center p-1 gap-1">
               {!isOpen ? (
                 <>
                   <div className={`flex flex-3 items-center justify-center gap-1 ${!suggestProduct.for_sale ? 'text-green-800 bg-gradient-to-r from-transparent via-green-200 to-transparent' : 'text-yellow-800 bg-gradient-to-r from-transparent via-yellow-200 to-transparent'}`}>{!suggestProduct.for_sale ? <FaCircleCheck/> : <AiFillDollarCircle size={18}/>}{!suggestProduct.for_sale ? 'Aceita' : 'À venda'}</div>
@@ -75,7 +75,7 @@ const SuggestedProductCard = ({
                 </>
               ) : (
                 <>
-                  <LuBoxes className="h-8 mx-2 sm:block hidden" size={20} color="#FF6900"/>        
+                  <LuBoxes className="h-8 mx-2 lg:block hidden" size={20} color="#FF6900"/>        
                   <input onChange={(e) => {
                     const value = Math.max(1, Number(e.target.value) || 1);
                     actions?.setSelectedSuggestedProductToSell?.(prev => ({...prev, amount: value, id: suggestProduct.id ?? null}))

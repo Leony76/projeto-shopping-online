@@ -96,7 +96,7 @@ const Suggestions = () => {
                        
             {!flags.isLoading && hasAcceptedProductSuggestions && (
               <>
-                <PageSectionTitle textSize='text-lg mt-2' title='Sugestões de produtos aceitos' icon={GrCodeSandbox}/>
+                <PageSectionTitle textSize='md:text-3xl text-lg mt-2' title='Sugestões de produtos aceitos' icon={GrCodeSandbox}/>
                 <CardsGrid gridType='productSuggests'>
                   {acceptedProductSuggestions.map((acceptedProductSuggestions) => (
                     <SuggestedProductCard 

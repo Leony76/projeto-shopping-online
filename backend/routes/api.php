@@ -19,21 +19,25 @@
   
   Route::post('/register', function (Request $request) {
     $data = $request->validate([
-      'name' => 'required|string',
-      'email' => 'required|email|unique:users',
-      'password' => 'required|min:6'
+        'name' => 'required|string',
+        'email' => 'required|email|unique:users',
+        'password' => 'required|min:6'
     ]);
-    
+
     $user = User::create([
-      'name' => $data['name'],
-      'email' => $data['email'],
-      'password' => bcrypt($data['password']),
+        'name' => $data['name'],
+        'email' => $data['email'],
+        'password' => bcrypt($data['password']),
     ]);
     
-    Auth::login($user);
-    
-    return response()->json($user);
+    $token = $user->createToken('auth_token')->plainTextToken;
+
+    return response()->json([
+        'user' => $user,
+        'token' => $token,
+    ]);
   });
+
   
   Route::post('/login', function (Request $request) {
     $credentials = $request->validate([

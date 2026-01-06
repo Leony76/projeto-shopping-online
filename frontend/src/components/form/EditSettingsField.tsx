@@ -108,10 +108,10 @@ const EditSettingsField = ({
 
   return (
     <>
-      <CardFocusOverlay/>
+      <CardFocusOverlay onClick={() => action.setEdit(null)}/>
       {(editable.password || editable.anyField) && (
-        <form onSubmit={action.handleEditData} className="z-50 w-[400px] fixed left-1/2 top-1/2 translate-[-50%] bg-white border-x-6 border-cyan-600 border-double px-2 pt-2">
-          {flag.processingState ? (<XCloseTopRight/>) : (<XCloseTopRight closeSetter={() => {
+        <form onSubmit={action.handleEditData} className="z-50 w-full sm:max-w-[400px] max-w-[95dvw] max fixed left-1/2 top-1/2 translate-[-50%] bg-white border-x-6 border-cyan-600 border-double px-2 pt-2">
+          {flag.processingState ? (<XCloseTopRight style="bg-transparent"/>) : (<XCloseTopRight  style="bg-transparent" closeSetter={() => {
             action.setEdit(null),
             action.setError('');
             action.setData(staticDataRef.current);
@@ -146,7 +146,7 @@ const EditSettingsField = ({
               iconButton={MdEditSquare}
               iconButtonSize={15}
               buttonLabel={`${element.edit.field === 'Senha' ? 'Alterar' : !staticDataRef.current?.[element.fieldKey] ? 'Definir' : 'Editar'}`}
-              styles="px-2 !flex-1 my-2 bg-yellow-100 text-yellow-600 border-yellow-600"
+              styles="px-2 !flex-1 sm:w-fit w-full my-2 mt-3 bg-yellow-100 text-yellow-600 border-yellow-600"
               processingState={flag.processingState}
               buttonLabelWhileProcessing={`${element.edit.field === 'Senha' ? 'Alterando' : !staticDataRef.current?.[element.fieldKey] ? 'Definindo' : 'Editando'}`}
               actionType="submit"

@@ -133,7 +133,7 @@ const InputForm = ({
           <label className="flex items-center gap-[2px] text-orange-800" htmlFor={'password'}>{Icon && <Icon/>}{fieldName}:</label>
           <div className={`flex items-center border-1 font-normal text-sm  ${mainInputStyle} ${inputStyle}`}>
             <input
-              className="p-1 flex-8 focus:outline-none"
+              className="p-1 flex-8 focus:outline-none pl-2"
               type={showPassword ? 'text' : 'password'}
               onChange={onChange}
               placeholder={placeholderValue}
@@ -189,7 +189,7 @@ const InputForm = ({
         <div className={`flex flex-col gap-[2px] font-semibold ${style}`}>
           <label className="flex items-center gap-[3px] text-orange-800" htmlFor={fieldType}>{Icon && <Icon/>}{fieldName}:</label>
           <input
-            className={`border-1 p-1 font-normal text-sm pl-2 ${mainInputStyle} ${inputStyle}`}
+            className={`border-1 p-1 w-full font-normal text-sm pl-2 ${mainInputStyle} ${inputStyle}`}
             type={fieldType}
             onChange={onChange}
             value={value}

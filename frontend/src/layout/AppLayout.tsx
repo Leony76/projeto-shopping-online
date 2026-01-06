@@ -127,30 +127,10 @@ const AppLayout = ({children, pageSelected}:AppLayout) => {
           </ul>
         </nav>
       </header>
-      <main className="
-        flex-1
-        mt-15
-        box-border
-        p-3
-        w-full
-        max-w-[1080px]
-        mx-auto
-        bg-white
-        border-x-3
-        border-cyan-200
-      ">
+      <main className="flex-1 mt-15 box-border p-3 w-full max-w-[1080px] mx-auto bg-white border-x-3 border-cyan-200">
         {children({search, filter})}
       </main>
-      <footer className="
-        w-full
-        flex
-        justify-center
-        border-y-6
-        border-orange-500
-        border-double
-        bg-gray-400
-        py-3
-      ">
+      <footer className="w-full flex justify-center border-y-6 border-orange-500 border-double bg-gray-400 py-3">
         <p className='text-cyan-800 text-center font-semibold text-shadow-sm'>&copy; Leony Leandro Barros, <br className='sm:hidden block'/>Todos os Direitos Reservados.</p>
       </footer>
     </div>
