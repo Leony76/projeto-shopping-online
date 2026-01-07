@@ -4,7 +4,7 @@ import { BiImage } from "react-icons/bi";
 import { useState } from "react";
 import { BsEyeFill } from "react-icons/bs";
 import '../../css/scrollbar.css';
-import { FaFilter } from "react-icons/fa6";
+import { FaFilter, FaUser } from "react-icons/fa6";
 
 type InputForm = {
   fieldType: 
@@ -30,6 +30,7 @@ type InputForm = {
   min?: number;
   max?: number; 
   maxLength?: number;
+  ref?: React.ForwardedRef<HTMLInputElement>;
 
   forSearchInput?: boolean;
   password?: {
@@ -53,6 +54,7 @@ const InputForm = ({
   placeholderValue,
   userProducts,
   style,
+  ref,
   maxLength,
   password,
   fieldIcon: Icon,
@@ -66,14 +68,16 @@ const InputForm = ({
   const mainInputStyle = "bg-white text-cyan-800 focus:outline-none focus:bg-orange-100 rounded border-cyan-600 border-x-4 border-double";
 
   const [showPassword, setShowPassword] = useState<boolean>(false);
+  const isMobile = window.innerWidth < 768;
 
   return (
     <>
       {fieldType === "select" ? (
         <div className="flex flex-col gap-[2px] font-semibold">
           <label className="flex items-center gap-[2px] text-orange-800" htmlFor="category">{Icon && <Icon/>}{fieldName}</label>
-          <select value={value} className={`cursor-pointer font-medium border-1 py-[5px] pl-1 font-normal text-xs ${mainInputStyle} ${inputStyle}`} onChange={onSelect} name="category" id="category">
-            <option disabled value="">{forSearchInput ? '-- Categoria --' : '-- Selecione --'}</option>
+          <select value={value} className={`cursor-pointer border-1 py-[5px] md:px-1 px-2 md:text-left text-center font-normal text-xs ${mainInputStyle} ${inputStyle} ${isMobile && 'appearance-none'}`} onChange={onSelect} name="category" id="category">
+            <option disabled value="">{(forSearchInput && !isMobile) ? '-- Categoria --' : (forSearchInput && isMobile) ? 'Categoria' : '-- Selecione --'}</option>
+            <option className="text-gray-400" value="">Nenhum</option>
             <option value="Artesanal">Artesanal</option>
             <option value="Limpeza">Limpeza</option>
             <option value="Cozinha">Cozinha</option>
@@ -148,6 +152,7 @@ const InputForm = ({
       ) : fieldType === 'search' ? (
         <div className={`flex flex-col gap-[2px] font-semibold ${style}`}>
           <input
+            ref={ref}
             className={`border-1 p-1 font-normal text-sm pl-2 ${mainInputStyle} ${inputStyle}`}
             type={'text'}
             onChange={onChange}
@@ -157,9 +162,9 @@ const InputForm = ({
         </div>
       ) : fieldType === 'advancedFilter' ? (
         userProducts ? (
-          <div className="flex border-y-4 border-double rounded-none !border-cyan-400 md:w-fit w-full items-center justify-center px-2 font-semibold">
+          <div className="flex border-y-4 border-double rounded-none !border-[#104E64] md:w-fit w-full items-center justify-center px-2 font-semibold">
             <label className="flex items-center gap-1 text-orange-800" htmlFor="category"><FaFilter/></label>
-            <select value={value} onChange={onSelect} className={`cursor-pointer text-center w-full py-[5px] pl-1 text-orange-700 focus:outline-none font-normal text-sm ${inputStyle}`} name="category" id="category">
+            <select value={value} onChange={onSelect} className={`cursor-pointer text-center w-full py-[5px] text-orange-700 focus:outline-none font-normal text-sm ${inputStyle}`} name="category" id="category">
               <option value="">-- Filtro avançado --</option>
               <option className="text-gray-500" value="Nenhum">Nenhum</option>
               <option value="Mais comprados">Mais comprados</option>
@@ -173,9 +178,9 @@ const InputForm = ({
             </select>
           </div>
         ) : (
-          <div className="flex border-y-4 border-double rounded-none !border-cyan-400 md:w-fit w-full items-center justify-center px-2 font-semibold">
+          <div className="flex border-y-4 border-double rounded-none !border-[#104E64] md:w-fit w-full items-center justify-center px-2 font-semibold">
             <label className="flex items-center gap-1 text-orange-800" htmlFor="category"><FaFilter/></label>
-            <select value={value} onChange={onSelect} className={`cursor-pointer text-center w-full py-[5px] pl-1 text-orange-700 focus:outline-none font-normal text-sm ${inputStyle}`} name="category" id="category">
+            <select value={value} onChange={onSelect} className={`cursor-pointer text-center w-full py-[5px] text-orange-700 focus:outline-none font-normal text-sm ${inputStyle}`} name="category" id="category">
               <option value="">-- Filtro avançado --</option>
               <option className="text-gray-500" value="Nenhum">Nenhum</option>
               <option value="Maiores preços">Maiores preço</option>

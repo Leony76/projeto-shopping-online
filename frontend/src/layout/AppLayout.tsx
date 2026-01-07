@@ -2,7 +2,7 @@ import LRC from '../assets/LericoriaFire.png';
 import { Link } from 'react-router-dom';
 import { TiShoppingCart, TiThMenuOutline } from "react-icons/ti";
 import { useAuth } from '../context/AuthContext';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import ProductCartModal from '../components/system/ProductCartModal';
 import type { ProductAPI } from '../types/ProductAPI';
 import Menu from '../components/system/Menu';
@@ -24,6 +24,8 @@ const AppLayout = ({children, pageSelected}:AppLayout) => {
   const { logout, user } = useAuth();
   const { products } = useProducts();
 
+  const searchInputRef = useRef<HTMLInputElement>(null);
+  
   const [showCart, setShowCart] = useState<boolean>(false);
 
   const [showMenu, setShowMenu] = useState<boolean>(false);
@@ -51,6 +53,14 @@ const AppLayout = ({children, pageSelected}:AppLayout) => {
     };
   }, []);
 
+  useEffect(() => {
+    if (showSearch) {
+      requestAnimationFrame(() => {
+        searchInputRef.current?.focus();
+      });
+    }
+  }, [showSearch]);
+
   return (
     <div className='flex flex-col min-h-[100dvh] bg-orange-900'>
       {showMenu && (
@@ -67,9 +77,9 @@ const AppLayout = ({children, pageSelected}:AppLayout) => {
             wallet={user?.wallet}
             pageSelected={pageSelected}
           />
-        </>
+        </>              
       )}
-
+      
       {showCart && (
         <>
           <CardFocusOverlay
@@ -81,23 +91,19 @@ const AppLayout = ({children, pageSelected}:AppLayout) => {
       )}
 
       <header className='fixed z-30 w-full'>
-        <nav className='flex px-5 justify-between items-center border-y-4 border-orange-500 border-double h-[60px] bg-cyan-900'>
+        <nav className='flex px-5 justify-between items-center border-y-5 border-orange-500 border-double h-[60px] bg-cyan-900'>
           <ul>
             <li className={`flex items-center text-base gap-2 text-orange-300 font-semibold italic`}><img className={`h-10 sm:hidden block ${showSearch && 'hidden'}`} src={LRC} alt={'LRC'}/><img className={`h-10 sm:block hidden`} src={LRC} alt={'LRC'}/> {!showSearch ? 'Lehinshoppin\'' : ''}</li>
           </ul>
           <ul className='flex gap-2 ml-[-10px] sm:mr-[-50px] '>
             <li onClick={() => setShowSearch(false)} className={`flex items-center text-base gap-2 text-yellow-600 hover:text-yellow-400 cursor-pointer font-semibold italic ${showSearch ? 'block' : 'hidden'}`}><FaArrowLeft size={25}/></li>
             {(pageSelected === 'products' || pageSelected === 'myProducts') && (            
-              <li className={`h-8 hidden
-                ${!user?.admin ? 'md:flex' : 'md:flex'}
-                ${!user?.admin ? 'lg:flex' : 'lg:flex'}
-                ${!user?.admin ? 'xl:flex' : 'xl:flex'}             
-              `}>
+              <li className={`h-8 hidden flex md:flex`}>
                 <MainSearchTopBar value={{filter, search}} actions={{setSearch, setFilter}}/> 
               </li>          
             )}
             {showSearch && (
-              <MainSearchTopBar value={{filter, search}} actions={{setSearch, setFilter}}/> 
+              <MainSearchTopBar ref={searchInputRef} value={{filter, search}} actions={{setSearch, setFilter}}/> 
             )}
           </ul>
           <ul className='flex gap-4 items-center'>
@@ -114,16 +120,20 @@ const AppLayout = ({children, pageSelected}:AppLayout) => {
             ) : (
               <>
                 <li className='lg:block hidden'><Link className={`font-semibold xl:text-base lg:text-sm hover:text-yellow-400 ${pageSelected === 'myProducts' ? 'text-yellow-400' : 'text-yellow-600'}`} to={'/my-products'}>Meus Produtos</Link></li>
-                <li><button onClick={() => {
-                  setShowCart(!showCart);
-                  setShowMenu(false);
-                }} className={`font-semibold mt-2 cursor-pointer text-[30px] hover:text-yellow-400 ${showCart ? 'text-yellow-400' : 'text-yellow-600'}`}><TiShoppingCart/></button></li>
+                {(!showSearch) && (
+                  <li><button onClick={() => {
+                    setShowCart(!showCart);
+                    setShowMenu(false);
+                  }} className={`font-semibold mt-2 cursor-pointer text-[30px] hover:text-yellow-400 ${showCart ? 'text-yellow-400' : 'text-yellow-600'}`}><TiShoppingCart/></button></li>
+                )}
               </>
             )}
-            <li className='flex'><button onClick={() => {
-              setShowMenu(!showMenu);
-              setShowCart(false);
-            }}><TiThMenuOutline className={`hover:text-yellow-400 text-[30px] cursor-pointer transition-colors ${showMenu ? 'text-yellow-400' : 'text-yellow-600'}`}/></button></li>          
+            {(!showSearch) && (
+              <li className='flex'><button onClick={() => {
+                setShowMenu(!showMenu);
+                setShowCart(false);
+              }}><TiThMenuOutline className={`hover:text-yellow-400 text-[30px] cursor-pointer transition-colors ${showMenu ? 'text-yellow-400' : 'text-yellow-600'}`}/></button></li>          
+            )}
           </ul>
         </nav>
       </header>

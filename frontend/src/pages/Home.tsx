@@ -222,7 +222,7 @@ const Home = () => {
 
   return (
     <AppLayout pageSelected="home">
-      {({search}) => {
+      {() => {
 
         const hasProducts = products.length > 0;
         const pendingSuggestions = suggestedProducts.filter(sp => !sp.accepted && !sp.denied);
@@ -261,7 +261,6 @@ const Home = () => {
                   ) : (
                     <div className="col-span-full py-10">
                       <EmptyCardGrid 
-                        search={search}
                         text="Nenhum produto disponível no estoque no momento"
                         icon={BsBoxSeamFill}
                       />    
@@ -290,7 +289,6 @@ const Home = () => {
                   ) : (
                     <div className="col-span-full py-10">
                       <EmptyCardGrid 
-                        search={search}
                         text="Ninguém fez comentário sobre algum produto ainda"
                         icon={FaCommentDots}
                       />    
@@ -335,7 +333,10 @@ const Home = () => {
                         ))
                       ) : (
                         <div className="col-span-full pb-2 pt-5">
-                          <EmptyCardGrid text={"Nenhuma sugestão ainda"} icon={TbBulbOff}/>
+                          <EmptyCardGrid 
+                            text={"Nenhuma sugestão ainda"} 
+                            icon={TbBulbOff}
+                          />
                         </div>
                       )}
                     </CardsGrid>

@@ -13,6 +13,9 @@ import { useCatchError } from '../utils/ui/useCatchError'
 import ConfirmDecision from '../components/ui/ConfirmDecision'
 import { useToast } from '../context/ToastContext'
 import { useLockYScroll } from '../utils/customHooks/useLockYScroll'
+import { BsBoxSeamFill } from 'react-icons/bs'
+import EmptyCardGrid from '../components/ui/EmptyCardGrid'
+import { TbBulbOff } from 'react-icons/tb'
 
 const Suggestions = () => {
 
@@ -86,7 +89,8 @@ const Suggestions = () => {
   return (
     <AppLayout pageSelected='suggestions'>
       {() => {
-        const hasAcceptedProductSuggestions = acceptedProductSuggestions.length > 0;        
+
+        const hasAcceptedProductSuggestions = acceptedProductSuggestions.length > 0;
 
         return (
           <>
@@ -94,31 +98,40 @@ const Suggestions = () => {
 
             <PageTitle style='!mb-1' title={'Sugestões'} IconSize={40} icon={HiLightBulb}/>
                        
-            {!flags.isLoading && hasAcceptedProductSuggestions && (
+            {!flags.isLoading && (
               <>
                 <PageSectionTitle textSize='md:text-3xl text-lg mt-2' title='Sugestões de produtos aceitos' icon={GrCodeSandbox}/>
                 <CardsGrid gridType='productSuggests'>
-                  {acceptedProductSuggestions.map((acceptedProductSuggestions) => (
-                    <SuggestedProductCard 
-                      key={acceptedProductSuggestions.id}
-                      suggestProduct={acceptedProductSuggestions} 
-                      attributes={selectedSuggestedProductToSell}
-                      accepted
-                      isOpen={openedSuggestionId === acceptedProductSuggestions.id}
-                      onClose={() => {
-                        setOpenedSuggestionId(null)
-                        setSelectedSuggestedProductToSell(prev => ({...prev, amount: 1, id: null}))
-                      }}
-                      onToggle={() => {
-                        setOpenedSuggestionId(prev => prev === acceptedProductSuggestions.id ? null : acceptedProductSuggestions.id)
-                        setSelectedSuggestedProductToSell(prev => ({...prev, amount: 1, id: acceptedProductSuggestions.id ?? 0}))
-                      }}
-                      actions={{
-                        setSelectedSuggestedProductToSell,
-                        setFlags,
-                      }}
-                    />
-                  ))}
+                  {hasAcceptedProductSuggestions ? (
+                    acceptedProductSuggestions.map((acceptedProductSuggestions) => (
+                      <SuggestedProductCard 
+                        key={acceptedProductSuggestions.id}
+                        suggestProduct={acceptedProductSuggestions} 
+                        attributes={selectedSuggestedProductToSell}
+                        accepted
+                        isOpen={openedSuggestionId === acceptedProductSuggestions.id}
+                        onClose={() => {
+                          setOpenedSuggestionId(null)
+                          setSelectedSuggestedProductToSell(prev => ({...prev, amount: 1, id: null}))
+                        }}
+                        onToggle={() => {
+                          setOpenedSuggestionId(prev => prev === acceptedProductSuggestions.id ? null : acceptedProductSuggestions.id)
+                          setSelectedSuggestedProductToSell(prev => ({...prev, amount: 1, id: acceptedProductSuggestions.id ?? 0}))
+                        }}
+                        actions={{
+                          setSelectedSuggestedProductToSell,
+                          setFlags,
+                        }}
+                      />
+                    ))
+                  ) : (
+                    <div className="col-span-full w-full fixed top-1/2 left-1/2 -translate-1/2">
+                      <EmptyCardGrid 
+                        text={"Nenhuma sugestão aceita ainda"} 
+                        icon={TbBulbOff}
+                      />
+                    </div>
+                  )}
                 </CardsGrid>
               </>
             )}

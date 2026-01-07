@@ -61,7 +61,7 @@ const GridProductCard = ({
   },[flags.closeEditModal]);
   
   return (
-    <div className="border-x-6 lg:p-1.5 p-2 bg-gray-100 border-double border-cyan-800">
+    <div className="border-x-6 lg:p-1.5 p-2 bg-gray-100 border-double shadow-[0_0_3px_#005F78] border-cyan-800">
       <figure className="py-1 aspect-square border-y-2 border-gray-300">
         <img className="rounded w-full h-full object-cover" src={product.image_url} alt={product.name} />
       </figure>

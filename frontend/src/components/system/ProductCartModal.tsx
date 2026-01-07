@@ -2,8 +2,6 @@ import { FaTrashAlt } from "react-icons/fa";
 import { useCart } from "../../context/CartContext";
 import { BRLmoney } from "../../utils/formatation/BRLmoney";
 import ClearCart from "../ui/ProceedActionButton";
-import PageTitle from "../ui/PageTitle";
-import { BsBoxSeamFill } from "react-icons/bs";
 import RemoveProduct from "../ui/ReturnActionButton";
 import { FaSackDollar, FaTrashCan } from "react-icons/fa6";
 import { GiCash } from "react-icons/gi";
@@ -95,7 +93,7 @@ const ProductCartModal = ({setShowCart}:{setShowCart: React.Dispatch<React.SetSt
   }
 
   return (
-    <div className="fixed z-50 top-18 sm:right-3 right-1/2 sm:translate-x-[0] translate-x-[50%] p-4 w-full sm:max-w-[450px] max-w-[90vw] bg-white shadow-lg border-x-6 border-double border-green-600 rounded">
+    <div className="fixed z-50 top-18 sm:right-3 right-1/2 sm:translate-x-[0] translate-x-[50%] p-4 w-full sm:max-w-[450px] max-w-[90vw] bg-white shadow-[0_0_3px_#008F3A] border-x-8 border-double border-green-600">
       <XCloseTopRight style="bg-transparent text-xl !top-1 !right-1" closeSetter={() => setShowCart(false)}/>
       {cart.length === 0 ? (
         <EmptyCardGrid 
@@ -137,7 +135,7 @@ const ProductCartModal = ({setShowCart}:{setShowCart: React.Dispatch<React.SetSt
               </div>
             ))}
           </div>
-          <div className="mt-1 sm:text-2xl text-xl flex items-center text-green-700 gap-1 font-bold"><span className="flex items-center gap-1 text-yellow-600">
+          <div className="mt-1 sm:text-lg text-xl flex items-center text-green-700 gap-1 font-bold"><span className="flex items-center gap-1 text-yellow-600">
             <GiCash/>Total:
           </span> R$ {BRLmoney(total)}</div>
           {error && (<WarnError error={error}/>)}
@@ -167,7 +165,7 @@ const ProductCartModal = ({setShowCart}:{setShowCart: React.Dispatch<React.SetSt
               <ProceedActionButton
                 iconButton={TbCurrencyDollarOff}
                 iconButtonSize={20}
-                styles="text-red-500 bg-red-100 border-red-500 hover:brightness-[.9] cursor-not-allowed"
+                styles="text-red-500 bg-red-100 border-red-500 !cursor-not-allowed"
                 buttonLabel={"Saldo Insuficiente para a compra"}
                 disable={true}
               />

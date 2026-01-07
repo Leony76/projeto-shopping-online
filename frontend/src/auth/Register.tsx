@@ -68,7 +68,7 @@ const Register = () => {
 
   return (
     <div className="flex flex-col bg-gradient-to-tr from-cyan-100 via-white to-orange-100 justify-center items-center min-h-[100dvh] px-2">
-      <div className="flex md:flex-row flex-col shadow-md p-2 md:max-w-[650px] max-w-[300px] md:max-h-[438px] h-full w-full md:h-[90dvh] bg-white border-x-8 border-double border-orange-500">
+      <div className="flex md:flex-row flex-col shadow-md p-2 md:max-w-[650px] max-w-[300px] md:max-h-[438px] h-full w-full md:h-[90dvh] bg-white border-x-8 border-double border-cyan-500">
         <div className="flex flex-col md:max-w-[272px] w-full custom-scroll px-2 mr-1 overflow-y-auto">
           <figure className="md:hidden mt-1 self-center flex border-gray-200 flex-col h-1/3 w-1/3 justify-center items-center">
             <img className="h-1/2" style={{background: 'radial-gradient(circle, #f8ab38cb, transparent 73%)'}} src={LRC} alt="LRC" />

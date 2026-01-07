@@ -25,7 +25,7 @@ type SuggestProductForm = {
 
 const SuggestProductForm = ({actions, flags, imagePreview, productSuggest}:SuggestProductForm) => {
   return (
-    <form onSubmit={actions.handleSuggestProductSubmit} className={`flex gap-3 bg-gray-100 border-y-6 border-cyan-500 border-double p-2 w-full mt-4`}>
+    <form onSubmit={actions.handleSuggestProductSubmit} className={`flex gap-3 bg-gray-100 border-y-6 shadow-[0_0_3px_#005F78] border-cyan-500 border-double p-2 w-full mt-4`}>
       <div className="flex gap-1 flex-col flex-1">
         <Input 
           fieldType={"text"} 

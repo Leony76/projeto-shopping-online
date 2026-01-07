@@ -24,7 +24,7 @@ const EmptyCardGrid = ({
         <FaQuestion className="rotate-45"/>
       </div>
       <Icon className="text-3xl"/>        
-      <p className="">{`${!search ? text : 'Nenhum produto encontrado para ' + search}!`}</p>
+      <p className="text-center">{`${!search ? text : 'Nenhum produto encontrado para ' + search}!`}</p>
     </div>
   )
 }

@@ -11,6 +11,8 @@
   use App\Http\Controllers\UserController;
   use App\Http\Controllers\ProductController;
   use App\Http\Controllers\UserReviewController;
+  use App\Http\Controllers\AuthController;
+
 
   Route::get('/test-session', function () {
     session(['teste' => 'ok']);
@@ -59,6 +61,9 @@
     ]);
   });
 
+  Route::post('/forgot-password', [AuthController::class, 'forgotPassword']);
+  Route::post('/reset-password', [AuthController::class, 'resetPassword']);
+
   Route::middleware('auth:sanctum')->group(function () {
     Route::get('/user', function (Request $request) {
         return $request->user();
@@ -89,7 +94,7 @@
     Route::get('/users-reviews', [UserReviewController::class, 'index']);
     Route::post('/like-dislike-comment/{id}', [UserReviewController::class, 'updateLikeDislike']);
     Route::get('/users-current-reactions', [UserReviewController::class, 'usersCurrentReactions']);
-  
+
     Route::patch('/user/update-data', [UserController::class, 'update']);
     Route::post('/passwordCheck', [UserController::class, 'checkPassword']);
   });

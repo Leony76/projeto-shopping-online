@@ -97,7 +97,7 @@ const UserComment = ({
   },[]);
 
   return (
-    <div className="border-y-3 bg-white px-1 border-double border-yellow-500">
+    <div className="border-y-4 shadow-[0_0_2px_#F0B100] bg-white px-1 border-double border-yellow-500">
       <div className="flex text-orange-800 py-1 items-center gap-1">
         <h4 className="text-sm flex items-center gap-1"><FaUserCircle className="sm:text-base text-lg"/>{limitName(username.length > 20 ? username.slice(0,20) + '...' : username, 2)}</h4>
         <span className="text-[10px]">●</span>

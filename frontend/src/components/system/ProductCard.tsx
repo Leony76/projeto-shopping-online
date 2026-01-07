@@ -134,7 +134,7 @@ const ProductCard = ({
                   <ProceedActionButton
                     iconButton={TbCurrencyDollarOff}
                     iconButtonSize={20}
-                    styles="text-red-500 bg-red-100 border-red-500 hover:brightness-[.9] cursor-not-allowed"
+                    styles="text-red-500 bg-red-100 border-red-500 !cursor-not-allowed"
                     buttonLabel={"Saldo Insuficiente para a compra"}
                     disable={true}
                   />
@@ -202,7 +202,7 @@ const ProductCard = ({
                 <ProceedActionButton
                   iconButton={TbCurrencyDollarOff}
                   iconButtonSize={20}
-                  styles="text-red-500 border-red-500 bg-red-100 hover:brightness-[.9] cursor-not-allowed"
+                  styles="text-red-500 bg-red-100 border-red-500 !cursor-not-allowed"
                   buttonLabel={"Saldo Insuficiente para a compra"}
                   disable={true}
                 />

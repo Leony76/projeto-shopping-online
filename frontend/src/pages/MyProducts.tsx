@@ -87,8 +87,8 @@ const MyProducts = () => {
             )}
 
             {!isLoading && (         
-              <CardsGrid gridType="productCards" style="border-y-2 py-2 border-gray-200">
-                {hasProducts && hasFilteredProducts ? (
+              <CardsGrid gridType="productCards" style={`${(hasProducts && hasFilteredProducts) ? 'border-y-2 pt-2 border-gray-200' : ''}`}>
+                {hasProducts ? (
                   filteredProducts.map((product) => (
                     <GridUserProductCard
                       key={product.id}
@@ -103,18 +103,16 @@ const MyProducts = () => {
                     />
                   ))
                 ) : hasProducts && !hasFilteredProducts ? (
-                  <div className="col-span-full py-21">
+                  <div className="col-span-full w-full fixed top-1/2 left-1/2 -translate-1/2">
                     <EmptyCardGrid 
-                      search={search}
                       text="Nenhum produto encontrado nesse filtro"
                       icon={BsBoxSeamFill}
                     />
                   </div>
                 ) : (
-                  <div className="col-span-full py-21">
+                  <div className="col-span-full w-full fixed top-1/2 left-1/2 -translate-1/2">
                     <EmptyCardGrid 
-                      search={search}
-                      text="Nenhum produto comprado ainda"
+                      text="Nenhum produto comprado até o momento"
                       icon={BsBoxSeamFill}
                     />
                   </div>

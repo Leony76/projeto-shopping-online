@@ -10,6 +10,8 @@ import AddProduct from "./pages/AddProduct";
 import Settings from "./pages/Settings";
 import RootLayout from "./layout/RootLayout";
 import Suggestions from "./pages/Suggestions";
+import ForgotPassword from "./auth/ForgotPassword";
+import ResetPassword from "./auth/ResetPassword";
 
 export const router = createBrowserRouter([
   {
@@ -18,6 +20,8 @@ export const router = createBrowserRouter([
 
       { path: "/", element: <Login/>},   
       { path: "/register", element: <Register/>},
+      { path: "/forgot-password", element: <ForgotPassword/>},
+      { path: "/reset-password", element: <ResetPassword/>},
       
       // <======)=o Private Routes (User) o=(======> // 
      

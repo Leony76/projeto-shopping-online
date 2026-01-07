@@ -51,7 +51,7 @@ const SuggestedProductCard = ({
 }:SuggestedProductCard) => {
   return (
     <>
-      <div className="flex border-y-8 bg-gray-100 border-double border-orange-600">
+      <div className="flex border-y-8 bg-gray-100 border-double shadow-[0_0_3px_#005F78] border-orange-600">
         <figure className="flex flex-2 flex-col p-1">
           <img className="p-1 rounded border border-gray-300 aspect-square object-cover" src={suggestProduct.image_url} alt={suggestProduct.name} />
           <p className="text-sm text-center">Sugerido por <i className="text-yellow-600 font-semibold">{limitName(suggestProduct.user?.name, 2)}</i></p>
