@@ -8,6 +8,7 @@ use Illuminate\Notifications\Notifiable;
 use App\Models\Order;
 use App\Models\ProductRate;
 use App\Models\ProductSuggest;
+use App\Models\AddSuggestion;
 use Laravel\Sanctum\HasApiTokens; 
 
 class User extends Authenticatable
@@ -79,5 +80,9 @@ class User extends Authenticatable
 
     public function productSuggests() {
         return $this->hasMany(ProductSuggest::class);
+    }
+
+    public function addSuggestions() {
+        return $this->hasMany(AddSuggestion::class);
     }
 }

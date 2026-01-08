@@ -24,7 +24,7 @@ import Loading from "../components/ui/Loading";
 import AppLayout from "../layout/AppLayout";
 
 import '../css/scrollbar.css';
-import { FaCommentDots } from "react-icons/fa6";
+import { FaCommentDots, FaCommentMedical, FaPaperPlane } from "react-icons/fa6";
 import UsersRateCommentCard from "../components/system/UsersRateCommentCard";
 import { api } from "../services/api";
 import type { UserCommentaryRate } from "../types/UserCommentaryRate";
@@ -38,6 +38,8 @@ import ConfirmDecision from "../components/ui/ConfirmDecision";
 import { TbBulbOff } from "react-icons/tb";
 import { IoHome } from "react-icons/io5";
 import { useLockYScroll } from "../utils/customHooks/useLockYScroll";
+import InputForm from "../components/form/InputForm";
+import SubmitButton from "../components/form/SubmitButton";
 
 const Home = () => {
   toastAppearOnce();
@@ -47,12 +49,18 @@ const Home = () => {
   const { showToast} = useToast();
   const catchError = useCatchError();
 
+  const [processing, setProcessing] = useState({
+    suggestProduct: false,
+    addSuggestion: false,
+  });
+
   const {products, setProducts} = useProducts();
   const [selectedProduct, setSelectedProduct] = useState<ProductAPI | null>(null);
   const [selectedSuggestionId, setSelectedSuggestionId] = useState<number | null>(null);
   const [userReviews, setUserReviews] = useState<UserCommentaryRate[]>([]);
   const [suggestedProducts, setSuggestedProducts] = useState<ProductSuggest[]>([]);
 
+  const [addSuggestion, setAddSuggestion] = useState<string>('');
 
   const [editProduct, setEditProduct] = useState<Product>({
     id: 0,
@@ -92,8 +100,8 @@ const Home = () => {
   const handleSuggestProductSubmit = async(e:React.FormEvent<HTMLFormElement>): Promise<void> => {
     e.preventDefault();
 
-    if (flags.processingState) return;
-    setFlags(prev => ({...prev, processingState: true}));
+    if (processing.suggestProduct) return;
+    setProcessing(p => ({ ...p, suggestProduct: true }));
 
     if (!productSuggest.name || !productSuggest.category || !productSuggest.description || !productSuggest.price || !productSuggest.image) {
       showToast('Preencha todos os campos antes de mandar sua sugestão', 'error');
@@ -118,7 +126,7 @@ const Home = () => {
     } catch (err:unknown) {
       catchError(err);
     } finally {
-      setFlags(prev => ({...prev, processingState: false}));
+      setProcessing(p => ({ ...p, suggestProduct: false }));
     }
   }
 
@@ -143,6 +151,36 @@ const Home = () => {
       setFlags(prev => ({...prev, processingState: false}));
     }
   };
+
+  const handleAddSuggestionSubmit = async(e:React.FormEvent<HTMLFormElement>):Promise<void> => {
+    e.preventDefault();
+
+    if (processing.addSuggestion) return;
+    setProcessing(p => ({ ...p, addSuggestion: true }));
+
+    if (!addSuggestion) {
+      showToast('Insira uma sugestão antes de mandar', 'alert');
+      setProcessing(p => ({ ...p, addSuggestion: false }));
+      return;
+    } if (addSuggestion.length < 2) {
+      showToast('A sugestão de ter no mínimo 2 caractéres', 'alert');
+      setProcessing(p => ({ ...p, addSuggestion: false }));
+      return;
+    }
+
+    try {
+      const response = await api.post('/add-suggestion', {
+        add_suggest: addSuggestion,
+      });
+
+      showToast(response.data.message, response.data.type);
+    } catch (err:unknown) {
+      catchError(err);
+    } finally {
+      setProcessing(p => ({ ...p, addSuggestion: false }));
+      setAddSuggestion('');
+    }
+  }
 
   const { RemoveProduct } = useRemoveProduct({
     actions: {
@@ -216,6 +254,37 @@ const Home = () => {
     );
   }, [userReviews]);
 
+  const TARGET_CATEGORIES = [
+    'Artesanal',
+    'Cozinha',
+    'Limpeza',
+    'Eletrônico',
+    'Móveis',
+  ];
+
+  const productsByCategory = products.reduce<Record<string, typeof products>>(
+    (acc, product) => {
+      const category = product.category; // ou product.category.name
+
+      if (!TARGET_CATEGORIES.includes(category)) return acc;
+
+      if (!acc[category]) acc[category] = [];
+      acc[category].push(product);
+
+      return acc;
+    },
+    {}
+  );
+
+  const topProductsByCategory = TARGET_CATEGORIES.map(category => {
+    const categoryProducts = productsByCategory[category];
+
+    if (!categoryProducts || categoryProducts.length === 0) return null;
+
+    return categoryProducts
+      .sort((a, b) => (b.orders_sum_quantity ?? 0) - (a.orders_sum_quantity ?? 0))[0];
+  }).filter(Boolean);
+
   useLockYScroll(flags.showProductInfo);
   useLockYScroll(flags.showConfirmSuggestion.accept);
   useLockYScroll(flags.showConfirmSuggestion.deny);
@@ -239,9 +308,9 @@ const Home = () => {
 
                 <CardsGrid gridType="productCards" style="border-y-2 py-2 px-2 border-gray-200">
                   {hasProducts ? (
-                    products.slice(0, 5).map((product) => (
+                    topProductsByCategory.slice(0, 5).map((product) => (
                       <GridProductCard
-                        key={product.id}
+                        key={product?.id}
                         product={product}
                         productForEdit={editProduct}
                         imagePreview={imagePreview}
@@ -308,11 +377,31 @@ const Home = () => {
                         setProductSuggest,
                       }} 
                       flags={{
-                        processingState: flags.processingState
+                        processingState: processing.suggestProduct
                       }}
                       imagePreview={imagePreview}
                       productSuggest={productSuggest}                  
                     />
+
+                    <div className="md:block hidden"><PageSectionTitle textSize="sm:text-2xl text-xl my-2 mt-4" position="left" title="Sugestão de adição" icon={FaCommentMedical}/></div>
+                    <div className="md:hidden block"><PageSectionTitle textSize="sm:text-2xl text-xl my-2 mt-4" position="centered" title="Sugestão de adição" icon={FaCommentMedical}/></div>
+
+                    <p className="md:text-base text-sm mb-2 text-cyan-800">Deixe sua segestão do que poderia ser adicionado de novo no nosso site! Estamos a disposição de acolher quaisquer melhorias proveitosas que possam ser sugeridas por você e pela comunidade!</p>
+                    <form onSubmit={handleAddSuggestionSubmit}>
+                      <InputForm
+                        fieldType="textArea" 
+                        maxLength={1000}
+                        value={addSuggestion}
+                        onTextArea={(e) => setAddSuggestion(e.target.value)}
+                      />
+                      <SubmitButton 
+                        ButtonAction={"Mandar sugestão"} 
+                        icon={FaPaperPlane} 
+                        processing={processing.addSuggestion}  
+                        processingLabel={"Mandando"}
+                        style="bg-cyan-100 text-cyan-700 w-full !text-lg !mt-3"
+                      />
+                    </form>
                   </>
                 ) : (
                   <>
@@ -344,6 +433,10 @@ const Home = () => {
                 )}
               </>            
             )}
+
+
+
+
 
             {(flags.showConfirmSuggestion.accept || flags.showConfirmSuggestion.deny) && (
               <>

@@ -1,6 +1,6 @@
 import { RiLockPasswordFill, RiResetLeftFill } from "react-icons/ri"
 import Input from "../components/form/InputForm"
-import { Link } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
 import { useState } from "react";
 import Submit from "../components/form/SubmitButton";
 import { useCatchError } from "../utils/ui/useCatchError";
@@ -19,6 +19,8 @@ const ResetPassword = () => {
 
   const catchError = useCatchError();
   const { showToast } = useToast();
+
+  const navigate = useNavigate();
 
   const email = params.get('email');
   const token = params.get('token');
@@ -57,6 +59,7 @@ const ResetPassword = () => {
     );
 
       showToast(response.data.message, response.data.type);
+      navigate('/');
     } catch (err:unknown) {
       catchError(err);
     } finally {

@@ -11,6 +11,7 @@
   use App\Http\Controllers\UserController;
   use App\Http\Controllers\ProductController;
   use App\Http\Controllers\UserReviewController;
+  use App\Http\Controllers\AddSuggestionsController;
   use App\Http\Controllers\AuthController;
 
 
@@ -88,7 +89,11 @@
     Route::patch('/suggested-product-answer/{id}', [ProductController::class, 'suggestedProductAnswer']);
     Route::get('/accepted-suggested-products', [ProductController::class, 'acceptedSuggestedProducts']);
     Route::post('/add-suggested-product/{id}', [ProductController::class, 'addSuggestedProduct']);
-  
+
+    Route::post('/add-suggestion', [AddSuggestionsController::class, 'addSuggestion']);
+    Route::get('/add-suggestions', [AddSuggestionsController::class, 'listAddSuggestions']);
+    Route::patch('/add-suggestion-decision/{id}', [AddSuggestionsController::class, 'updateAddSuggestion']);
+
     Route::post('/product-rating/{id}', [ProductController::class, 'updateRating']);
     Route::post('/user-review/{id}', [UserReviewController::class, 'store']);
     Route::get('/users-reviews', [UserReviewController::class, 'index']);

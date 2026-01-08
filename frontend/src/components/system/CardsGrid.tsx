@@ -1,7 +1,12 @@
 type CardsGrid = {
   children: React.ReactNode;
   style?: string;
-  gridType: 'productCards' | 'productReviews' | 'productSuggests';
+  gridType: 
+  | 'productCards' 
+  | 'productReviews' 
+  | 'productSuggests'
+  | 'addSuggestions'
+  ;
 }
 
 const CardsGrid = ({children, style, gridType}:CardsGrid) => {
@@ -30,6 +35,17 @@ const CardsGrid = ({children, style, gridType}:CardsGrid) => {
         gap-4 my-4
         ${style}
       `}>{children}</div>
+    ) : gridType === 'addSuggestions' ? (
+      <div className={`grid
+       grid-cols-1
+       sm:grid-cols-1
+       md:grid-cols-2
+       lg:grid-cols-2
+       xl:grid-cols-3
+       gap-4 my-4
+       ${style}
+     `}>{children}</div>
+     
     ) : (
       <div className={`grid
        grid-cols-1
@@ -40,7 +56,6 @@ const CardsGrid = ({children, style, gridType}:CardsGrid) => {
        gap-4 my-4
        ${style}
      `}>{children}</div>
-
     )
   )
 }

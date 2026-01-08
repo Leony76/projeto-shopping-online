@@ -19,7 +19,7 @@ import Date from "../ui/Date";
 
 type Actions = {
   setFlags:           React.Dispatch<React.SetStateAction<UIFlags>>;
-  setEditProduct:     React.Dispatch<React.SetStateAction<Product>>
+  setEditProduct:     React.Dispatch<React.SetStateAction<Product>>;
   setSelectedProduct: React.Dispatch<React.SetStateAction<ProductAPI | null>>
 
   handleEditProduct:   (e: React.FormEvent<HTMLFormElement>) => Promise<void>;
@@ -29,7 +29,7 @@ type Actions = {
 }
 
 type GridProductCard = {
-  product:        ProductAPI;
+  product:        ProductAPI | null;
   productForEdit: Product;
   actions:         Actions;
   flags:           Flags;
@@ -63,19 +63,19 @@ const GridProductCard = ({
   return (
     <div className="border-x-6 lg:p-1.5 p-2 bg-gray-100 border-double shadow-[0_0_3px_#005F78] border-cyan-800">
       <figure className="py-1 aspect-square border-y-2 border-gray-300">
-        <img className="rounded w-full h-full object-cover" src={product.image_url} alt={product.name} />
+        <img className="rounded w-full h-full object-cover" src={product?.image_url} alt={product?.name} />
       </figure>
       <div className="flex flex-col">
-        <CardTitle style="md:text-base text-xl mb-[-8px] mt-1" textLength={17} name={product.name}/>
+        <CardTitle style="md:text-base text-xl mb-[-8px] mt-1" textLength={17} name={product?.name}/>
         <div className="flex xl:text-xs lg:text-sm sm:text-[13px] text-base items-center font-normal text-[#104E64] gap-1 py-1">
-          <CategoryIcon category={product.category ?? 'Artesanal'}/>
+          <CategoryIcon category={product?.category ?? 'Artesanal'}/>
           <span className="text-[10px]">●</span>
-          <Date timeStamp={product.created_at}/>
+          <Date timeStamp={product?.created_at}/>
         </div>
         <div className="flex xl:text-xs lg:text-sm md:text-sm sm:text-base text-lg justify-between mx-1 py-1 font-semibold border-y-2 border-gray-300">
-          <Price value={product.price}/>
-          <Rating rate={product.product_rate_avg_rating}/>
-          <Stock stock={product.amount}/>
+          <Price value={product?.price}/>
+          <Rating rate={product?.product_rate_avg_rating}/>
+          <Stock stock={product?.amount}/>
         </div>
         <div className="flex gap-1 mt-2 pb-2 border-b-2 border-gray-300">
           <ProceedActionButton
@@ -92,7 +92,7 @@ const GridProductCard = ({
           <div className="flex gap-3 sm:h-10 sm:text-xs text-xl h-15 justify-between">
             <button onClick={() => {
               setShowEditProduct(true),
-              actions.setEditProduct(product)
+              product && actions.setEditProduct(product)
             }} className="flex flex-1 items-center gap-1 border-x-8 border-double mt-2 mb-1 justify-center rounded text-yellow-600 bg-yellow-100 p-1 transition cursor-pointer hover:brightness-[1.05] active:brightness-[.9]"><MdEditSquare className="mt-1"/>Editar</button>
             <button onClick={() => setShowConfirmRemoveProduct(true)} className="flex flex-1 justify-center items-center gap-1 border-x-8 border-double mt-2 mb-1 rounded text-red-600 bg-red-100 p-1 transition cursor-pointer hover:brightness-[1.05] active:brightness-[.9]"><FaTrashCan className="mt-1"/>Remover</button>
           </div>
@@ -101,7 +101,7 @@ const GridProductCard = ({
         )}
       </div>
 
-      {showConfirmRemoveProduct ? (
+      {product && showConfirmRemoveProduct ? (
         <ConfirmDecision
           decisionTitle={'Confirmar remover o produto?'}
           decisionDescription={'Confirma?'}

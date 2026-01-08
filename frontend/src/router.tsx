@@ -12,6 +12,7 @@ import RootLayout from "./layout/RootLayout";
 import Suggestions from "./pages/Suggestions";
 import ForgotPassword from "./auth/ForgotPassword";
 import ResetPassword from "./auth/ResetPassword";
+import ResetPasswordGuard from "./privateRoutes/ResetPasswordGuard";
 
 export const router = createBrowserRouter([
   {
@@ -21,8 +22,12 @@ export const router = createBrowserRouter([
       { path: "/", element: <Login/>},   
       { path: "/register", element: <Register/>},
       { path: "/forgot-password", element: <ForgotPassword/>},
-      { path: "/reset-password", element: <ResetPassword/>},
-      
+      { path: "/reset-password", element: (
+        <ResetPasswordGuard>
+          <ResetPassword/>
+        </ResetPasswordGuard>
+      )},
+     
       // <======)=o Private Routes (User) o=(======> // 
      
       { path: "/home", element:(

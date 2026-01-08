@@ -6,6 +6,7 @@ type ReturnActionButton = {
   iconButtonSize: number;
   buttonLabel: string;
   processingState?: boolean;
+  buttonLabelWhileProcessing?: string;
   style?: string;
 }
 

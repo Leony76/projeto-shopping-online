@@ -56,7 +56,7 @@ const SuggestedProductCard = ({
           <img className="p-1 rounded border border-gray-300 aspect-square object-cover" src={suggestProduct.image_url} alt={suggestProduct.name} />
           <p className="text-sm text-center">Sugerido por <i className="text-yellow-600 font-semibold">{limitName(suggestProduct.user?.name, 2)}</i></p>
           {!accepted ? (
-            <div className="flex h-8 gap-2 mt-1">
+            <div className="flex h-10 gap-2 mt-1">
               <AcceptButton onClick={() => {
                 actions?.setSelectedSuggestionId?.(suggestProduct.id ?? null);
                 actions?.setFlag?.(prev => ({...prev, showConfirmSuggestion: { accept: true, deny: false }}));
