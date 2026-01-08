@@ -1,17 +1,7 @@
-import { useState, useEffect } from "react";
 import { BsBoxSeamFill } from "react-icons/bs";
-import { useAuth } from "../context/AuthContext";
-import { getProducts } from "../services/getProducts";
-import { useProducts } from "../context/ProductContext";
-import { toastAppearOnce } from "../utils/ui/toastAppearOnce";
-import { useImagePreview } from "../utils/product/useImagePreview";
-import { useBuyProduct } from "../utils/customHooks/useBuyProduct";
-import { useEditProduct } from "../utils/customHooks/useEditProduct";
-import { useRemoveProduct } from "../utils/customHooks/useRemoveProduct";
+import { searchFilter } from "../utils/ui/searchFilter";
 
-import type { Product } from "../types/Product";
-import type { ProductAPI } from "../types/ProductAPI";
-import type { UIFlags } from "../types/UIFlags";
+import type { AdvancedFilter } from "../types/AdvancedFilter";
 
 import GridProductCard from "../components/system/GridProductCard";
 import PageSectionTitle from "../components/ui/PageSectionTitle";
@@ -19,92 +9,33 @@ import CardFocusOverlay from "../components/ui/CardFocusOverlay";
 import EmptyCardGrid from "../components/ui/EmptyCardGrid";
 import ProductCard from "../components/system/ProductCard";
 import CardsGrid from "../components/system/CardsGrid";
+import InputForm from "../components/form/InputForm";
 import PageTitle from "../components/ui/PageTitle";
 import Loading from "../components/ui/Loading";
 import AppLayout from "../layout/AppLayout";
 
 import '../css/scrollbar.css';
-import { searchFilter } from "../utils/ui/searchFilter";
-import InputForm from "../components/form/InputForm";
-import type { AdvancedFilter } from "../types/AdvancedFilter";
-import { useLockYScroll } from "../utils/customHooks/useLockYScroll";
+
+import useProductLogic from "../utils/customHooks/useProductLogic";
 
 const Products = () => {
-  toastAppearOnce();
-
-  const { user, setUser } = useAuth();
-  const { handleImageChange, imagePreview } = useImagePreview();
-
-  const {products, setProducts} = useProducts();
-  const [selectedProduct, setSelectedProduct] = useState<ProductAPI | null>(null);
-  const [advancedFilter, setAdvancedFilter] = useState<AdvancedFilter['filter']>(null);
-
-  const [editProduct, setEditProduct] = useState<Product>({
-    id: 0,
-    name: "",
-    image: null,
-    amount: "",
-    description: "",
-    category: "",
-    price: "",
-    created_at: "",
-    updated_at: "",
-  })
-
-  const [flags, setFlags] = useState<UIFlags>({
-    showProductInfo: false,
-    showProductAmount: false,
-    showConfirmPurchase: false,
-    processingState: false,
-    closeEditModal: false,
-    isLoading: true,
-    showConfirmSuggestion: {deny:false, accept:false},
-  })
-
-  const { RemoveProduct } = useRemoveProduct({
-    actions: {
-      setFlags,
-      setProducts
-    },
-  });
-
-  const { EditProduct } = useEditProduct({
-    actions: {
-      setFlags,
-      setProducts,
-    }
-  });
-
-  const { BuyProduct } = useBuyProduct({
-    actions: {
-      setFlags,
-      setProducts,
-      setSelectedProduct,
-      setUser,
-    }
-  })
-
-  const handleRemoveProduct = async(id: number):Promise<void> => {
-    RemoveProduct(id, flags.processingState);
-  }
-
-  const handleEditProduct = async(e:React.FormEvent<HTMLFormElement>):Promise<void> => {
-    e.preventDefault();
-    EditProduct(flags.processingState, editProduct);
-  }
-
-  const handleBuySubmit = async(e:React.FormEvent<HTMLFormElement>):Promise<void> => {
-    e.preventDefault();
-    BuyProduct(flags.processingState, selectedProduct);
-  }
-
-  useEffect(() => {
-    getProducts()
-      .then(setProducts)
-      .finally(() => setFlags(prev => ({...prev, isLoading: false})));
-  }, []);
-
-  useLockYScroll(flags.showProductInfo);
+  const {
+    user, 
+    flags,  
+    products, 
+    editProduct,  
+    imagePreview, 
+    advancedFilter, 
+    selectedProduct,  
+    setSelectedProduct, 
+    handleImageChange,  
+    setAdvancedFilter,  
+    setEditProduct, 
+    RemoveProduct,  
+    EditProduct,  
+    BuyProduct, 
+    setFlags, 
+  } = useProductLogic();
 
   return (
     <AppLayout pageSelected="products">
@@ -150,12 +81,12 @@ const Products = () => {
                         closeEditModal:flags.closeEditModal
                       }}
                       actions={{
-                        setFlags:setFlags,
-                        setSelectedProduct:setSelectedProduct,
-                        handleImageChange:handleImageChange,
-                        handleEditProduct: handleEditProduct,
-                        handleRemoveProduct:handleRemoveProduct,
-                        setEditProduct:setEditProduct,
+                        setFlags,
+                        setSelectedProduct,
+                        handleImageChange,
+                        EditProduct,
+                        RemoveProduct,
+                        setEditProduct,
                       }}
                     />
                   ))
@@ -187,7 +118,7 @@ const Products = () => {
                   user={user}
                   actions={{
                     setFlags,
-                    handleBuySubmit,
+                    BuyProduct,
                     setProduct: setSelectedProduct,
                   }}
                 />

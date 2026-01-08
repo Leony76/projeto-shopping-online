@@ -8,21 +8,24 @@ import { useImagePreview } from "../product/useImagePreview";
 import { useCatchError } from "../ui/useCatchError";
 
 type useEditProduct = {
+  editProduct: Product;
   actions: {
     setFlags: React.Dispatch<React.SetStateAction<UIFlags>>;
     setProducts: React.Dispatch<React.SetStateAction<ProductAPI[]>>;
   }
+  flags: UIFlags;
 }
 
-export const useEditProduct = ({actions}:useEditProduct) => {
+export const useEditProduct = ({actions, editProduct, flags}:useEditProduct) => {
   const { showToast } = useToast();
   const { resetImagePreview } = useImagePreview();
 
   const catchError = useCatchError();
 
-  const EditProduct = async(processingState: boolean, editProduct: Product) => {
-  
-    if (processingState)return;
+  const EditProduct = async(e:React.FormEvent<HTMLFormElement>):Promise<void> => {
+    e.preventDefault();
+
+    if (flags.processingState)return;
     actions.setFlags(prev => ({...prev, processingState: true}));
 
     const result = addProductsValidation(editProduct);

@@ -3,7 +3,7 @@ import type { TransactionAPI } from "../../types/TransactionAPI";
 import type { ProductAPI } from "../../types/ProductAPI";
 import { useCatchError } from "../ui/useCatchError";
 
-type useListUserProducts = {
+type UseListUserProducts = {
   actions: {
     setProduct: React.Dispatch<React.SetStateAction<ProductAPI[]>>;
     setProductTransactions: React.Dispatch<React.SetStateAction<TransactionAPI[]>>;
@@ -11,7 +11,7 @@ type useListUserProducts = {
   }
 }
 
-export const useListUserProducts = ({actions}:useListUserProducts) => {
+export const useListUserProducts = ({actions}:UseListUserProducts) => {
   const catchError = useCatchError();
 
   const ListUserProducts = async() => {

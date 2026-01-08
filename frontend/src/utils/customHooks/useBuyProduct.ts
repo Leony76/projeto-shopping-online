@@ -6,30 +6,29 @@ import type { User } from "../../types/User";
 import { useCatchError } from "../ui/useCatchError";
 
 type useBuyProduct = {
+  selectedProduct: ProductAPI | null;
   actions: {
     setFlags: React.Dispatch<React.SetStateAction<UIFlags>>;
     setUser: React.Dispatch<React.SetStateAction<User | null>>;
     setProducts: React.Dispatch<React.SetStateAction<ProductAPI[]>>;
     setSelectedProduct: React.Dispatch<React.SetStateAction<ProductAPI | null>>;
   }
+  flags: UIFlags;
 }
 
-export const useBuyProduct = ({actions}:useBuyProduct) => {
+export const useBuyProduct = ({actions, flags, selectedProduct}:useBuyProduct) => {
   const { showToast } = useToast();
   const catchError = useCatchError();
 
-  const BuyProduct = async(
-    processingState: boolean, 
-    selectedProduct: ProductAPI | null,
+  const BuyProduct = async(e:React.FormEvent<HTMLFormElement>):Promise<void> => {
+    e.preventDefault();
 
-  ) => {
-    if (processingState) return; 
+    if (flags.processingState) return; 
     actions.setFlags(prev => ({...prev, processingState: true}));
 
-    if (!selectedProduct)return;
+    if (!selectedProduct) return;
 
     try {
-
       const response = await api.post('/buy-product', {
         id: selectedProduct.id,
         amount: selectedProduct.selectedAmount ?? 1, 

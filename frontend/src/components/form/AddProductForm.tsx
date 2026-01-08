@@ -39,7 +39,7 @@ const ProductForm = ({actions, product, flags, imagePreview, imageBeforeEdit}:Pr
   return (
     <>
     {flags.isAModal && <CardFocusOverlay style={'z-10'}/>}
-    <form onSubmit={actions.handleAddProductSubmit} className={`flex gap-3 bg-gray-100 border-y-6 border-cyan-500 border-double p-2 w-full lg:max-w-[1000px] max-w-[95vw] ${flags.isAModal ? 'fixed top-1/2 left-1/2 translate-[-50%]' : ''}`}>
+    <form onSubmit={actions.handleAddProductSubmit} className={`flex gap-3 bg-gray-100 border-y-6 shadow-[0_0_3px_#005F78] border-cyan-500 border-double p-3 w-full lg:max-w-full max-w-[95vw] ${flags.isAModal ? 'fixed top-1/2 left-1/2 translate-[-50%]' : ''}`}>
       <div className="flex gap-1 flex-col flex-1 w-full">
         <PageTitle style="!text-2xl gap-[2px]" title={`${flags.forEdit ? 'Editar' : 'Adicionar'} produto`} icon={FaPlus}/>
         <Input 

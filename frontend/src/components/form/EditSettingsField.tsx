@@ -29,7 +29,7 @@ type EditSettingsField = {
   }
 
   action: {
-    handleEditData: (e: React.FormEvent<HTMLFormElement>) => Promise<void>;
+    EditUserData: (e: React.FormEvent<HTMLFormElement>) => Promise<void>;
     
     showToast: (message: string, type?: ToastType | undefined) => void;
 
@@ -110,7 +110,7 @@ const EditSettingsField = ({
     <>
       <CardFocusOverlay onClick={() => action.setEdit(null)}/>
       {(editable.password || editable.anyField) && (
-        <form onSubmit={action.handleEditData} className="z-50 w-full sm:max-w-[400px] max-w-[95dvw] max fixed left-1/2 top-1/2 translate-[-50%] bg-white border-x-6 border-cyan-600 border-double px-2 pt-2">
+        <form onSubmit={action.EditUserData} className="z-50 w-full sm:max-w-[400px] max-w-[95dvw] max fixed left-1/2 top-1/2 translate-[-50%] bg-white border-x-6 border-cyan-600 border-double px-2 pt-2">
           {flag.processingState ? (<XCloseTopRight style="bg-transparent"/>) : (<XCloseTopRight  style="bg-transparent" closeSetter={() => {
             action.setEdit(null),
             action.setError('');

@@ -23,8 +23,8 @@ const UsersRateCommentCard = ({
       <div className="p-2 border-x-6 border-double shadow-[0_0_3px_#005F78] border-cyan-700 bg-gray-100">
         <div className="flex xl:flex-row flex-col xl:gap-0 gap-4 w-full border-y-2 border-gray-300 py-1 py-2">                    
           <div className="xl:w-[200px] w-full">
-            <figure className="xl:h-[185px] w-full">
-              <img className="rounded object-cover h-full" src={product.image_url} alt={product.name} />
+            <figure className="h-[200px] w-full">
+              <img className="rounded object-cover w-full h-full" src={product.image_url} alt={product.name} />
             </figure>
             <div className="flex flex-col gap-">
               <CardTitle style="xl:block hidden" textLength={24} name={product.name}/>

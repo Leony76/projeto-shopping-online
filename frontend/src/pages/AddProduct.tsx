@@ -14,19 +14,20 @@ const AddProduct = () => {
   
   return (
     <AppLayout pageSelected={"addProduct"}>
-      {({search}) => {
-        console.log(search)
+      {() => {
         return (   
-          <AddProductForm 
-            actions={{
-              handleAddProductSubmit,
-              updateProduct,
-              handleImageChange: (e) => handleImageChange(e, (file) => updateProduct('image', file))
-            }} 
-            flags={{ processing: processingState }}
-            product={addProduct} 
-            imagePreview={imagePreview}        
-          />   
+          <div className="flex justify-center w-full">
+            <AddProductForm 
+              actions={{
+                handleAddProductSubmit,
+                updateProduct,
+                handleImageChange: (e) => handleImageChange(e, (file) => updateProduct('image', file))
+              }} 
+              flags={{ processing: processingState }}
+              product={addProduct} 
+              imagePreview={imagePreview}        
+            />   
+          </div>
         )
       }}
     </AppLayout>

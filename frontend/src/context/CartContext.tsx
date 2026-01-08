@@ -9,7 +9,6 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
 
   const [cart, setCart] = useState<ProductCart[]>([]);
   const { products } = useProducts();
-  const cartKey = user ? `cart_user_${user.id}` : 'cart_guest';
 
   useEffect(() => {
     if (!user) return;
@@ -54,7 +53,6 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
       localStorage.setItem(`cart_user_${user.id}`, JSON.stringify(cart));
     }
   }, [cart, user]);
-
 
   function addToCart(productId: number, requestedAmount: number) {
     const product = products.find(p => p.id === productId);

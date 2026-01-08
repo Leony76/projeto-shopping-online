@@ -15,7 +15,8 @@ export const useRemoveProduct = ({actions}:useRemoveProduct) => {
   const { showToast } = useToast(); 
   const catchError = useCatchError();
 
-  const RemoveProduct = async(id:number, processingState: boolean) => {
+  const RemoveProduct = async(id:number, processingState: boolean):Promise<void> => {
+
     if (processingState) return;
     actions.setFlags(prev => ({...prev, processingState: true}))
 
@@ -28,6 +29,8 @@ export const useRemoveProduct = ({actions}:useRemoveProduct) => {
       actions.setFlags(prev => ({...prev, processingState: false}));
     } catch (err:any) {
       catchError(err);
+    } finally {
+      actions.setFlags(prev => ({ ...prev, processingState: false }));
     }
   }
 

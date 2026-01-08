@@ -1,9 +1,7 @@
-import { useEffect, useState } from "react";
-import type { ProductAPI } from "../types/ProductAPI";
 import { searchFilter } from "../utils/ui/searchFilter"
 import { BsBoxSeamFill, BsDropbox } from "react-icons/bs"
-import type { TransactionAPI } from "../types/TransactionAPI"
-import { useListUserProducts } from "../utils/customHooks/useListUserProducts"
+
+import type { AdvancedFilter } from "../types/AdvancedFilter";
 
 import GridUserProductCard from "../components/system/GridUserProductCard";
 import UserProductCard from "../components/system/UserProductCard"
@@ -11,47 +9,28 @@ import CardFocusOverlay from "../components/ui/CardFocusOverlay";
 import PageSectionTitle from "../components/ui/PageSectionTitle"
 import EmptyCardGrid from "../components/ui/EmptyCardGrid"
 import CardsGrid from "../components/system/CardsGrid"
+import InputForm from "../components/form/InputForm";
 import PageTitle from "../components/ui/PageTitle"
 import Loading from "../components/ui/Loading";
 import AppLayout from "../layout/AppLayout"
 
 import '../css/scrollbar.css';
-import InputForm from "../components/form/InputForm";
-import type { AdvancedFilter } from "../types/AdvancedFilter";
-import { useLockYScroll } from "../utils/customHooks/useLockYScroll";
+import useMyProductsLogic from "../utils/customHooks/useMyProductsLogic";
 
 const MyProducts = () => {
 
-  const [products, setProduct] = useState<ProductAPI[]>([]);
-  const [productTransactions, setProductTransactions] = useState<TransactionAPI[]>([]);
-  const [selectedProduct, setSelectedProduct] = useState<ProductAPI | null>(null);
-  const [advancedFilter, setAdvancedFilter] = useState<AdvancedFilter['filter']>(null);
-
-  const [isLoading, setIsLoading] = useState<boolean>(true);
-
-  const { ListUserProducts } = useListUserProducts({
-    actions: {
-      setProduct,
-      setProductTransactions,
-      setIsLoading,
-    }
-  });
-
-  const [flags, setFlags] = useState({
-    showProductInfo: false,
-    showProductTransactions: false,
-    showConfirmPurchase: false,
-  });
-
-  const listUserProducts = async() => {
-    ListUserProducts();
-  }
-
-  useEffect(() => {
-    listUserProducts();
-  },[])
-
-  useLockYScroll(flags.showProductInfo);
+  const {
+    flags,
+    products,
+    isLoading,
+    advancedFilter,
+    selectedProduct,
+    productTransactions,
+    setSelectedProduct,
+    setAdvancedFilter,
+    setProduct,
+    setFlags,
+  } = useMyProductsLogic();
 
   return (
     <AppLayout pageSelected="myProducts">
@@ -93,12 +72,12 @@ const MyProducts = () => {
                     <GridUserProductCard
                       key={product.id}
                       actions={{
-                        setFlags:setFlags,
-                        setSelectedProduct:setSelectedProduct
+                        setFlags,
+                        setSelectedProduct,
                       }}               
                       product={{
                         selected: product,
-                        transactions:productTransactions
+                        transactions: productTransactions
                       }}
                     />
                   ))
@@ -125,17 +104,17 @@ const MyProducts = () => {
                 <CardFocusOverlay onClick={() => setFlags(prev => ({...prev, showProductInfo: false, showProductTransactions: false}))}/>
                 <UserProductCard
                   product={{
-                    selected:selectedProduct,
-                    transactions:transactions
+                    selectedProduct,
+                    transactions
                   }}
                   flags={{
                     showProductTransactions:flags.showProductTransactions,
                     showConfirmPurchase:flags.showConfirmPurchase,
                   }}
                   actions={{
-                    setFlags:setFlags,
-                    setSelectedProduct:setSelectedProduct,
-                    setProduct:setProduct,
+                    setFlags,
+                    setSelectedProduct,
+                    setProduct,
                   }}
                 />
               </>

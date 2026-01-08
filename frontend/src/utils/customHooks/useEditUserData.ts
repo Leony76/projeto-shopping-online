@@ -3,10 +3,18 @@ import { date } from "../formatation/date";
 import { useCatchError } from "../ui/useCatchError";
 import { isDateFromFuture } from "../validations/isDataFromFuture";
 import type { User } from "../../types/User";
-import type { Field, FieldType } from "../../types/SettingsUpdateField";
+import type { Field, FieldKey, FieldType } from "../../types/SettingsUpdateField";
 import { useToast } from "../../context/ToastContext";
+import { fieldMap } from "../../types/SettingsUpdateField";
+import type { RefObject } from "react";
 
 type useEditUserData = {
+  data: User | null;
+  staticData: RefObject<User | null>;
+  edit: {
+    field: "Nome" | "E-mail" | "Telefone" | "Data de nascimento" | "Telefone de recuperação" | "E-mail de recuperação" | "Senha" | "Logradouro" | "CEP" | "Número de residência" | "Complemento" | "Bairro" | "Cidade" | "Estado" | "País";
+    fieldType: FieldType;
+  } | null
   actions: {
     setFlag: React.Dispatch<React.SetStateAction<{processingState: boolean}>>;
     setError: React.Dispatch<React.SetStateAction<string>>;
@@ -16,25 +24,21 @@ type useEditUserData = {
       fieldType: FieldType;
     } | null>>;
   }
+  flag: {
+    processingState: boolean;
+  };
 }
 
-const useEditUserData = ({actions}:useEditUserData) => {
+const useEditUserData = ({actions, data, staticData, edit, flag}:useEditUserData) => {
   const catchError = useCatchError();
   const { showToast } = useToast();
 
-  const EditUserData = async(
-    processingState: boolean,
-    staticData: User | null,
-    fieldKey: "email" | "recovery_email" | "phone" | "recovery_phone" | "birthday" | "name" | "password" | "public_place" | "zip_code" | "home_number" | "complement" | "neighborhood" | "city" | "state" | "country" | undefined,
-    data: User | null,
-    edit: {
-      field: "Nome" | "E-mail" | "Telefone" | "Data de nascimento" | "Telefone de recuperação" | "E-mail de recuperação" | "Senha" | "Logradouro" | "CEP" | "Número de residência" | "Complemento" | "Bairro" | "Cidade" | "Estado" | "País";
-      fieldType: FieldType,
-    } | null,
+  const fieldKey: FieldKey | undefined = edit ? fieldMap[edit.field] : undefined;
 
-  ) => {
+  const EditUserData = async(e:React.FormEvent<HTMLFormElement>):Promise<void> => {
+    e.preventDefault();
 
-    if (processingState) return;
+    if (flag.processingState) return;
     actions.setFlag(prev => ({...prev, processingState: true}));
 
     if (!data || !staticData || !fieldKey) {
@@ -48,7 +52,7 @@ const useEditUserData = ({actions}:useEditUserData) => {
       return;
     }
 
-    if (data[fieldKey] == staticData[fieldKey]) {
+    if (data[fieldKey] == staticData.current?.[fieldKey]) {
       actions.setError(`O ${edit?.field} não pode ser o mesmo`);
       actions.setFlag(prev => ({...prev, processingState: false}));
       return;

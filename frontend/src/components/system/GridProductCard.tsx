@@ -22,10 +22,15 @@ type Actions = {
   setEditProduct:     React.Dispatch<React.SetStateAction<Product>>;
   setSelectedProduct: React.Dispatch<React.SetStateAction<ProductAPI | null>>
 
-  handleEditProduct:   (e: React.FormEvent<HTMLFormElement>) => Promise<void>;
+  EditProduct:   (e: React.FormEvent<HTMLFormElement>) => Promise<void>;
   handleImageChange:   (e: React.ChangeEvent<HTMLInputElement>, onFileSelect?: (file: File) => void) => void;
-  handleRemoveProduct: (id: number) => Promise<void>;
+  RemoveProduct: (id: number, processingState: boolean) => Promise<void>;
+}
 
+
+type Flags = {
+  processingState: boolean;
+  closeEditModal:  boolean;
 }
 
 type GridProductCard = {
@@ -35,12 +40,6 @@ type GridProductCard = {
   flags:           Flags;
   imagePreview:    string | null;
 }
-
-type Flags = {
-  processingState: boolean;
-  closeEditModal:  boolean;
-}
-
 
 const GridProductCard = ({
   actions,
@@ -105,7 +104,7 @@ const GridProductCard = ({
         <ConfirmDecision
           decisionTitle={'Confirmar remover o produto?'}
           decisionDescription={'Confirma?'}
-          onAcceptWithoutForm={() => actions.handleRemoveProduct(product.id)}
+          onAcceptWithoutForm={() => actions.RemoveProduct(product.id, flags.processingState)}
           onCancel={() => setShowConfirmRemoveProduct(false)}
           processingState={flags && flags.processingState}
           formRequired={false}
@@ -115,7 +114,7 @@ const GridProductCard = ({
         <EditProductForm
           product={productForEdit}
           actions={{
-            handleEditProduct:actions.handleEditProduct,
+            handleEditProduct:actions.EditProduct,
             handleImageChange: (e) => actions.handleImageChange(e, (file) => actions.setEditProduct(prev => ({...prev, image: file}))),
             EditProduct:actions.setEditProduct,
           }}

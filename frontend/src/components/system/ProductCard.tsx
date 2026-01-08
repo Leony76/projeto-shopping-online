@@ -39,7 +39,7 @@ import CardFocusOverlay from "../ui/CardFocusOverlay";
 type Actions = {
   setFlags: React.Dispatch<React.SetStateAction<UIFlags>>;
   setProduct: React.Dispatch<React.SetStateAction<ProductAPI | null>>;
-  handleBuySubmit?: (e:React.FormEvent<HTMLFormElement>) => Promise<void>;
+  BuyProduct?: (e:React.FormEvent<HTMLFormElement>) => Promise<void>;
 };
 
 type ProductCard = {
@@ -214,7 +214,7 @@ const ProductCard = ({
         {flags.showConfirmPurchase && 
           <>
             <CardFocusOverlay onClick={() => actions.setFlags(prev => ({...prev, showConfirmPurchase: false}))}/>
-            <form onSubmit={actions.handleBuySubmit} className="fixed max-w-[600px] w-full border-x-8 border-cyan-800 translate-[-50%] p-3 border-double z-50 bg-gray-100 top-1/2 left-1/2">
+            <form onSubmit={actions.BuyProduct} className="fixed max-w-[600px] w-full border-x-8 border-cyan-800 translate-[-50%] p-3 border-double z-50 bg-gray-100 top-1/2 left-1/2">
               <h3 className="md:text-xl text-2xl font-semibold text-orange-800 mb-2 flex items-center gap-1">Confirmar compra</h3>
               <p className="md:text-sm text-cyan-800 text-base mb-2 flex gap-2">Confirma a compra de {product?.selectedAmount ?? 1} unidade(s) do {product?.name} por R$ {formattedTotalPrice}?</p>
               <small className="flex gap-2 text-gray-500">Seu saldo após a compra será de <span className="flex items-center gap-1 text-green-800 font-bold"><FaWallet className="mt-[2px]" size={15}/>R$ {userWalletIfProductBought}</span></small>

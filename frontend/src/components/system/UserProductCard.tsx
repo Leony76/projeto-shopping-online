@@ -29,7 +29,7 @@ import { useLockYScroll } from "../../utils/customHooks/useLockYScroll";
 
 type UserProductCard = {
   product: {
-    selected: ProductAPI | null;
+    selectedProduct: ProductAPI | null;
     transactions: TransactionAPI[];
   }
 
@@ -80,13 +80,13 @@ const UserProductCard = ({
     try {
 
       const response = await api.post(
-        `product-rating/${product.selected?.id}`,
+        `product-rating/${product.selectedProduct?.id}`,
         { rating }
       );
 
       actions.setProduct(prev =>
         prev.map(p =>
-          p.id === product.selected?.id
+          p.id === product.selectedProduct?.id
             ? { ...p, user_rating: rating }
             : p
         )
@@ -123,9 +123,9 @@ const UserProductCard = ({
     }
 
     try {
-      const response = await api.post(`/user-review/${product.selected?.id}`, {
+      const response = await api.post(`/user-review/${product.selectedProduct?.id}`, {
         commentary: commentary,
-        rate: product.selected?.user_rating ?? 0,
+        rate: product.selectedProduct?.user_rating ?? 0,
       });
 
       showToast(response.data.message, response.data.type);
@@ -143,11 +143,11 @@ const UserProductCard = ({
     <div className={`fixed flex md:flex-row flex-col top-1/2 left-1/2 translate-[-50%] w-full lg:max-w-[1000px] md:max-w-[90vw] sm:max-w-[350px] max-w-[95vw] border-y-8 border-double border-cyan-800 bg-gray-100 z-50 lg:gap-3 custom-scroll ${expandProductImage ? 'lg:h-[95vh] md:h-[80vh]' : 'md:max-h-[70vh] md:max-h-[80vh]'}`}>
       <figure className="flex-1 self-center lg:ml-3 m-2 max-w-[350px] lg:max-w-[450px] flex items-center justify-center">
         <button onClick={() => setExpandProductImage(true)} className="fixed top-5 lg:left-[36%] left-5"><MdOutlineZoomOutMap className="text-orange-500 lg:text-2xl text-4xl bg-cyan-100/20 p-0.5 rounded hover:bg-cyan-100 cursor-pointer"/></button>
-        <img onClick={() => setExpandProductImage(true)} className="md:ml-2 lg:ml-0 h-[250px] w-full object-cover border-2 border-gray-200 p-1" src={product.selected?.image_url} alt={product.selected?.name} />
+        <img onClick={() => setExpandProductImage(true)} className="md:ml-2 lg:ml-0 h-[250px] w-full object-cover border-2 border-gray-200 p-1" src={product.selectedProduct?.image_url} alt={product.selectedProduct?.name} />
         {expandProductImage && (
           <div onClick={() => setExpandProductImage(false)} className="fixed inset-0 z-[100] bg-orange-100 flex items-center justify-center">
             <button onClick={() => setExpandProductImage(prev => !prev)} className="fixed top-2 right-1"><MdOutlineZoomInMap className="text-orange-500 lg:text-3xl text-4xl bg-cyan-100/20 p-0.5 rounded hover:bg-cyan-100 cursor-pointer"/></button>
-            <img src={product.selected?.image_url} alt={product.selected?.name} className="h-full object-contain"/>
+            <img src={product.selectedProduct?.image_url} alt={product.selectedProduct?.name} className="h-full object-contain"/>
           </div>
         )}
       </figure>
@@ -162,19 +162,19 @@ const UserProductCard = ({
             />
             {flags.showProductTransactions && <GoBackArrow onClick={() => actions.setFlags(prev => ({...prev, showProductTransactions:false}))}/>}
           </div>
-          <h4 className="text-2xl md:text-lg lg:text-xl font-semibold text-orange-800">{product.selected?.name}</h4>
+          <h4 className="text-2xl md:text-lg lg:text-xl font-semibold text-orange-800">{product.selectedProduct?.name}</h4>
           <div className="flex lg:flex-row text-sm flex-col lg:items-center font-normal text-[#104E64] mt-[-5px] gap-1 pt-2">
-            <CategoryIcon style="!text-base lg:mt-0 mt-[-5px]" category={product.selected?.category ?? 'Artesanal'}/>
+            <CategoryIcon style="!text-base lg:mt-0 mt-[-5px]" category={product.selectedProduct?.category ?? 'Artesanal'}/>
             <span className="text-[10px] lg:block hidden">●</span>
             <div className="flex md:flex-row flex-col lg:mt-0 mt-[-5px] gap-1">
-              <p className="flex md:text-xs  items-center gap-[3px]"><FaCalendarAlt/> Foi à venda - {(dateTime(product.selected?.created_at))}</p>
-              {product.selected?.created_at !== product.selected?.updated_at && (<p className="flex md:text-xs items-center gap-[1px] md:border-l-2 border-gray-300 md:pl-1"><AiFillEdit/> Sofreu alteração - {(dateTime(product.selected?.updated_at))}</p>)}
+              <p className="flex md:text-xs  items-center gap-[3px]"><FaCalendarAlt/> Foi à venda - {(dateTime(product.selectedProduct?.created_at))}</p>
+              {product.selectedProduct?.created_at !== product.selectedProduct?.updated_at && (<p className="flex md:text-xs items-center gap-[1px] md:border-l-2 border-gray-300 md:pl-1"><AiFillEdit/> Sofreu alteração - {(dateTime(product.selectedProduct?.updated_at))}</p>)}
             </div>
           </div>
           {!flags.showProductTransactions && (
             <>
               <label className="flex items-center gap-1"><CiTextAlignLeft className="mt-[2px]"/>Decrição:</label>
-              <p className="custom-scroll lg:mb-0 mb-1.5 text-gray-700 text-[13px] border-gray-400 col max-h-30  overflow-y-auto">{product.selected?.description}</p>
+              <p className="custom-scroll lg:mb-0 mb-1.5 text-gray-700 text-[13px] border-gray-400 col max-h-30  overflow-y-auto">{product.selectedProduct?.description}</p>
             </>
           )}
         </div>
@@ -201,7 +201,7 @@ const UserProductCard = ({
                     :
                      'Avalie:',
                     hoverRating: hoverRating,
-                    rating: product.selected?.user_rating ?? 0,
+                    rating: product.selectedProduct?.user_rating ?? 0,
                   }}
                   actions={{
                     setHoverRating,
@@ -209,7 +209,7 @@ const UserProductCard = ({
                   }}
                   flags={{ hovering: true }}
                 />
-                {product.selected?.user_rating && (
+                {product.selectedProduct?.user_rating && (
                   <>
                     <span className="text-gray-400 mx-2 sm:block hidden text-[15px]">●</span>
                     <ProceedActionButton
