@@ -264,7 +264,7 @@ const Home = () => {
 
   const productsByCategory = products.reduce<Record<string, typeof products>>(
     (acc, product) => {
-      const category = product.category; // ou product.category.name
+      const category = product.category; 
 
       if (!TARGET_CATEGORIES.includes(category)) return acc;
 
@@ -386,7 +386,7 @@ const Home = () => {
                     <div className="md:block hidden"><PageSectionTitle textSize="sm:text-2xl text-xl my-2 mt-4" position="left" title="Sugestão de adição" icon={FaCommentMedical}/></div>
                     <div className="md:hidden block"><PageSectionTitle textSize="sm:text-2xl text-xl my-2 mt-4" position="centered" title="Sugestão de adição" icon={FaCommentMedical}/></div>
 
-                    <p className="md:text-base text-sm mb-2 text-cyan-800">Deixe sua segestão do que poderia ser adicionado de novo no nosso site! Estamos a disposição de acolher quaisquer melhorias proveitosas que possam ser sugeridas por você e pela comunidade!</p>
+                    <p className="md:text-base text-sm mb-2 text-cyan-800">Deixe sua sugestão do que poderia ser adicionado de novo no nosso site! Estamos a disposição de acolher quaisquer melhorias proveitosas que possam ser sugeridas por você e pela comunidade!</p>
                     <form onSubmit={handleAddSuggestionSubmit}>
                       <InputForm
                         fieldType="textArea" 
@@ -399,7 +399,7 @@ const Home = () => {
                         icon={FaPaperPlane} 
                         processing={processing.addSuggestion}  
                         processingLabel={"Mandando"}
-                        style="bg-cyan-100 text-cyan-700 w-full !text-lg !mt-3"
+                        style="bg-cyan-100 text-cyan-700 w-full !text-base font-semibold !mt-3"
                       />
                     </form>
                   </>

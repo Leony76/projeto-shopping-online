@@ -5,7 +5,7 @@ const RatingCount = ({rateCount, border}:{rateCount:number | null | undefined, b
     <p className={`flex items-center gap-1 font-semibold text-yellow-600 
       ${border === 'left' && 'border-l-2 pl-2 ml-2 border-yellow-600'} 
       ${border === 'right' && 'border-r-2 pr-2 mr-2 border-yellow-600'} 
-    `}><MdPeopleAlt className="lg:text-xl md:text-lg text-2xl"/>{rateCount}</p>   
+    `}><MdPeopleAlt className="xl:text-lg lg:text-xl md:text-xl sm:text-2xl text-base"/>{rateCount}</p>   
   )
 }
 

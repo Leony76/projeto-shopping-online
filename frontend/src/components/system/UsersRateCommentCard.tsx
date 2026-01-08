@@ -34,19 +34,15 @@ const UsersRateCommentCard = ({
                 <span className="text-[10px]">●</span>   
                 <Date timeStamp={product.created_at}/>
               </div>
-              <div className="flex sm:flex-row flex-col xl:text-xs sm:text-base text-xl font-semibold items-center xl:justify-between gap-4 xl:gap-0">
-                <div className="flex gap-4">
-                  <Money value={product.price}/>
-                  <SoldAmount soldAmount={product.orders_sum_quantity}/>
-                </div>
-                <div className="flex gap-4">
-                  <Rating rate={product.product_rate_avg_rating}/>
-                  <RatingCount rateCount={product.product_rate_count}/>
-                </div>
+              <div className="flex justify-between font-semibold xl:text-[13px] md:text-lg sm:text-xl text-[14px] flex-wrap">
+                <Money value={product.price}/>
+                <SoldAmount soldAmount={product.orders_sum_quantity}/>
+                <Rating rate={product.product_rate_avg_rating}/>
+                <RatingCount rateCount={product.product_rate_count}/>
               </div>
             </div>
           </div>
-          <div className="custom-scroll xl:border-none mt-[-5px] xl:mt-0 border-t-2 border-gray-300 pt-2 max-h-[185px] overflow-y-auto flex flex-col flex-1 gap-2 xl:px-2 pr-1 ml-1">
+          <div className="custom-scroll xl:border-none mt-[-8px] xl:mt-0 border-t-2 border-gray-300 xl:pt-0 pt-2 max-h-[185px] overflow-y-auto flex flex-col flex-1 gap-2 xl:px-2 pr-1 ml-1">
             {usersReviews.map(review => (
               <UserComment
                 key={review.id}
