@@ -2,7 +2,6 @@ import { Link } from "react-router-dom";
 import Input from "../components/form/InputForm";
 import Submit from "../components/form/SubmitButton";
 import { useEffect, useState } from "react";
-import { api } from "../services/api";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { useToast } from "../context/ToastContext";
@@ -11,7 +10,6 @@ import { MdEmail } from "react-icons/md";
 import { RiLockPasswordFill } from "react-icons/ri";
 import { useCatchError } from "../utils/ui/useCatchError";
 import LRC from '../assets/LericoriaFire.png';
-import WarnError from "../components/ui/WarnError";
 
 const Login = () => {
 

@@ -4,7 +4,7 @@ import { BiImage } from "react-icons/bi";
 import { useState } from "react";
 import { BsEyeFill } from "react-icons/bs";
 import '../../css/scrollbar.css';
-import { FaFilter, FaUser } from "react-icons/fa6";
+import { FaFilter } from "react-icons/fa6";
 
 type InputForm = {
   fieldType: 

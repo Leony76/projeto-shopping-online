@@ -1,7 +1,7 @@
 import type { Product } from "../Product";
 import type { ProductAPI } from "../ProductAPI"
 
-type GridProductCard = {
+export type GridProductCard = {
   product: ProductAPI;
   editProduct: Product;
   imagePreview: string | null;
