@@ -62,6 +62,14 @@
     ]);
   });
 
+  Route::get('/debug-cloudinary', function () {
+    return [
+      'exists' => file_exists(config_path('cloudinary.php')),
+      'config' => config('cloudinary'),
+    ];
+  });
+
+
   Route::post('/forgot-password', [AuthController::class, 'forgotPassword']);
   Route::post('/reset-password', [AuthController::class, 'resetPassword']);
 
