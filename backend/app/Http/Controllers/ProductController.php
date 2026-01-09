@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Product;
 use Illuminate\Http\JsonResponse;
 use App\Models\Order;
+use Throwable;
 use App\Models\ProductRate;
 use App\Models\ProductSuggest;
 use App\Models\User;
@@ -26,36 +27,85 @@ class ProductController extends Controller
         ]);
     }
 
-    public function store(Request $request):JsonResponse {
-        $request->validate([
-            'name' => 'required|string|min:2|max:50',
-            'category' => 'required|string',
-            'description' => 'required|string|min:2|max:255',
-            'image' => 'required|image|mimes:jpg,jpeg,png,webp,gif',
-            'amount' => 'required|integer|min:1',
-            'price' => 'required|numeric|min:1',
-        ]);
+    // public function store(Request $request):JsonResponse {
+    //     $request->validate([
+    //         'name' => 'required|string|min:2|max:50',
+    //         'category' => 'required|string',
+    //         'description' => 'required|string|min:2|max:255',
+    //         'image' => 'required|image|mimes:jpg,jpeg,png,webp,gif',
+    //         'amount' => 'required|integer|min:1',
+    //         'price' => 'required|numeric|min:1',
+    //     ]);
 
-        // $path = $request->file('image')->store('products', 'public');
-        $uploaded = Cloudinary::upload(
-            $request->file('image')->getRealPath(),
-            ['folder' => 'products']
-        );
+    //     $path = $request->file('image')->store('products', 'public');
+    //     $uploaded = Cloudinary::upload(
+    //         $request->file('image')->getRealPath(),
+    //         ['folder' => 'products']
+    //     );
 
-        Product::create([
-            'name' => $request->name,
-            'category' => $request->category,
-            'description' => $request->description,
-            'datePutToSale' => now(),
-            'amount' => (int) $request->amount,
-            'price' => (float) $request->price,
-            'image' => $uploaded->getSecurePath(),
-        ]);
+    //     Product::create([
+    //         'name' => $request->name,
+    //         'category' => $request->category,
+    //         'description' => $request->description,
+    //         'datePutToSale' => now(),
+    //         'amount' => (int) $request->amount,
+    //         'price' => (float) $request->price,
+    //         'image' => $uploaded->getSecurePath(),
+    //     ]);
 
-        return response()->json([
-            'message' => 'Produto adicionado com sucesso!',
-            'type' => 'success',
-        ]);
+    //     return response()->json([
+    //         'message' => 'Produto adicionado com sucesso!',
+    //         'type' => 'success',
+    //     ]);
+    //     return response()->json([
+    //         'cloudinary_env' => [
+    //             'cloud_name' => config('cloudinary.cloud_name'),
+    //             'key' => config('cloudinary.api_key') ? 'OK' : 'MISSING',
+    //         ],
+    //     ]);
+    // }
+
+    public function store(Request $request): JsonResponse {
+        try {
+            $request->validate([
+                'name' => 'required|string|min:2|max:50',
+                'category' => 'required|string',
+                'description' => 'required|string|min:2|max:255',
+                'image' => 'required|image|mimes:jpg,jpeg,png,webp,gif',
+                'amount' => 'required|integer|min:1',
+                'price' => 'required|numeric|min:1',
+            ]);
+
+            if (!$request->hasFile('image')) {
+                return response()->json(['message' => 'Imagem não enviada'], 422);
+            }
+
+            $uploaded = Cloudinary::upload(
+                $request->file('image')->getRealPath(),
+                ['folder' => 'products']
+            );
+
+            Product::create([
+                'name' => $request->name,
+                'category' => $request->category,
+                'description' => $request->description,
+                'datePutToSale' => now(),
+                'amount' => (int) $request->amount,
+                'price' => (float) $request->price,
+                'image' => $uploaded->getSecurePath(),
+            ]);
+
+            return response()->json([
+                'message' => 'Produto adicionado com sucesso!',
+                'type' => 'success',
+            ]);
+
+        } catch (Throwable $e) {
+            return response()->json([
+                'message' => 'Erro no upload',
+                'error' => $e->getMessage(),
+            ], 500);
+        }
     }
 
     public function create(Request $request):JsonResponse {
