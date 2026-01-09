@@ -8,4 +8,9 @@ export default defineConfig({
     react(),
     tailwindcss(),
   ],
+  preview: {
+    allowedHosts: [
+      "projeto-shopping-online-production-f4d2.up.railway.app",
+    ],
+  },
 })
