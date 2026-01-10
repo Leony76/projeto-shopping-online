@@ -7,6 +7,7 @@ use App\Models\Product;
 use Illuminate\Http\JsonResponse;
 use App\Models\Order;
 use Throwable;
+use Illuminate\Support\Facades\Log;
 use App\Models\ProductRate;
 use App\Models\ProductSuggest;
 use App\Models\User;
@@ -65,23 +66,23 @@ class ProductController extends Controller
     //     ]);
     // }
 
-    public function store(Request $request): JsonResponse {
+    public function store(Request $request): JsonResponse
+    {
         $request->validate([
             'name' => 'required|string|min:2|max:50',
             'category' => 'required|string',
             'description' => 'required|string|min:2|max:255',
-            'image' => 'required|image|mimes:jpg,jpeg,png,webp|max:10240',
+            'image' => 'required|image|mimes:jpg,jpeg,png,webp|max:2048',
             'amount' => 'required|integer|min:1',
             'price' => 'required|numeric|min:1',
         ]);
 
         try {
+            $file = $request->file('image');
+
             $uploaded = Cloudinary::upload(
-                $request->file('image')->getRealPath(),
-                [
-                    'folder' => 'products',
-                    'resource_type' => 'image',
-                ]
+                $file->getPathname(),
+                ['folder' => 'products']
             );
 
             Product::create([
@@ -100,16 +101,17 @@ class ProductController extends Controller
             ]);
 
         } catch (\Throwable $e) {
-            Log::error('Cloudinary upload error', [
+            Log::error('UPLOAD ERROR', [
                 'error' => $e->getMessage(),
             ]);
 
             return response()->json([
-                'message' => 'Erro no upload da imagem',
+                'message' => 'Erro no upload',
                 'error' => $e->getMessage(),
             ], 500);
         }
     }
+
 
     public function create(Request $request):JsonResponse {
         $data = $request->validate([
