@@ -41,7 +41,7 @@
   Route::post('/login', function (Request $request) {
     $credentials = $request->validate([
         'email' => 'required|email',
-        'password' => 'required'
+        'password' => 'required',
     ]);
 
     $user = User::where('email', $credentials['email'])->first();
@@ -54,9 +54,9 @@
 
     return response()->json([
         'token' => $token,
-        'user' => $user
+        'user' => $user,
     ]);
-  });
+});
 
 
   Route::post('/forgot-password', [AuthController::class, 'forgotPassword']);
