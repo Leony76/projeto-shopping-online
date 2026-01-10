@@ -15,15 +15,6 @@
   use App\Http\Controllers\AuthController;
 
 
-  Route::get('/test-session', function () {
-    session(['teste' => 'ok']);
-    return session('teste');
-  });
-
-  Route::get('/test-cloudinary', function () {
-    return config('cloudinary.cloud');
-  });
-
   
   Route::post('/register', function (Request $request) {
     $data = $request->validate([
@@ -53,11 +44,11 @@
         'password' => 'required'
     ]);
 
-    if (!Auth::attempt($credentials)) {
+    $user = User::where('email', $credentials['email'])->first();
+
+    if (! $user || ! Hash::check($credentials['password'], $user->password)) {
         return response()->json(['message' => 'Credenciais inválidas'], 401);
     }
-
-    $user = $request->user();
 
     $token = $user->createToken('access-token')->plainTextToken;
 
@@ -65,13 +56,6 @@
         'token' => $token,
         'user' => $user
     ]);
-  });
-
-  Route::get('/debug-cloudinary', function () {
-    return [
-      'exists' => file_exists(config_path('cloudinary.php')),
-      'config' => config('cloudinary'),
-    ];
   });
 
 
