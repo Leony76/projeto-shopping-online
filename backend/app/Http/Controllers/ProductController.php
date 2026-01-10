@@ -78,33 +78,18 @@ class ProductController extends Controller
         ]);
 
         try {
-            $file = $request->file('image');
+            if (!$request->hasFile('image')) {
+                return response()->json([
+                    'message' => 'Imagem não recebida',
+                ], 422);
+            }
 
             $uploaded = Cloudinary::upload(
-                $file->getPathname(),
+                $request->file('image')->getPathname(),
                 ['folder' => 'products']
             );
 
-            Product::create([
-                'name' => $request->name,
-                'category' => $request->category,
-                'description' => $request->description,
-                'datePutToSale' => now(),
-                'amount' => (int) $request->amount,
-                'price' => (float) $request->price,
-                'image' => $uploaded->getSecurePath(),
-            ]);
-
-            return response()->json([
-                'message' => 'Produto adicionado com sucesso!',
-                'type' => 'success',
-            ]);
-
         } catch (\Throwable $e) {
-            Log::error('UPLOAD ERROR', [
-                'error' => $e->getMessage(),
-            ]);
-
             return response()->json([
                 'message' => 'Erro no upload',
                 'error' => $e->getMessage(),
