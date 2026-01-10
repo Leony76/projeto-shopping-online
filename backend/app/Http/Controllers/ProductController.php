@@ -66,23 +66,22 @@ class ProductController extends Controller
     // }
 
     public function store(Request $request): JsonResponse {
+        $request->validate([
+            'name' => 'required|string|min:2|max:50',
+            'category' => 'required|string',
+            'description' => 'required|string|min:2|max:255',
+            'image' => 'required|image|mimes:jpg,jpeg,png,webp|max:10240',
+            'amount' => 'required|integer|min:1',
+            'price' => 'required|numeric|min:1',
+        ]);
+
         try {
-            $request->validate([
-                'name' => 'required|string|min:2|max:50',
-                'category' => 'required|string',
-                'description' => 'required|string|min:2|max:255',
-                'image' => 'required|image|mimes:jpg,jpeg,png,webp,gif',
-                'amount' => 'required|integer|min:1',
-                'price' => 'required|numeric|min:1',
-            ]);
-
-            if (!$request->hasFile('image')) {
-                return response()->json(['message' => 'Imagem não enviada'], 422);
-            }
-
             $uploaded = Cloudinary::upload(
                 $request->file('image')->getRealPath(),
-                ['folder' => 'products']
+                [
+                    'folder' => 'products',
+                    'resource_type' => 'image',
+                ]
             );
 
             Product::create([
@@ -100,9 +99,13 @@ class ProductController extends Controller
                 'type' => 'success',
             ]);
 
-        } catch (Throwable $e) {
+        } catch (\Throwable $e) {
+            Log::error('Cloudinary upload error', [
+                'error' => $e->getMessage(),
+            ]);
+
             return response()->json([
-                'message' => 'Erro no upload',
+                'message' => 'Erro no upload da imagem',
                 'error' => $e->getMessage(),
             ], 500);
         }
