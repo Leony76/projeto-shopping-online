@@ -19,6 +19,11 @@
     session(['teste' => 'ok']);
     return session('teste');
   });
+
+  Route::get('/test-cloudinary', function () {
+    return config('cloudinary.cloud');
+  });
+
   
   Route::post('/register', function (Request $request) {
     $data = $request->validate([
