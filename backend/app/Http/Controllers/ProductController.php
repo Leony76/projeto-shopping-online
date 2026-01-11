@@ -12,6 +12,7 @@ use App\Models\User;
 use App\Models\UserReview;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
+use Illuminate\Support\Facades\Storage;
 
 class ProductController extends Controller
 {
@@ -25,7 +26,7 @@ class ProductController extends Controller
         ]);
     }
 
-    public function store(Request $request):JsonResponse {
+    public function store(Request $request): JsonResponse {
         $request->validate([
             'name' => 'required|string|min:2|max:50',
             'category' => 'required|string',
@@ -35,7 +36,8 @@ class ProductController extends Controller
             'price' => 'required|numeric|min:1',
         ]);
 
-        $path = $request->file('image')->store('products', 'public');
+        $path = $request->file('image')->store('products', 'cloudinary');
+        $imageUrl = Storage::disk('cloudinary')->url($path);
 
         Product::create([
             'name' => $request->name,
@@ -44,7 +46,7 @@ class ProductController extends Controller
             'datePutToSale' => now(),
             'amount' => (int) $request->amount,
             'price' => (float) $request->price,
-            'image' => $path,
+            'image' => $imageUrl,
         ]);
 
         return response()->json([
@@ -139,26 +141,28 @@ class ProductController extends Controller
         ], 200);
     }
 
-    public function update(int $id, Request $request):JsonResponse {
+    public function update(int $id, Request $request): JsonResponse {
         $product = Product::findOrFail($id);
 
-        $validate = $request->validate([
+        $validated = $request->validate([
             'name' => 'required|string|max:255',
             'category' => 'required|string',
             'description' => 'required|string',
             'amount' => 'required|integer|min:0',
             'price' => 'required|numeric|min:0',
-            'image' => 'nullable',
+            'image' => 'nullable|image|mimes:jpg,jpeg,png,webp,gif',
         ]);
 
-        unset($validate['image']);
+        unset($validated['image']);
 
-        $product->update($validate);
+        $product->update($validated);
 
         if ($request->hasFile('image')) {
-            $path = $request->file('image')->store('products', 'public');
+            $path = $request->file('image')->store('products', 'cloudinary');
+            $imageUrl = Storage::disk('cloudinary')->url($path);
+
             $product->update([
-                'image' => $path
+                'image' => $imageUrl
             ]);
         }
 
@@ -166,8 +170,9 @@ class ProductController extends Controller
             'message' => 'Produto editado com sucesso',
             'type' => 'success',
             'product' => $product,
-        ], 200);
+        ]);
     }
+
 
     public function storeCartProducts(Request $request):JsonResponse {
         $data = $request->validate([
@@ -267,7 +272,7 @@ class ProductController extends Controller
         ], 200);
     }
 
-    public function productSuggest(Request $request, int $userId):JsonResponse {
+    public function productSuggest(Request $request, int $userId): JsonResponse {
         $data = $request->validate([
             'name' => 'required|string|max:255',
             'category' => 'required|string',
@@ -276,13 +281,11 @@ class ProductController extends Controller
             'image' => 'required|image|mimes:png,jpeg,jpg,webp',
         ]);
 
-        $imagePath = $request->file('image')->store(
-            'product_suggests',
-            'public',
-        );
+        $path = $request->file('image')->store('product_suggests', 'cloudinary');
+        $imageUrl = Storage::disk('cloudinary')->url($path);
 
         $data['price'] = (float) $data['price'];
-        $data['image'] = $imagePath;
+        $data['image'] = $imageUrl;
         $data['user_id'] = $userId;
 
         ProductSuggest::create($data);
@@ -293,6 +296,7 @@ class ProductController extends Controller
             'suggestion' => $data,
         ], 201);
     }
+
 
     public function suggestedProducts():JsonResponse {
         $suggestedProducts = ProductSuggest::with('user:id,name')->get();
@@ -327,7 +331,7 @@ class ProductController extends Controller
         ]);
     }
 
-    public function addSuggestedProduct(Request $request, int $id):JsonResponse {
+    public function addSuggestedProduct(Request $request, int $id): JsonResponse {
         $data = $request->validate([
             'amount' => 'required|integer|min:1'
         ]);
@@ -343,7 +347,7 @@ class ProductController extends Controller
             'datePutToSale' => now(),
             'amount' => (int) $data['amount'],
             'price' => (float) $suggestedProduct->price,
-            'image' => $suggestedProduct->image,
+            'image' => $suggestedProduct->image, // ✅ já é URL
         ]);
 
         return response()->json([
