@@ -1,6 +1,6 @@
 import { MdEmail } from "react-icons/md"
 import { RiLockPasswordFill } from "react-icons/ri"
-import { Link, useNavigate } from "react-router-dom"
+import { Link } from "react-router-dom"
 import Input from "../components/form/InputForm"
 import Submit from "../components/form/SubmitButton"
 import { FaPaperPlane } from "react-icons/fa6"
@@ -12,7 +12,6 @@ import { useToast } from "../context/ToastContext"
 const ForgotPassword = () => {
 
   const catchError = useCatchError();
-  const navigate = useNavigate();
   const { showToast } = useToast();
 
   const [processing, setProcessing] = useState<boolean>(false);

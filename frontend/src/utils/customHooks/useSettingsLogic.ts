@@ -3,7 +3,7 @@ import { useAuth } from "../../context/AuthContext";
 import { useToast } from "../../context/ToastContext";
 import type { Field, FieldType } from "../../types/SettingsUpdateField";
 import type { User } from "../../types/User";
-import { settingsFieldMap } from "../misc/SettingsFieldMap";
+import { settingsFieldMap } from "../misc/settingsFieldMap";
 import useEditUserData from "./useEditUserData";
 
 const useSettingsLogic = () => {

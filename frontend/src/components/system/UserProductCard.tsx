@@ -13,7 +13,7 @@ import { FaCalendarAlt } from "react-icons/fa";
 import { AiFillEdit } from "react-icons/ai";
 import CategoryIcon from "../ui/CategoryIcon";
 import { CiTextAlignLeft } from "react-icons/ci";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useCatchError } from "../../utils/ui/useCatchError";
 import { api } from "../../services/api";
 import { useToast } from "../../context/ToastContext";
