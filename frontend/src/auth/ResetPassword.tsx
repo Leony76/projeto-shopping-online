@@ -6,13 +6,11 @@ import Submit from "../components/form/SubmitButton";
 import { useCatchError } from "../utils/ui/useCatchError";
 import { api } from "../services/api";
 import { useToast } from "../context/ToastContext";
-import { useLocation } from "react-router-dom";
 
 const ResetPassword = () => {
 
   const [processing, setProcessing] = useState<boolean>(false);
 
-  const location = useLocation();
   const params = new URLSearchParams(
     window.location.search.replace(/&amp;/g, '&')
   );
