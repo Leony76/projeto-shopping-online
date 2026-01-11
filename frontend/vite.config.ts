@@ -8,4 +8,10 @@ export default defineConfig({
     react(),
     tailwindcss(),
   ],
+  preview: {
+    host: true,
+    allowedHosts: [
+      'front-end-production-4e3c.up.railway.app',
+    ]
+  }
 })
