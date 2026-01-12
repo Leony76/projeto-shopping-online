@@ -31,8 +31,15 @@ const GridProductCard = ({
 
   const productTransactions = product.transactions?.filter(t => t.product_id === product.selected.id) ?? [];
 
-  const totalSpent = productTransactions.reduce((sum, t) => sum + t.total_price,0);
-  const totalUnits = productTransactions.reduce((sum, t) => sum + t.quantity,0);
+  const totalSpent = productTransactions.reduce(
+    (sum, t) => sum + Number(t.total_price),
+    0
+  );
+
+  const totalUnits = productTransactions.reduce(
+    (sum, t) => sum + Number(t.quantity),
+    0
+  );
 
   return (
     <div className="border-x-6 lg:p-1.5 p-2 bg-gray-100 border-double shadow-[0_0_3px_#005F78] border-cyan-800">
