@@ -57,6 +57,7 @@ const EditProductForm = ({actions, flags, extra, product}:EditProductForm) => {
             fieldIcon={MdDescription}
             placeholderValue="Esse produto é isso, isso e isso..."
             value={product.description}
+            maxLength={254}
             fieldName={"Descrição"} 
             onTextArea={(e) => actions.EditProduct(prev => ({...prev, description: e.target.value}))}
           />

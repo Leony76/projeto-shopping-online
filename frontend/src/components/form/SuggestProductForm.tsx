@@ -49,7 +49,7 @@ const SuggestProductForm = ({actions, flags, imagePreview, productSuggest}:Sugge
           placeholderValue="Esse produto é isso, isso e isso..."
           value={productSuggest.description}
           fieldName={"Descrição"} 
-          maxLength={355}
+          maxLength={254}
           onTextArea={(e) => actions.setProductSuggest(prev => ({...prev, description: e.target.value}))}
         />
         <Input 

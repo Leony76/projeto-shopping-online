@@ -65,7 +65,7 @@ const ProductForm = ({actions, product, flags, imagePreview, imageBeforeEdit}:Pr
           value={product.description}
           fieldName={"Descrição"} 
           onTextArea={(e) => {actions.updateProduct("description", e.target.value)}}
-          maxLength={255}
+          maxLength={254}
         />
         <div className="flex sm:gap-4 gap-1 sm:flex-row flex-col">
           <Input 
