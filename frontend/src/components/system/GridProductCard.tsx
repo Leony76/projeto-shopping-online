@@ -91,7 +91,7 @@ const GridProductCard = ({
           <div className="flex gap-3 sm:h-10 sm:text-xs text-xl h-15 justify-between">
             <button onClick={() => {
               setShowEditProduct(true),
-              product && actions.setEditProduct(product)
+              product && actions.setEditProduct(structuredClone(product))
             }} className="flex flex-1 items-center gap-1 border-x-8 border-double mt-2 mb-1 justify-center rounded text-yellow-600 bg-yellow-100 p-1 transition cursor-pointer hover:brightness-[1.05] active:brightness-[.9]"><MdEditSquare className="mt-1"/>Editar</button>
             <button onClick={() => setShowConfirmRemoveProduct(true)} className="flex flex-1 justify-center items-center gap-1 border-x-8 border-double mt-2 mb-1 rounded text-red-600 bg-red-100 p-1 transition cursor-pointer hover:brightness-[1.05] active:brightness-[.9]"><FaTrashCan className="mt-1"/>Remover</button>
           </div>

@@ -35,7 +35,7 @@ export const useEditProduct = ({actions, editProduct, products, flags}:UseEditPr
     if (flags.processingState)return;
     actions.setFlags(prev => ({...prev, processingState: true}));
 
-    const result = addProductsValidation(editProduct);
+    const result = addProductsValidation(editProduct);      
     
     if (!result.valid) {
       showToast(result.message!, "alert");
@@ -44,6 +44,8 @@ export const useEditProduct = ({actions, editProduct, products, flags}:UseEditPr
     }
 
     const payload = new FormData();
+
+    payload.append('_method', 'PATCH');
 
     if (editProduct.name !== product.name) {
       payload.append('name', editProduct.name);
