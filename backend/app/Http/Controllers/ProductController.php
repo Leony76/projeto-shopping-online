@@ -37,7 +37,7 @@ class ProductController extends Controller
             'price' => 'required|numeric|min:1',
         ]);
 
-        $uploadedImage = Cloudinary::upload(
+        $uploadedImage = Cloudinary::uploadFile(
             $request->file('image')->getRealPath(),
             [
                 'folder' => 'products',
@@ -166,7 +166,7 @@ class ProductController extends Controller
         $product->update($validated);
 
         if ($request->hasFile('image')) {
-            $uploadedImage = Cloudinary::upload(
+            $uploadedImage = Cloudinary::uploadFile(
                 $request->file('image')->getRealPath(),
                 [
                     'folder' => 'products',
@@ -294,7 +294,7 @@ class ProductController extends Controller
             'image' => 'required|image|mimes:png,jpeg,jpg,webp',
         ]);
 
-        $uploadedImage = Cloudinary::upload(
+        $uploadedImage = Cloudinary::uploadFile(
             $request->file('image')->getRealPath(),
             [
                 'folder' => 'product_suggests',
