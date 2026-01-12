@@ -70,7 +70,7 @@ const Login = () => {
         <div className="flex flex-col md:max-w-[272px] w-full custom-scroll px-2 mr-1 overflow-y-auto">
           <figure className="md:hidden mt-1 self-center flex border-gray-200 flex-col h-1/3 w-1/3 justify-center items-center">
             <img className="h-1/2" style={{background: 'radial-gradient(circle, #f8ab38cb, transparent 73%)'}} src={LRC} alt="LRC" />
-            <h2 className="text-orange-300 text-shadow-md text-lg italic font-bold">Lehinshopping'</h2>
+            <h2 className="text-orange-300 text-shadow-md text-lg italic font-bold">Lehinshoppin'</h2>
           </figure>
           <h1 className="flex items-center justify-center gap-1 py-1 text-3xl text-cyan-500 font-semibold"><TbLogin2/>Login</h1>
           <form onSubmit={handleLoginSubmit} className="flex flex-col py-2 gap-2">
@@ -91,7 +91,7 @@ const Login = () => {
         </div>
         <figure className="md:flex border-l-2 border-gray-200 flex-col hidden w-1/2 justify-center items-center ml-2">
           <img className="h-[70%]" style={{background: 'radial-gradient(circle, #f8ab38cb, transparent 70%)'}} src={LRC} alt="LRC" />
-          <h2 className="text-orange-300 text-shadow-md text-2xl italic font-bold">Lehinshopping'</h2>
+          <h2 className="text-orange-300 text-shadow-md text-2xl italic font-bold">Lehinshoppin'</h2>
         </figure>
       </div>
     </div>

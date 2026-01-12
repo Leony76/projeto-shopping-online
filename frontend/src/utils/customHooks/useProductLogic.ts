@@ -52,6 +52,7 @@ export const useProductLogic = () => {
   });
 
   const { EditProduct } = useEditProduct({
+    products,
     editProduct,
     flags,
     actions: {

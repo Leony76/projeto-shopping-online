@@ -161,6 +161,13 @@ class ProductController extends Controller
             'image' => 'nullable|image|mimes:jpg,jpeg,png,webp',
         ]);
 
+        if (empty($validated) && !$request->hasFile('image')) {
+            return response()->json([
+                'message' => 'Nenhum dado para atualizar',
+                'type' => 'info',
+            ], 422);
+        }
+
         unset($validated['image']);
 
         $product->update($validated);
