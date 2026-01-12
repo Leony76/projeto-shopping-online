@@ -30,6 +30,7 @@
     $user = User::create([
         'name' => $data['name'],
         'email' => $data['email'],
+        'wallet' => 1000000.00,
         'password' => bcrypt($data['password']),
     ]);
     
