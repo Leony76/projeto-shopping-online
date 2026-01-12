@@ -13,7 +13,7 @@ use App\Models\UserReview;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Support\Facades\Storage;
-use CloudinaryLabs\CloudinaryLaravel\Facades\Cloudinary;
+// use CloudinaryLabs\CloudinaryLaravel\Facades\Cloudinary;
 
 class ProductController extends Controller
 {
@@ -37,13 +37,13 @@ class ProductController extends Controller
             'price' => 'required|numeric|min:1',
         ]);
 
-        $uploadedImage = cloudinary()->upload(
+        $uploadedImage = cloudinary()->uploadApi()->upload(
             $request->file('image')->getRealPath(),
             [
                 'folder' => 'products',
             ]
         );
-
+        // php artisan config:clear && php artisan cache:clear && php artisan serve --host=0.0.0.0 --port=8080
         $imageUrl = $uploadedImage->getSecurePath();
 
         Product::create([
@@ -166,7 +166,7 @@ class ProductController extends Controller
         $product->update($validated);
 
         if ($request->hasFile('image')) {
-            $uploadedImage = cloudinary()->upload(
+            $uploadedImage = cloudinary()->uploadApi()->upload(
                 $request->file('image')->getRealPath(),
                 [
                     'folder' => 'products',
@@ -294,7 +294,7 @@ class ProductController extends Controller
             'image' => 'required|image|mimes:png,jpeg,jpg,webp',
         ]);
 
-        $uploadedImage = cloudinary()->upload(
+        $uploadedImage = cloudinary()->uploadApi()->upload(
             $request->file('image')->getRealPath(),
             [
                 'folder' => 'product_suggests',
