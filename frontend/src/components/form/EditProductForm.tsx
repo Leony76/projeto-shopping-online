@@ -29,6 +29,7 @@ type EditProductForm = {
 }
 
 const EditProductForm = ({actions, flags, extra, product}:EditProductForm) => {
+
   return (
     <>
       <CardFocusOverlay onClick={() => flags.setShowEditProduct(false)} style={'z-10'}/>

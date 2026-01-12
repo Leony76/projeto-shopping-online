@@ -116,7 +116,7 @@ const Home = () => {
                 <div className="md:block hidden"><PageSectionTitle textSize="sm:text-2xl text-xl" position="left" title="Avaliações do público" icon={FaCommentDots} /></div>
 
                 <CardsGrid gridType="productReviews" style="border-y-2 border-gray-200 p-2 custom-scroll max-h-[480px] overflow-y-auto">
-                  {reviewsByProduct ? (
+                  {userReviews.length > 0 ? (
                     Object.entries(reviewsByProduct).map(([productId, reviews]) => {
 
                       const product = products.find(p => p.id === Number(productId));

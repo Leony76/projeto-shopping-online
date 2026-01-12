@@ -153,12 +153,12 @@ class ProductController extends Controller
         $product = Product::findOrFail($id);
 
         $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'category' => 'required|string',
-            'description' => 'required|string',
-            'amount' => 'required|integer|min:0',
-            'price' => 'required|numeric|min:0',
-            'image' => 'nullable|image|mimes:jpg,jpeg,png,webp,gif',
+            'name' => 'sometimes|required|string|max:255',
+            'category' => 'sometimes|required|string',
+            'description' => 'sometimes|required|string',
+            'amount' => 'sometimes|required|integer|min:0',
+            'price' => 'sometimes|required|numeric|min:0',
+            'image' => 'nullable|image|mimes:jpg,jpeg,png,webp',
         ]);
 
         unset($validated['image']);
