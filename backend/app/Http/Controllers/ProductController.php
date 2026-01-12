@@ -43,8 +43,8 @@ class ProductController extends Controller
                 'folder' => 'products',
             ]
         );
-        // php artisan config:clear && php artisan cache:clear && php artisan serve --host=0.0.0.0 --port=8080
-        $imageUrl = $uploadedImage->getSecurePath();
+
+        $imageUrl = $uploadedImage['secure_url'];
 
         Product::create([
             'name' => $request->name,
@@ -174,7 +174,7 @@ class ProductController extends Controller
             );
 
             $product->update([
-                'image' => $uploadedImage->getSecurePath(),
+                'image' => $uploadedImage['secure_url'],
             ]);
         }
 
@@ -302,7 +302,7 @@ class ProductController extends Controller
         );
 
         $data['price'] = (float) $data['price'];
-        $data['image'] = $uploadedImage->getSecurePath();
+        $data['image'] = $uploadedImage['secure_url'];
         $data['user_id'] = $userId;
 
         ProductSuggest::create($data);
