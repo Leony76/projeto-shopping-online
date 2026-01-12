@@ -7,7 +7,7 @@ import { addProductsValidation } from "../product/addProductValidation";
 import { useImagePreview } from "../product/useImagePreview";
 import { useCatchError } from "../ui/useCatchError";
 
-type useEditProduct = {
+type UseEditProduct = {
   editProduct: Product;
   actions: {
     setFlags: React.Dispatch<React.SetStateAction<UIFlags>>;
@@ -16,7 +16,7 @@ type useEditProduct = {
   flags: UIFlags;
 }
 
-export const useEditProduct = ({actions, editProduct, flags}:useEditProduct) => {
+export const useEditProduct = ({actions, editProduct, flags}:UseEditProduct) => {
   const { showToast } = useToast();
   const { resetImagePreview } = useImagePreview();
 
