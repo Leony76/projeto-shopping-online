@@ -25,7 +25,11 @@ class ProductSuggest extends Model
         'image_url'
     ];
 
-    public function getImageUrlAttribute() {
+    public function getImageUrlAttribute(): string {
+        if (str_starts_with($this->image, 'http')) {
+            return $this->image;
+        }
+
         return asset('storage/' . $this->image);
     }
 
