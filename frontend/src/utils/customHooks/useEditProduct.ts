@@ -71,7 +71,6 @@ export const useEditProduct = ({actions, editProduct, products, flags}:UseEditPr
       payload.append('image', editProduct.image);
     }
 
-
     try {
       const response = await api.patch(`/product/${editProduct.id}`, payload);
 
