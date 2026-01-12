@@ -82,7 +82,7 @@
     Route::post('/buy-product', [ProductController::class, 'create']);
     Route::get('/user-products', [ProductController::class, 'list']);
     Route::delete('/product/{id}', [ProductController::class, 'destroy']);
-    Route::patch('/product/{id}', [ProductController::class, 'update']);
+    Route::post('/product/{id}', [ProductController::class, 'update']);
     Route::post('/cart-products', [ProductController::class, 'storeCartProducts']);
     Route::post('/product-suggest/{id}', [ProductController::class, 'productSuggest']);
     Route::get('/suggested-products',[ProductController::class, 'suggestedProducts']);

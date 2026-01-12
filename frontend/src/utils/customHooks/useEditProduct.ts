@@ -45,8 +45,6 @@ export const useEditProduct = ({actions, editProduct, products, flags}:UseEditPr
 
     const payload = new FormData();
 
-    payload.append('_method', 'PATCH');
-
     if (editProduct.name !== product.name) {
       payload.append('name', editProduct.name);
     }
@@ -72,7 +70,7 @@ export const useEditProduct = ({actions, editProduct, products, flags}:UseEditPr
     }
 
     try {
-      const response = await api.patch(`/product/${editProduct.id}`, payload);
+      const response = await api.post(`/product/${editProduct.id}`, payload);
 
       const updatedProduct = response.data.product;
       
