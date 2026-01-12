@@ -75,6 +75,13 @@ const ProductCard = ({
   const [addToCartConfirm, setAddToCartConfirm] = useState<boolean>(false); 
   const [expandProductImage, setExpandProductImage] = useState<boolean>(false);
 
+  const rating = Number(product?.product_rate_avg_rating);
+
+  const displayRating =
+    !isNaN(rating) && rating > 0
+      ? rating.toFixed(1).replace('.', ',')
+      : 'N/A';
+
   return (
     <div className={`fixed flex md:flex-row flex-col top-1/2 left-1/2 translate-[-50%] w-full lg:max-w-[1000px] md:max-w-[90vw] sm:max-w-[350px] max-w-[95vw] border-y-8 border-double border-cyan-800 bg-gray-100 z-50 lg:gap-3 custom-scroll ${expandProductImage ? 'lg:h-[95vh] md:h-[80vh]' : 'md:max-h-[70vh] md:max-h-[80vh]'}`}>
       <figure className="flex-1 self-center lg:ml-3 m-2 max-w-[350px] lg:max-w-[450px] flex items-center justify-center">
@@ -120,8 +127,8 @@ const ProductCard = ({
               <div className="flex lg:text-base md:text-sm text-xl md:mb-0 mb-3 items-center">
                 <RatingStars
                   elements={{
-                    name: `${!product?.product_rate_avg_rating ? 'N/A' : '' + product.product_rate_avg_rating.toFixed(1).replace('.',',')}`,
-                    rating: product?.product_rate_avg_rating ?? 0,
+                    name: displayRating,
+                    rating: rating,
                   }}
                   flags={{hovering: false}}
                 />
