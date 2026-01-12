@@ -13,6 +13,7 @@ use App\Models\UserReview;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Support\Facades\Storage;
+use CloudinaryLabs\CloudinaryLaravel\Facades\Cloudinary;
 
 class ProductController extends Controller
 {
@@ -36,8 +37,14 @@ class ProductController extends Controller
             'price' => 'required|numeric|min:1',
         ]);
 
-        $path = $request->file('image')->store('products', 'cloudinary');
-        $imageUrl = Storage::disk('cloudinary')->url($path);
+        $uploadedImage = Cloudinary::upload(
+            $request->file('image')->getRealPath(),
+            [
+                'folder' => 'products',
+            ]
+        );
+
+        $imageUrl = $uploadedImage->getSecurePath();
 
         Product::create([
             'name' => $request->name,
@@ -54,6 +61,7 @@ class ProductController extends Controller
             'type' => 'success',
         ]);
     }
+
 
     public function create(Request $request):JsonResponse {
         $data = $request->validate([
@@ -158,11 +166,15 @@ class ProductController extends Controller
         $product->update($validated);
 
         if ($request->hasFile('image')) {
-            $path = $request->file('image')->store('products', 'cloudinary');
-            $imageUrl = Storage::disk('cloudinary')->url($path);
+            $uploadedImage = Cloudinary::upload(
+                $request->file('image')->getRealPath(),
+                [
+                    'folder' => 'products',
+                ]
+            );
 
             $product->update([
-                'image' => $imageUrl
+                'image' => $uploadedImage->getSecurePath(),
             ]);
         }
 
@@ -172,6 +184,7 @@ class ProductController extends Controller
             'product' => $product,
         ]);
     }
+
 
 
     public function storeCartProducts(Request $request):JsonResponse {
@@ -281,11 +294,15 @@ class ProductController extends Controller
             'image' => 'required|image|mimes:png,jpeg,jpg,webp',
         ]);
 
-        $path = $request->file('image')->store('product_suggests', 'cloudinary');
-        $imageUrl = Storage::disk('cloudinary')->url($path);
+        $uploadedImage = Cloudinary::upload(
+            $request->file('image')->getRealPath(),
+            [
+                'folder' => 'product_suggests',
+            ]
+        );
 
         $data['price'] = (float) $data['price'];
-        $data['image'] = $imageUrl;
+        $data['image'] = $uploadedImage->getSecurePath();
         $data['user_id'] = $userId;
 
         ProductSuggest::create($data);
@@ -296,7 +313,6 @@ class ProductController extends Controller
             'suggestion' => $data,
         ], 201);
     }
-
 
     public function suggestedProducts():JsonResponse {
         $suggestedProducts = ProductSuggest::with('user:id,name')->get();
@@ -347,7 +363,7 @@ class ProductController extends Controller
             'datePutToSale' => now(),
             'amount' => (int) $data['amount'],
             'price' => (float) $suggestedProduct->price,
-            'image' => $suggestedProduct->image, // ✅ já é URL
+            'image' => $suggestedProduct->image, 
         ]);
 
         return response()->json([
