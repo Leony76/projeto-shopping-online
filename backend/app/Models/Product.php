@@ -27,9 +27,14 @@ class Product extends Model
 
     protected $appends = ['image_url', 'user_rating'];
 
-    public function getImageUrlAttribute() {
+    public function getImageUrlAttribute(): string {
+        if (str_starts_with($this->image, 'http')) {
+            return $this->image;
+        }
+
         return asset('storage/' . $this->image);
     }
+
 
     public function orders() {
         return $this->hasMany(Order::class);
