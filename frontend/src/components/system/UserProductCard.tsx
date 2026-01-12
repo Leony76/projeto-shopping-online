@@ -55,8 +55,8 @@ const UserProductCard = ({
   actions,
 }:UserProductCard) => {
 
-  const totalUnits = product.transactions.reduce((sum, t) => sum + t.quantity, 0); 
-  const totalSpent = product.transactions.reduce((sum, t) => sum + t.total_price, 0); 
+  const totalUnits = product.transactions.reduce((sum, t) => sum + Number(t.quantity), 0); 
+  const totalSpent = product.transactions.reduce((sum, t) => sum + Number(t.total_price), 0); 
 
   const catchError = useCatchError();
   const { showToast } = useToast();
