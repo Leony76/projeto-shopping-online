@@ -8,6 +8,7 @@ import { useImagePreview } from "../product/useImagePreview";
 import { useCatchError } from "../ui/useCatchError";
 
 type UseEditProduct = {
+  products: Product[];
   editProduct: Product;
   actions: {
     setFlags: React.Dispatch<React.SetStateAction<UIFlags>>;
@@ -16,14 +17,20 @@ type UseEditProduct = {
   flags: UIFlags;
 }
 
-export const useEditProduct = ({actions, editProduct, flags}:UseEditProduct) => {
+export const useEditProduct = ({actions, editProduct, products, flags}:UseEditProduct) => {
   const { showToast } = useToast();
   const { resetImagePreview } = useImagePreview();
 
   const catchError = useCatchError();
 
+  const product = products.find(p =>
+    p.id === editProduct.id,
+  );
+
   const EditProduct = async(e:React.FormEvent<HTMLFormElement>):Promise<void> => {
     e.preventDefault();
+
+    if (!product)return;
 
     if (flags.processingState)return;
     actions.setFlags(prev => ({...prev, processingState: true}));
@@ -38,12 +45,30 @@ export const useEditProduct = ({actions, editProduct, flags}:UseEditProduct) => 
 
     const payload = new FormData();
 
-    payload.append('name', editProduct.name);
-    payload.append('category', editProduct.category);
-    payload.append('description', editProduct.description);
-    payload.append('amount', String(editProduct.amount));
-    payload.append('price', String(editProduct.price));
-    editProduct.image && payload.append('image', editProduct.image);
+    if (editProduct.name !== product.name) {
+      payload.append('name', editProduct.name);
+    }
+
+    if (editProduct.category !== product.category) {
+      payload.append('category', editProduct.category);
+    }
+
+    if (editProduct.description !== product.description) {
+      payload.append('description', editProduct.description);
+    }
+
+    if (editProduct.amount !== product.amount) {
+      payload.append('amount', String(editProduct.amount));
+    }
+
+    if (editProduct.price !== product.price) {
+      payload.append('price', String(editProduct.price));
+    }
+
+    if (editProduct.image instanceof File) {
+      payload.append('image', editProduct.image);
+    }
+
 
     try {
       const response = await api.patch(`/product/${editProduct.id}`, payload);

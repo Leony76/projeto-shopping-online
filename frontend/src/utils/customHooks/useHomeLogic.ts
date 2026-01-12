@@ -108,6 +108,7 @@ export const useHomeLogic = () => {
   });
 
   const { EditProduct } = useEditProduct({
+    products,
     editProduct,
     flags,
     actions: {
