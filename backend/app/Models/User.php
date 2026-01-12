@@ -25,6 +25,7 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'wallet',
         'phone',
         'birthday',
         'recovery_email',
